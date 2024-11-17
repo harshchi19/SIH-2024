@@ -10,6 +10,8 @@ import EventCard from "../components/EventCard";
 import RightSidebar from "../components/RightSidebar";
 import Sidebar from "../components/Sidebar";
 
+import { days, meetings } from "../data/meetings.js";
+
 export default function Calendar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentDate] = useState("July 17");
@@ -19,96 +21,6 @@ export default function Calendar() {
     const hour = 9 + i;
     return `${hour.toString().padStart(2, "0")}:00 AM`;
   });
-
-  const days = [
-    "Monday 12",
-    "Tuesday 13",
-    "Wednesday 14",
-    "Thursday 15",
-    "Friday 16",
-    "Saturday 17",
-  ];
-
-  const meetings = [
-    {
-      day: "Monday",
-      time: "09:00",
-      endTime: "10:00",
-      title: "Speech Therapy Session",
-      therapist: "Ananya Sharma",
-      type: "success",
-      location: "Room 203B",
-      description:
-        "Weekly speech therapy session focusing on articulation and fluency.",
-      patientNotes: "Please bring previous exercise materials",
-    },
-    {
-      day: "Monday",
-      time: "11:00",
-      endTime: "12:00",
-      title: "Group Counseling",
-      therapist: "Rohan Deshmukh",
-      type: "info",
-      location: "Conference Room A",
-      description: "Support group session for anxiety management",
-      patientNotes: "New members welcome",
-    },
-    {
-      day: "Wednesday",
-      time: "10:00",
-      endTime: "11:30",
-      title: "Occupational Therapy",
-      therapist: "Ishita Patel",
-      type: "warning",
-      location: "OT Lab",
-      description: "Fine motor skills development session",
-      patientNotes: "Wear comfortable clothing",
-    },
-    {
-      day: "Thursday",
-      time: "14:00",
-      endTime: "15:30",
-      title: "Mental Health Workshop",
-      therapist: "Dr. Kumar (Supervisor)",
-      type: "error",
-      location: "Main Hall",
-      description: "Interactive workshop on stress management techniques",
-      patientNotes: "Bring a notebook and pen",
-    },
-    {
-      day: "Friday",
-      time: "11:00",
-      endTime: "12:00",
-      title: "Physical Therapy Session",
-      therapist: "Karan Mehta",
-      type: "success",
-      location: "PT Room 101",
-      description: "Lower body strength training and assessment",
-      patientNotes: "Wear athletic shoes",
-    },
-    {
-      day: "Saturday",
-      time: "09:00",
-      endTime: "10:30",
-      title: "Rehabilitation Workshop",
-      therapist: "Dr. Gupta (Supervisor)",
-      type: "warning",
-      location: "Rehab Center",
-      description: "Group session on recovery techniques",
-      patientNotes: "Bring water bottle",
-    },
-    {
-      day: "Saturday",
-      time: "11:00",
-      endTime: "12:00",
-      title: "Family Counseling",
-      therapist: "Sanya Gupta",
-      type: "info",
-      location: "Counseling Room 3",
-      description: "Family support and communication session",
-      patientNotes: "All family members should attend",
-    },
-  ];
 
   return (
     <div className="flex h-screen bg-background">

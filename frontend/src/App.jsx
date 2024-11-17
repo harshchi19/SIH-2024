@@ -1,12 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import StudentTherapistCard from "./pages/StudentTherapistCard";
-// import Calendar from "./pages/Calendar";
+import { Dashboard, Calendar, Patients, ReportsPage, StudentTherapistCard } from './pages/index.js';
 // import Inbox from "./pages/Inbox";
-import ReportsPage from "./pages/ReportsPage";
-import Patients from "./pages/Patients";
-import Calendar from "./pages/Calendar";
 // import Patients from "./pages/Patients";
 // import Communication from "./pages/Communication";
 
