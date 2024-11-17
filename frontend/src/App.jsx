@@ -5,6 +5,8 @@ import StudentTherapistCard from "./pages/StudentTherapistCard";
 // import Calendar from "./pages/Calendar";
 // import Inbox from "./pages/Inbox";
 import ReportsPage from "./pages/ReportsPage";
+import Patients from "./pages/Patients";
+import Calendar from "./pages/Calendar";
 // import Patients from "./pages/Patients";
 // import Communication from "./pages/Communication";
 
@@ -36,7 +38,7 @@ const App = () => {
             </AppLayout>
           }
         />
-        {/* <Route
+        <Route
           path="/calendar"
           element={
             <AppLayout>
@@ -44,7 +46,7 @@ const App = () => {
             </AppLayout>
           }
         />
-        <Route
+        {/* <Route
           path="/inbox"
           element={
             <AppLayout>
@@ -60,7 +62,7 @@ const App = () => {
             </AppLayout>
           }
         />
-        {/* <Route
+        <Route
           path="/patients"
           element={
             <AppLayout>
@@ -68,7 +70,7 @@ const App = () => {
             </AppLayout>
           }
         />
-        <Route
+        {/* <Route
           path="/communication"
           element={
             <AppLayout>

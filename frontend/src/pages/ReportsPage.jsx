@@ -25,7 +25,7 @@ const ReportsPage = () => {
       appointment: "Aarav Patel",
       details: "Babbling",
       date: "Just now",
-      status: "Report Analysis",
+      status: "View Report",
     },
     {
       id: "#CMP802",
@@ -33,7 +33,7 @@ const ReportsPage = () => {
       appointment: "Vivaan Singh",
       details: "Audiology",
       date: "A minute ago",
-      status: "Report Analysis",
+      status: "View Report",
     },
     {
       id: "#CMP803",
@@ -41,7 +41,7 @@ const ReportsPage = () => {
       appointment: "Aarav Patel",
       details: "Hearing Aid",
       date: "1 hour ago",
-      status: "Report Analysis",
+      status: "View Report",
     },
     {
       id: "#CMP804",
@@ -49,7 +49,7 @@ const ReportsPage = () => {
       appointment: "Shanaya Sharma",
       details: "Caucheology",
       date: "Yesterday",
-      status: "Report Analysis",
+      status: "View Report",
     },
     {
       id: "#CMP805",
@@ -57,7 +57,7 @@ const ReportsPage = () => {
       appointment: "Vivaan Singh",
       details: "Audiology",
       date: "Feb 2, 2024",
-      status: "Report Analysis",
+      status: "View Report",
     },
   ];
 
