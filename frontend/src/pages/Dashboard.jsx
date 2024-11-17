@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,6 +20,7 @@ import {
 } from "recharts";
 import { Bell } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
+import RightSidebar from "../components/RightSidebar";
 
 const monthlyData = [
   { month: "Jan", thisYear: 10, lastYear: 8 },
@@ -47,6 +49,7 @@ const therapyTypeData = [
 ];
 
 const Dashboard = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
@@ -175,6 +178,10 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      <RightSidebar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+      />
     </div>
   );
 };

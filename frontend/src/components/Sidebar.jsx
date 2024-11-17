@@ -1,4 +1,5 @@
-// import React from "react";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +15,52 @@ import {
 import HoverSpecializationPopup from "./HoverSpecializationPopup";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const navigationItems = [
+    {
+      icon: <LayoutDashboard className="h-4 w-4" />,
+      label: "Dashboard",
+      path: "/dashboard",
+    },
+    {
+      icon: <Users className="h-4 w-4" />,
+      label: "Student Therapist",
+      path: "/student-therapist",
+    },
+    {
+      icon: <Calendar className="h-4 w-4" />,
+      label: "Calendar",
+      path: "/calendar",
+    },
+    {
+      icon: <Inbox className="h-4 w-4" />,
+      label: "Inbox",
+      path: "/inbox",
+    },
+    {
+      icon: <FileText className="h-4 w-4" />,
+      label: "Reports",
+      path: "/reports",
+    },
+    {
+      icon: <Users className="h-4 w-4" />,
+      label: "Patients",
+      path: "/patients",
+    },
+    {
+      icon: <MessageSquare className="h-4 w-4" />,
+      label: "Communication",
+      path: "/communication",
+    },
+  ];
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
   return (
     <div className="w-64 border-r bg-[#5DB075] p-6">
       <div className="flex items-center gap-2 mb-6">
@@ -21,7 +68,7 @@ const Sidebar = () => {
           <AvatarImage src="/api/placeholder/32/32" alt="User" />
           <AvatarFallback>YB</AvatarFallback>
         </Avatar>
-        <span className="text-white font-semibold hover:cursor-pointer hover:">
+        <span className="text-white font-semibold hover:cursor-pointer">
           <HoverSpecializationPopup
             name="Yash Buddhadev"
             specialization="Supervisor"
@@ -30,30 +77,16 @@ const Sidebar = () => {
       </div>
 
       <nav className="space-y-2">
-        {[
-          {
-            icon: <LayoutDashboard className="h-4 w-4" />,
-            label: "Dashboard",
-            active: true,
-          },
-          { icon: <Users className="h-4 w-4" />, label: "Student Therapist" },
-          { icon: <Calendar className="h-4 w-4" />, label: "Calendar" },
-          { icon: <Inbox className="h-4 w-4" />, label: "Inbox" },
-          { icon: <FileText className="h-4 w-4" />, label: "Reports" },
-          { icon: <Users className="h-4 w-4" />, label: "Patients" },
-          {
-            icon: <MessageSquare className="h-4 w-4" />,
-            label: "Communication",
-          },
-        ].map((item) => (
+        {navigationItems.map((item) => (
           <Button
             key={item.label}
-            variant={item.active ? "secondary" : "ghost"}
-            className={`w-full justify-start ${
-              item.active
+            variant={currentPath === item.path ? "secondary" : "ghost"}
+            className={`w-full justify-start transition-colors duration-200 ${
+              currentPath === item.path
                 ? "bg-[#54C174] text-white hover:bg-[#54C174]"
-                : "text-white hover:bg-[#FEFEFE]"
+                : "text-white hover:bg-[#FEFEFE] hover:text-[#5DB075]"
             }`}
+            onClick={() => handleNavigation(item.path)}
           >
             {item.icon}
             <span className="ml-2">{item.label}</span>

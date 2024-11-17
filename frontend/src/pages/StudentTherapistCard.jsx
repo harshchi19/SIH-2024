@@ -1,18 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import {
-  User,
-  Calendar,
-  Star,
-  Users,
-  Clock,
-  TrendingUp,
-  Filter,
-} from "lucide-react";
-import Sidebar from "../../components/Sidebar";
+import { User, Star, Users, Clock, TrendingUp, Filter } from "lucide-react";
+import Sidebar from "../components/Sidebar";
+import RightSidebar from "../components/RightSidebar";
 
 const StudentTherapistCard = ({
   name,
@@ -94,6 +87,7 @@ const StudentTherapistCard = ({
 };
 
 const StudentTherapistPage = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const students = [
     {
       name: "Sarah Johnson",
@@ -186,6 +180,12 @@ const StudentTherapistPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Rigth Sidebar */}
+      <RightSidebar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+      />
     </div>
   );
 };
