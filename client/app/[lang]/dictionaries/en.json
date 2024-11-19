@@ -1,0 +1,17 @@
+{
+    "landing": {
+        "nav_login": "Go to Login",
+        "read": "Read our docs"
+    },
+    "login": {
+        "header": "Login to you account",
+        "description1": "Whether you’re a Patient, Student Therapist, or Supervisor, choose your role to unlock personalized features and proceed.",
+        "pat": "I'm a Patient",
+        "pat_desc": "Access personal health information",
+        "stt": "I'm a Student Therapist",
+        "stt_desc": "Standard user access",
+        "sup": "I'm a Supervisor",
+        "sup_desc": "Administrative access",
+        "continue": "Continue"
+    }
+}
