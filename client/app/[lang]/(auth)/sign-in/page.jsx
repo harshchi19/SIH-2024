@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { UserCircle, Stethoscope, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import LanguageSwitcher from "@/components/LanguageButton";
 import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { logo } from "@/assets";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import PatientForm from "@/components/login/PatientForm";
+import StudentTherapistForm from "@/components/login/StudentTherapistForm";
+import SupervisorForm from "@/components/login/SupervisorForm";
 
 const SignInPage = () => {
   const [selectedRole, setSelectedRole] = useState("");
@@ -61,7 +61,6 @@ const SignInPage = () => {
                     alt="Logo"
                   />
                 </Link>
-                <LanguageSwitcher currentLang={currentLang} />
               </div>
               {currentStep === 1 && (
                 <div>
@@ -117,6 +116,20 @@ const SignInPage = () => {
                     {dict?.login?.continue}
                   </Button>
                 </div>
+              )}
+
+              {currentStep === 2 && (
+                <>
+                  {selectedRole === "PAT" && (
+                    <PatientForm setCurrentStep={setCurrentStep} />
+                  )}
+                  {selectedRole === "STT" && (
+                    <StudentTherapistForm setCurrentStep={setCurrentStep} />
+                  )}
+                  {selectedRole === "SUP" && (
+                    <SupervisorForm setCurrentStep={setCurrentStep} />
+                  )}
+                </>
               )}
             </div>
           </div>
