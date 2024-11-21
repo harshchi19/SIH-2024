@@ -92,7 +92,6 @@ export default function AddPatientPage() {
       details_to_pay_attention: "",
       language_evaluation: "",
       auditory_skills: "",
-      reading_writing_skills: "",
       formal_testing: "",
       diagnostic_formulation: "",
       clinical_impression: "",
@@ -143,12 +142,14 @@ export default function AddPatientPage() {
     );
   }
 
-  const updateFormData = (key, value) => {
+  const updateFormData = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [key]: value,
+      [e.target.id]: e.target.value,
     }));
   };
+
+  console.log("DATA: ", formData);
 
   const handleSubmit = () => {};
 

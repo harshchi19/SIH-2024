@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Clock, Plus } from "lucide-react";
 import EventCard from "@/components/EventCard.jsx";
 import RightSidebar from "@/components/RightSidebar";
-import Sidebar from "@/components/Sidebar";
 import { days, meetings } from "@/constants/meetings";
 
 export default function StudentCalendar() {
@@ -19,7 +18,6 @@ export default function StudentCalendar() {
 
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar />
       {/* Main Content */}
       <div className="w-screen p-4 bg-white rounded-lg shadow">
         {/* Calendar Header */}

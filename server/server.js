@@ -4,11 +4,14 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import cors from "cors";
-import sidebarRouter from "./routes/sidebar.route.js";
+import sidebarRouter from "./routes/sidebar.route.js"
+import patientRouter from "./routes/patient.route.js";
+import userRouter from "./routes/user.route.js";
 
 dotenv.config();
 
 const app = express();
+
 
 const corsOptions = {
     origin: process.env.WEB_URL,
@@ -25,6 +28,8 @@ app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 
 app.use("/sidebar", sidebarRouter);
+app.use("/patient", patientRouter);
+app.use("/auth", userRouter);
 
 const PORT = process.env.PORT || 4224;
 

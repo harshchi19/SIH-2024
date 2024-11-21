@@ -12,18 +12,53 @@ import Link from "next/link";
 import PatientForm from "@/components/login/PatientForm";
 import StudentTherapistForm from "@/components/login/StudentTherapistForm";
 import SupervisorForm from "@/components/login/SupervisorForm";
+import { toast } from "@/hooks/use-toast";
+import { useLogin } from "@/hooks/useLogin";
+import { useParams, useRouter } from "next/navigation";
 
 const SignInPage = () => {
   const [selectedRole, setSelectedRole] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const { dict, currentLang } = useLanguage();
+  const [formData, setFormData] = useState({
+    userType: "",
+    name: "",
+    phone_no: "",
+    password: "",
+    supervisor_id: "",
+    student_therapist_id: "",
+  });
+  const { login, isLoading, error } = useLogin();
+  const router = useRouter();
+  const params = useParams();
+
+  const updateFormData = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      formData["userType"] = selectedRole;
+
+      const res = await login(formData);
+      console.log(res);
+      if (res.success) {
+        toast({ title: dict?.success?.login_succ });
+
+        router.push(`/${params.lang}/${res.userRoute}/dashboard`);
+      } else {
+        toast({ variant: "destructive", title: dict?.errors?.try_lat_err });
+      }
+    } catch (error) {
+      toast({ variant: "destructive", title: dict?.errors?.try_lat_err });
+    }
+  };
 
   if (!dict) {
-    return (
-      <>
-        <Loader />
-      </>
-    );
+    return <Loader />;
   }
 
   const roles = [
@@ -121,20 +156,35 @@ const SignInPage = () => {
               {currentStep === 2 && (
                 <>
                   {selectedRole === "PAT" && (
-                    <PatientForm setCurrentStep={setCurrentStep} />
+                    <PatientForm
+                      data={formData}
+                      updateData={updateFormData}
+                      setCurrentStep={setCurrentStep}
+                      handleSubmit={handleSubmit}
+                    />
                   )}
                   {selectedRole === "STT" && (
-                    <StudentTherapistForm setCurrentStep={setCurrentStep} />
+                    <StudentTherapistForm
+                      data={formData}
+                      updateData={updateFormData}
+                      setCurrentStep={setCurrentStep}
+                      handleSubmit={handleSubmit}
+                    />
                   )}
                   {selectedRole === "SUP" && (
-                    <SupervisorForm setCurrentStep={setCurrentStep} />
+                    <SupervisorForm
+                      data={formData}
+                      updateData={updateFormData}
+                      setCurrentStep={setCurrentStep}
+                      handleSubmit={handleSubmit}
+                    />
                   )}
                 </>
               )}
             </div>
           </div>
           <div className="text-center text-xs text-gray-400 pb-4">
-            © {new Date().getFullYear()} All Rights Reserved
+            Vaani Vikas © {new Date().getFullYear()} All Rights Reserved
           </div>
         </div>
       </div>

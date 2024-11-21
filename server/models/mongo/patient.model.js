@@ -4,71 +4,103 @@ const { Schema } = mongoose;
 const patientsSchema = new Schema({
     // Basic Details
     patient_id: {
-        type: String,
+        type: Map,
+        of: String,
         required: true,
         unique: true
     },
     name: {
-        type: String,
+        type: Map,
+        of: String,
         required: true,
     },
     password: {
-        type: String,
+        type: Map,
+        of: String,
         required: true
     },
     phone_no: {
-        type: String,
+        type: Map,
+        of: String,
         required: true,
     },
-    date_of_birth: {
-        type: Date,
+    email: {
+        type: Map,
+        of: String,
         required: true
     },
-    age: {
-        type: Number,
-        required: true,
+    date_of_birth: {
+        type: Map,
+        of: String,
+        required: true
     },
     sex: {
-        type: String,
+        type: Map,
+        of: String,
         required: true,
         enum: ['M', 'F', 'O']
     },
     preferred_language: {
-        type: String,
+        type: Map,
+        of: String,
         required: true
     },
     user_image: {
-        type: String
+        type: Map,
+        of: String,
     },
     case_no: {
-        type: String,
+        type: Map,
+        of: String,
         required: true,
         unique: true
+    },
+    patient_id_hash: {
+        type: String,
+        required: true,
+    },
+    email_hash: {
+        type: String,
+        required: true
+    },
+    phone_hash: {
+        type: String,
+        required: true
+    },
+    case_no_hash: {
+        type: String,
+        required: true
     },
 
     // Address Details
     address: {
         address_line1: {
-            type: String,
+            type: Map,
+            of: String,
             required: true
         },
         address_line2: {
-            type: String,
+            type: Map,
+            of: String,
         },
         city: {
-            type: String,
+            type: Map,
+            of: String,
             required: true
         },
         state: {
-            type: String,
+            type: Map,
+            of: String,
             required: true
         },
         postal_code: {
-            type: String,
+            type: Map,
+            of: String,
             required: true
         },
         country: {
-            type: String,
+            type: Map,
+            of: String,
             required: true
         }
     },
@@ -84,120 +116,151 @@ const patientsSchema = new Schema({
             ref: "StudentTherapist"
         }],
         multilingual_factors: {
-            type: String
+            type: Map,
+            of: String,
         },
         details_to_pay_attention: {
-            type: String,
+            type: Map,
+            of: String,
         },
         language_evaluation: {
-            type: String
+            type: Map,
+            of: String,
         },
         auditory_skills: {
-            type: String
+            type: Map,
+            of: String,
         },
         formal_testing: {
-            type: String
+            type: Map,
+            of: String,
         },
         diagnostic_formulation: {
-            type: String
+            type: Map,
+            of: String,
         },
         clinical_impression: {
-            type: String
+            type: Map,
+            of: String,
         },
         recommendations: {
-            type: String
+            type: Map,
+            of: String,
         },
     },
 
     // Speech Development History
     speech_development_history: {
         vocalization: {
-            type: String
+            type: Map,
+            of: String,
         },
         babbling: {
-            type: String
+            type: Map,
+            of: String,
         },
         first_word: {
-            type: String
+            type: Map,
+            of: String,
         },
         first_sentence: {
-            type: String
+            type: Map,
+            of: String,
         },
     },
 
     // Non-Verbal Communication
     non_verbal_communication: {
         expression_level: {
-            type: String
+            type: Map,
+            of: String,
         },
         comprehension_level: {
-            type: String
+            type: Map,
+            of: String,
         }
     },
 
     // Articulation and Phonetic Level
     articulation_at_phonetic_level: {
         vowels_stage: {
-            type: String
+            type: Map,
+            of: String,
         },
         consonants_stage: {
-            type: String
+            type: Map,
+            of: String,
         },
         blends_stage: {
-            type: String
+            type: Map,
+            of: String,
         },
     },
 
     // Voice Details
     voice_details: {
         pitch_quality: {
-            type: String
+            type: Map,
+            of: String,
         },
         loudness: {
-            type: String
+            type: Map,
+            of: String,
         },
         voice_quality: {
-            type: String
+            type: Map,
+            of: String,
         },
         breath_control: {
-            type: String
+            type: Map,
+            of: String,
         }
     },
 
     // Suprasegmental Aspects
     suprasegmental_aspects: {
         emphasis_level: {
-            type: String
+            type: Map,
+            of: String,
         },
         intonation: {
-            type: String
+            type: Map,
+            of: String,
         },
         phrasing: {
-            type: String
+            type: Map,
+            of: String,
         },
         speech_rate: {
-            type: String
+            type: Map,
+            of: String,
         }
     },
 
     reading_writing_skills: {
         letter_recognition: {
-            type: String
+            type: Map,
+            of: String,
         },
         word_recognition: {
-            type: String
+            type: Map,
+            of: String,
         },
         reading_comprehension: {
-            type: String
+            type: Map,
+            of: String,
         },
         copying: {
-            type: String
+            type: Map,
+            of: String,
         },
         writing_to_dictation: {
-            type: String
+            type: Map,
+            of: String,
         },
         spontaneous_writing: {
-            type: String
+            type: Map,
+            of: String,
         },
     },
 
