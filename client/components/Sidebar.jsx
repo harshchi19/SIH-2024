@@ -12,51 +12,63 @@ import {
   MessageSquare,
 } from "lucide-react";
 import HoverSpecializationPopup from "./HoverSpecializationPopup";
+import { useLanguage } from "@/context/LanguageContext";
+import Link from "next/link";
 
-const Sidebar = () => {
+const iconMap = {
+  LayoutDashboard: LayoutDashboard,
+  Users: Users,
+  Calendar: Calendar,
+  Inbox: Inbox,
+  FileText: FileText,
+  MessageSquare: MessageSquare,
+};
+
+const Sidebar = ({ sidebarData }) => {
   const router = useRouter();
   const currentPath = router.pathname;
+  const { currentLang } = useLanguage();
 
-  const navigationItems = [
-    {
-      icon: <LayoutDashboard className="h-4 w-4" />,
-      label: "Dashboard",
-      path: "/patient/dashboard",
-    },
-    {
-      icon: <Users className="h-4 w-4" />,
-      label: "Student Therapist",
-      path: "/student-therapist",
-    },
-    {
-      icon: <Calendar className="h-4 w-4" />,
-      label: "Calendar",
-      path: "/patient/calendar",
-    },
-    {
-      icon: <Inbox className="h-4 w-4" />,
-      label: "Inbox",
-      path: "/inbox",
-    },
-    {
-      icon: <FileText className="h-4 w-4" />,
-      label: "Reports",
-      path: "/reports",
-    },
-    {
-      icon: <Users className="h-4 w-4" />,
-      label: "Patients",
-      path: "/patients",
-    },
-    {
-      icon: <MessageSquare className="h-4 w-4" />,
-      label: "Communication",
-      path: "/communication",
-    },
-  ];
+  // const navigationItems = [
+  //   {
+  //     icon: <LayoutDashboard className="h-4 w-4" />,
+  //     label: "Dashboard",
+  //     path: "/patient/dashboard",
+  //   },
+  //   {
+  //     icon: <Users className="h-4 w-4" />,
+  //     label: "Student Therapist",
+  //     path: "/student-therapist",
+  //   },
+  //   {
+  //     icon: <Calendar className="h-4 w-4" />,
+  //     label: "Calendar",
+  //     path: "/patient/calendar",
+  //   },
+  //   {
+  //     icon: <Inbox className="h-4 w-4" />,
+  //     label: "Inbox",
+  //     path: "/inbox",
+  //   },
+  //   {
+  //     icon: <FileText className="h-4 w-4" />,
+  //     label: "Reports",
+  //     path: "/reports",
+  //   },
+  //   {
+  //     icon: <Users className="h-4 w-4" />,
+  //     label: "Patients",
+  //     path: "/patients",
+  //   },
+  //   {
+  //     icon: <MessageSquare className="h-4 w-4" />,
+  //     label: "Communication",
+  //     path: "/communication",
+  //   },
+  // ];
 
   const handleNavigation = (path) => {
-    router.push(path);
+    router.push(`${path}`);
   };
 
   return (
@@ -74,7 +86,7 @@ const Sidebar = () => {
         </span>
       </div>
 
-      <nav className="space-y-2">
+      {/* <nav className="space-y-2">
         {navigationItems.map((item) => (
           <Button
             key={item.label}
@@ -90,6 +102,27 @@ const Sidebar = () => {
             <span className="ml-2">{item.label}</span>
           </Button>
         ))}
+      </nav> */}
+
+      <nav className="space-y-2">
+        {sidebarData.map((item) => {
+          const IconComponent = iconMap[item.icon];
+          return (
+            <Button
+              key={item._id}
+              variant={currentPath === item.route ? "secondary" : "ghost"}
+              className={`w-full justify-start transition-colors duration-200 ${
+                currentPath === item.route
+                  ? "bg-[#54C174] text-white hover:bg-[#54C174]"
+                  : "text-white hover:bg-[#FEFEFE] hover:text-[#5DB075]"
+              }`}
+              onClick={() => handleNavigation(`/${currentLang}/${item.route}`)}
+            >
+              {IconComponent && <IconComponent className="h-4 w-4" />}
+              <span className="ml-2 capitalize">{item.name}</span>
+            </Button>
+          );
+        })}
       </nav>
 
       <Card className="mt-6 bg-[#54C174] border-none text-white">

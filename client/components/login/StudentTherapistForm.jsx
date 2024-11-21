@@ -6,20 +6,17 @@ import { Input } from "../ui/input";
 import Link from "next/link";
 import { Loader } from "lucide-react";
 
-const StudentTherapistForm = ({ setCurrentStep }) => {
+const StudentTherapistForm = ({
+  data,
+  updateData,
+  setCurrentStep,
+  handleSubmit,
+}) => {
   const { dict, currentLang } = useLanguage();
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    password: "",
-  });
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
+    updateData(id, value);
   };
 
   if (!dict) {
@@ -41,13 +38,13 @@ const StudentTherapistForm = ({ setCurrentStep }) => {
 
       <div className="space-y-5 mt-5">
         <div className="space-y-2">
-          <Label htmlFor="id" className="text-gray-700">
+          <Label htmlFor="student_therapist_id" className="text-gray-700">
             {dict?.login?.stt_id}
           </Label>
           <Input
             type="text"
-            id="id"
-            value={formData.name}
+            id="student_therapist_id"
+            value={data.student_therapist_id}
             placeholder={dict?.login?.pat_pchldr_id}
             onChange={handleChange}
             className="w-full border-gray-200 focus:border-green-500 focus:ring-green-500"
@@ -55,13 +52,13 @@ const StudentTherapistForm = ({ setCurrentStep }) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone" className="text-gray-700">
+          <Label htmlFor="phone_no" className="text-gray-700">
             {dict?.login?.phone}
           </Label>
           <Input
             type="tel"
-            id="phone"
-            value={formData.phone}
+            id="phone_no"
+            value={data.phone_no}
             placeholder={dict?.login?.pat_pchldr_phon}
             onChange={handleChange}
             className="w-full border-gray-200 focus:border-green-500 focus:ring-green-500"
@@ -75,7 +72,7 @@ const StudentTherapistForm = ({ setCurrentStep }) => {
           <Input
             type="password"
             id="password"
-            value={formData.password}
+            value={data.password}
             placeholder={dict?.login?.pat_pchldr_pass}
             onChange={handleChange}
             className="w-full border-gray-200 focus:border-green-500 focus:ring-green-500"
@@ -100,12 +97,14 @@ const StudentTherapistForm = ({ setCurrentStep }) => {
 
         <Button
           className={`w-full h-12 bg-green-600 hover:bg-green-700 text-white font-medium tracking-tight transition-colors ${
-            !formData.name || !formData.phone || !formData.password
+            !data.student_therapist_id || !data.phone_no || !data.password
               ? "cursor-not-allowed"
               : "cursor-pointer"
           }`}
-          disabled={!formData.name || !formData.phone || !formData.password}
-          onClick={() => setCurrentStep(2)}
+          disabled={
+            !data.student_therapist_id || !data.phone_no || !data.password
+          }
+          onClick={handleSubmit}
         >
           {dict?.login?.continue}
         </Button>
