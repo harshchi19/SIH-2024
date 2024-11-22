@@ -23,6 +23,7 @@ import {
 import { Bell } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import RightSidebar from "@/components/RightSidebar";
+import { useLanguage } from "@/context/LanguageContext";
 
 const monthlyData = [
   { month: "Jan", thisYear: 10, lastYear: 8 },
@@ -51,6 +52,7 @@ const therapyTypeData = [
 ];
 
 const StudentDashboardPage = () => {
+  const { dict } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <>
@@ -60,12 +62,12 @@ const StudentDashboardPage = () => {
           {/* Stats Cards */}
           <div className="grid grid-cols-4 gap-4 mb-6">
             {[
-              { title: "Total Patients", value: "348" },
-              { title: "Student Therapists", value: "12" },
-              { title: "Appointments", value: "678" },
-              { title: "Therapy Sessions", value: "567" },
+              { title: dict?.dashboard?.total_patients, value: "348" },
+              { title: dict?.dashboard?.student_therapist, value: "12" },
+              { title: dict?.dashboard?.appointments, value: "678" },
+              { title: dict?.dashboard?.therapy_sessions, value: "567" },
             ].map((stat) => (
-              <Card key={stat.title}>
+              <Card key={stat.value}>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
                     {stat.title}
@@ -82,7 +84,7 @@ const StudentDashboardPage = () => {
           <div className="grid grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Patients Overview</CardTitle>
+                <CardTitle>{dict?.dashboard?.patient_overview}</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -100,7 +102,9 @@ const StudentDashboardPage = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Therapy Sessions By Student Therapists</CardTitle>
+                <CardTitle>
+                  {dict?.dashboard?.therapy_sessions_by_student_therapists}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -116,7 +120,7 @@ const StudentDashboardPage = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Patient Distribution by Therapy Type</CardTitle>
+                <CardTitle>{dict?.dashboard?.patient_distribution_by_therapy_type}</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -142,7 +146,7 @@ const StudentDashboardPage = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Recent Appointments</CardTitle>
+                <CardTitle>{dict?.dashboard?.recent_appointments}</CardTitle>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[300px]">

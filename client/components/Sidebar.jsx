@@ -1,4 +1,5 @@
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,23 +16,30 @@ import HoverSpecializationPopup from "./HoverSpecializationPopup";
 
 const Sidebar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const currentPath = router.pathname;
+  const { dict, currentLang } = useLanguage();
+
+  const pathWithoutLang = pathname.replace(/^\/[a-z]{2}\//, "");
+  const pathParts = pathWithoutLang.split("/").filter((part) => part !== "");
+
+  console.log("currentPath", pathParts[0]);
 
   const navigationItems = [
     {
       icon: <LayoutDashboard className="h-4 w-4" />,
       label: "Dashboard",
-      path: "/patient/dashboard",
+      path: `/${currentLang}/${pathParts[0]}/dashboard`,
     },
     {
       icon: <Users className="h-4 w-4" />,
       label: "Student Therapist",
-      path: "/student-therapist",
+      path: `/${currentLang}/${pathParts[0]}/student-therapist`,
     },
     {
       icon: <Calendar className="h-4 w-4" />,
       label: "Calendar",
-      path: "/patient/calendar",
+      path: `/${currentLang}/${pathParts[0]}/calendar`,
     },
     {
       icon: <Inbox className="h-4 w-4" />,
@@ -41,17 +49,17 @@ const Sidebar = () => {
     {
       icon: <FileText className="h-4 w-4" />,
       label: "Reports",
-      path: "/reports",
+      path: `/${currentLang}/${pathParts[0]}/reports`,
     },
     {
       icon: <Users className="h-4 w-4" />,
       label: "Patients",
-      path: "/patients",
+      path: `/${currentLang}/${pathParts[0]}/patients`,
     },
     {
       icon: <MessageSquare className="h-4 w-4" />,
       label: "Communication",
-      path: "/communication",
+      path: `/${currentLang}/${pathParts[0]}/communication`,
     },
   ];
 
@@ -92,7 +100,7 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <Card className="mt-6 bg-[#54C174] border-none text-white">
+      {/* <Card className="mt-6 bg-[#54C174] border-none text-white">
         <CardHeader>
           <CardTitle className="text-sm font-medium">Upcoming Event</CardTitle>
         </CardHeader>
@@ -107,7 +115,7 @@ const Sidebar = () => {
             Go to meet link
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };
