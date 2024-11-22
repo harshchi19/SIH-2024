@@ -1,12 +1,3 @@
-export const days = [
-  "Monday 12",
-  "Tuesday 13",
-  "Wednesday 14",
-  "Thursday 15",
-  "Friday 16",
-  "Saturday 17",
-];
-
 export const meetings = [
   {
     day: "Monday",

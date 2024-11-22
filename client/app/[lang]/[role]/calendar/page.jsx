@@ -5,11 +5,24 @@ import { ChevronLeft, ChevronRight, Clock, Plus } from "lucide-react";
 import EventCard from "@/components/EventCard.jsx";
 import RightSidebar from "@/components/RightSidebar";
 import { days, meetings } from "@/constants/meetings";
+import Header from "@/components/Header";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function StudentCalendar() {
+  const { dict } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentDate] = useState("July 17");
   const [currentTime] = useState("7:10 PM IST");
+
+  const day = {
+    Monday: dict?.calendar?.monday,
+    Tuesday: dict?.calendar?.tuesday,
+    Wednesday: dict?.calendar?.wednesday,
+    Thursday: dict?.calendar?.thursday,
+    Friday: dict?.calendar?.friday,
+    Saturday: dict?.calendar?.saturday,
+  };
+  const days = Object.entries(day);
 
   const timeSlots = Array.from({ length: 8 }, (_, i) => {
     const hour = 9 + i;
@@ -19,13 +32,13 @@ export default function StudentCalendar() {
   return (
     <div className="flex h-screen bg-background">
       {/* Main Content */}
-      <div className="w-screen p-4 bg-white rounded-lg shadow">
+      <div className="w-full p-4 bg-white rounded-lg shadow">
         {/* Calendar Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4">
             <select className="px-3 py-2 border rounded-md">
-              <option>Today</option>
-              <option selected>{currentDate}</option>
+              <option>{dict?.calendar?.today}</option>
+              <option>{currentDate}</option>
             </select>
             <div className="flex items-center space-x-2">
               <Clock className="w-4 h-4" />
@@ -40,11 +53,11 @@ export default function StudentCalendar() {
               <ChevronRight className="w-5 h-5" />
             </button>
             <select className="px-3 py-2 border rounded-md">
-              <option>This week</option>
+              <option>{dict?.calendar?.this_week}</option>
             </select>
             <button className="flex items-center px-3 py-2 space-x-2 text-white bg-green-500 rounded-md">
               <Plus className="w-4 h-4" />
-              <span>Add event</span>
+              <span>{dict?.calendar?.add_event}</span>
             </button>
           </div>
         </div>
@@ -62,13 +75,13 @@ export default function StudentCalendar() {
           </div>
 
           {/* Days columns */}
-          {days.map((day, index) => (
+          {days.map(([dayKey, dayValue], index) => (
             <div
-              key={day}
+              key={dayKey}
               className="flex-1 border-r border-gray-200 last:border-r-0"
             >
               <div className="h-8 font-medium px-2 py-1 border-b border-gray-200 bg-gray-50">
-                {day}
+                {dayValue}
               </div>
               <div className="relative h-full">
                 {/* Hour grid lines */}
@@ -82,7 +95,7 @@ export default function StudentCalendar() {
 
                 {/* Meetings */}
                 {meetings
-                  .filter((meeting) => meeting.day === day.split(" ")[0])
+                  .filter((meeting) => meeting.day === dayKey)
                   .map((meeting, idx) => (
                     <div
                       key={idx}

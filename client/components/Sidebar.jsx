@@ -1,4 +1,5 @@
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +27,7 @@ const iconMap = {
 
 const Sidebar = ({ sidebarData }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const currentPath = router.pathname;
   const { currentLang } = useLanguage();
 
@@ -125,7 +127,7 @@ const Sidebar = ({ sidebarData }) => {
         })}
       </nav>
 
-      <Card className="mt-6 bg-[#54C174] border-none text-white">
+      {/* <Card className="mt-6 bg-[#54C174] border-none text-white">
         <CardHeader>
           <CardTitle className="text-sm font-medium">Upcoming Event</CardTitle>
         </CardHeader>
@@ -140,7 +142,7 @@ const Sidebar = ({ sidebarData }) => {
             Go to meet link
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };

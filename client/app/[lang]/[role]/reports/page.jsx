@@ -18,38 +18,29 @@ import RightSidebar from "@/components/RightSidebar";
 import Sidebar from "@/components/Sidebar";
 
 import reports from "@/constants/reports";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Reports Page Component
 const StudentReportsPage = () => {
+  const { dict } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar />
       {/* Main Content */}
       <div className="flex-1 p-6 space-y-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Reports List</h1>
-          <div className="flex items-center gap-2">
-            <Input placeholder="Search" className="w-64" />
-            <Button variant="outline" size="icon">
-              <Bell className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
         <div className="flex items-center gap-4">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            Add New
+            {dict?.reports?.add_new}
           </Button>
           <Button variant="outline">
             <SlidersHorizontal className="h-4 w-4 mr-2" />
-            Filters
+            {dict?.reports?.filter}
           </Button>
           <Button variant="outline">
             <ArrowUpDown className="h-4 w-4 mr-2" />
-            Sort
+            {dict?.reports?.sort}
           </Button>
           <Input placeholder="Search reports..." className="w-64 ml-auto" />
         </div>
@@ -61,12 +52,12 @@ const StudentReportsPage = () => {
                 <TableHead className="w-12">
                   <input type="checkbox" className="rounded border-gray-300" />
                 </TableHead>
-                <TableHead>Report ID</TableHead>
-                <TableHead>Student Therapist</TableHead>
-                <TableHead>Appointments</TableHead>
-                <TableHead>Details</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{dict?.reports?.report_id}</TableHead>
+                <TableHead>{dict?.reports?.student_therapist}</TableHead>
+                <TableHead>{dict?.reports?.appointments}</TableHead>
+                <TableHead>{dict?.reports?.details}</TableHead>
+                <TableHead>{dict?.reports?.date}</TableHead>
+                <TableHead>{dict?.reports?.status}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -105,7 +96,7 @@ const StudentReportsPage = () => {
                           : "bg-blue-100 text-blue-700"
                       }
                     >
-                      {report.status}
+                      {dict?.reports?.view_report}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -116,7 +107,7 @@ const StudentReportsPage = () => {
 
         <div className="flex items-center justify-center gap-2 mt-4">
           <Button variant="outline" size="sm">
-            Previous
+            {dict?.reports?.previous}
           </Button>
           {[1, 2, 3, 4, 5].map((page) => (
             <Button
@@ -128,7 +119,7 @@ const StudentReportsPage = () => {
             </Button>
           ))}
           <Button variant="outline" size="sm">
-            Next
+            {dict?.reports?.next}
           </Button>
         </div>
       </div>
