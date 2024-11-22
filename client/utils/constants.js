@@ -1,4 +1,8 @@
-export const HOST = process.env.NEXT_SERVER_URL;
+export const HOST = process.env.NEXT_PUBLIC_SERVER_URL;
+
+// Auth
+export const AUTH_ROUTE = `${HOST}/auth`;
+export const LOGIN_USER_ROUTE = `${AUTH_ROUTE}/login-user`;
 
 // Sidebar
 export const SIDEBAR_DATA_ROUTE = `${HOST}/sidebar/get-sidebar-data`;

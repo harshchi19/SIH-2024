@@ -13,6 +13,16 @@
     "patients": "All Patients",
     "add-patient": "Add Patient"
   },
+    "errors": {
+        "int_ser_err": "Internal Server Error",
+        "try_lat_err": "Please try again later",
+        "usr-not-fnd": "User not found",
+        "corr-pass": "Please enter correct password"
+    },
+    "success": {
+        "login_succ": "Login Successful. Welcome to VaaniVikas!",
+        "user-alr-ext": "User already exists!"
+    },
   "login": {
     "header": "Login to you account",
     "description1": "Whether you’re a Patient, Student Therapist, or Supervisor, choose your role to unlock personalized features and proceed.",

@@ -1,7 +1,12 @@
 import { useState } from "react";
-import { useAuthContext } from "./useAuthContext";
-import { LOGIN_ROUTE } from "../utils/constants";
-import axios from "axios";
+import { useAuthContext } from "./useAuthContext.js";
+import { LOGIN_USER_ROUTE } from "@/utils/constants";
+
+const ROLE_PREFIXES = {
+    "PAT": "patient",
+    "STT": "student-therapist",
+    "SUP": "supervisor"
+}
 
 export const useLogin = () => {
     const [error, setError] = useState(null);
@@ -13,23 +18,22 @@ export const useLogin = () => {
         setError(null);
 
         try {
-            const response = await axios.post(
-                LOGIN_ROUTE,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    withCredentials: true
-                }
-            );
+            const response = await fetch(LOGIN_USER_ROUTE, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+                credentials: "include",
+            });
 
-            if (response.status === 200) {
-                const user = response.data.userId;
-                localStorage.setItem("user", user);
-                dispatch({ type: "LOGIN", payload: user });
+            if (response.ok) {
+                const result = await response.json();
+                localStorage.setItem("user", result.userId);
+                localStorage.setItem("userType", result.userType);
+                dispatch({ type: "LOGIN", payload: result.userId });
                 setIsLoading(false);
-                return { success: true };
+                return { success: true, userRoute: ROLE_PREFIXES[result.userType] };
             } else {
                 setIsLoading(false);
                 setError("Login failed. Please try again.");

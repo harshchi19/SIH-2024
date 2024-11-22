@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Clock, Plus } from "lucide-react";
 import EventCard from "@/components/EventCard.jsx";
 import RightSidebar from "@/components/RightSidebar";
-import Sidebar from "@/components/Sidebar";
 import { days, meetings } from "@/constants/meetings";
 import Header from "@/components/Header";
 import { useLanguage } from "@/context/LanguageContext";
