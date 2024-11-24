@@ -1,5 +1,6 @@
 "use client";
 
+import FloatingChatbot from "@/components/FloatingChatbot";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
 import Sidebar from "@/components/Sidebar";
@@ -40,12 +41,13 @@ export default function RoleLayout({ children }) {
     );
   }
   return (
-    <div className="flex h-screen bg-slate-50">
+    <div className="relative min-h-screen flex bg-slate-50">
       <Sidebar sidebarData={sidebarData} />
       <div className="flex flex-col w-screen">
         <Header />
         {children}
       </div>
+      <FloatingChatbot />
     </div>
   );
 }

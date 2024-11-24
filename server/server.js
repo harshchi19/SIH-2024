@@ -8,6 +8,7 @@ import sidebarRouter from "./routes/sidebar.route.js";
 import patientRouter from "./routes/patient.route.js";
 import userRouter from "./routes/user.route.js";
 import studentRouter from "./routes/student-therapist.route.js";
+import preTherapyRouter from "./routes/pre_therapy.route.js";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use("/sidebar", sidebarRouter);
 app.use("/patient", patientRouter);
 app.use("/auth", userRouter);
 app.use("/student-therapist", studentRouter);
+app.use("/pre_therapy", preTherapyRouter);
 
 const PORT = process.env.PORT || 4224;
 

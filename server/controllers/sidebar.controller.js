@@ -2,7 +2,6 @@ import { Sidebar } from "../models/mongo/sidebar_config.model.js";
 
 export const getSidebarData = async (req, res, next) => {
     const { userType } = req.params;
-    console.log(userType);
 
     try {
         if (!userType)
