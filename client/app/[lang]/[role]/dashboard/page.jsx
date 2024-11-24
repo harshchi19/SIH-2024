@@ -155,7 +155,7 @@ const StudentDashboardPage = () => {
                     .map((_, i) => (
                       <div key={i} className="flex items-center gap-4 py-4">
                         <Avatar>
-                          <AvatarImage src={`/api/placeholder/${32 + i}/32`} />
+                          {/* <AvatarImage src={`/api/placeholder/${32 + i}/32`} /> */}
                           <AvatarFallback>AP</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">

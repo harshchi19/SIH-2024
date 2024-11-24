@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { User, Star, Users, Clock, TrendingUp, Filter } from "lucide-react";
-import Sidebar from "./Sidebar";
-import RightSidebar from "./RightSidebar";
+import RightSidebar from "@/components/RightSidebar";
+import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 const StudentTherapistCard = ({
   name,
@@ -87,6 +90,7 @@ const StudentTherapistCard = ({
 };
 
 const StudentTherapistPage = () => {
+  const { currentLang } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const students = [
     {
@@ -146,16 +150,11 @@ const StudentTherapistPage = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <Sidebar />
-      <div className="w-screen bg-gray-50 p-8">
+    <>
+      <div className="w-full bg-gray-50 px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Student Therapists
-              </h1>
               <p className="text-gray-600 mt-2">
                 Overview of our training therapists and their progress
               </p>
@@ -170,6 +169,14 @@ const StudentTherapistPage = () => {
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Performance Report
               </Button>
+              <Link
+                href={`/${currentLang}/patient/student-therapist/add-student-therapist`}
+              >
+                <Button className="flex items-center">
+                  <User className="h-4 w-4 mr-2" />
+                  Add Student
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -186,7 +193,7 @@ const StudentTherapistPage = () => {
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
-    </div>
+    </>
   );
 };
 

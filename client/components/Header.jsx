@@ -32,6 +32,7 @@ const Header = () => {
   useEffect(() => {
     const pathWithoutLang = pathname.replace(/^\/[a-z]{2}\//, "");
     const pathParts = pathWithoutLang.split("/").filter((part) => part !== "");
+    console.log(pathParts);
 
     const breadcrumbList = pathParts.map((part, index) => {
       const normalizedPart = part.trim().toLowerCase();

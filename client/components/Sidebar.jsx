@@ -10,138 +10,171 @@ import {
   Inbox,
   FileText,
   MessageSquare,
+  LogOut,
 } from "lucide-react";
 import HoverSpecializationPopup from "./HoverSpecializationPopup";
 import { useLanguage } from "@/context/LanguageContext";
+import { useEffect, useState } from "react";
+import { useById } from "@/hooks/useById.js";
+import Image from "next/image";
+import { logo } from "@/assets";
 
 const iconMap = {
-  LayoutDashboard: LayoutDashboard,
-  Users: Users,
-  Calendar: Calendar,
-  Inbox: Inbox,
-  FileText: FileText,
-  MessageSquare: MessageSquare,
+  LayoutDashboard,
+  Users,
+  Calendar,
+  Inbox,
+  FileText,
+  MessageSquare,
 };
 
 const Sidebar = ({ sidebarData }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const currentPath = router.pathname;
   const { currentLang } = useLanguage();
 
-  // const navigationItems = [
-  //   {
-  //     icon: <LayoutDashboard className="h-4 w-4" />,
-  //     label: "Dashboard",
-  //     path: "/patient/dashboard",
-  //   },
-  //   {
-  //     icon: <Users className="h-4 w-4" />,
-  //     label: "Student Therapist",
-  //     path: "/student-therapist",
-  //   },
-  //   {
-  //     icon: <Calendar className="h-4 w-4" />,
-  //     label: "Calendar",
-  //     path: "/patient/calendar",
-  //   },
-  //   {
-  //     icon: <Inbox className="h-4 w-4" />,
-  //     label: "Inbox",
-  //     path: "/inbox",
-  //   },
-  //   {
-  //     icon: <FileText className="h-4 w-4" />,
-  //     label: "Reports",
-  //     path: "/reports",
-  //   },
-  //   {
-  //     icon: <Users className="h-4 w-4" />,
-  //     label: "Patients",
-  //     path: "/patients",
-  //   },
-  //   {
-  //     icon: <MessageSquare className="h-4 w-4" />,
-  //     label: "Communication",
-  //     path: "/communication",
-  //   },
-  // ];
+  const userId = localStorage.getItem("user");
+  const userType = localStorage.getItem("userType");
+  const ROLE_PREFIXES = {
+    PAT: "Patient",
+    STT: "Student Therapist",
+    SUP: "Supervisor",
+  };
+
+  const { getById } = useById();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (userId) {
+        const result = await getById(userId);
+        if (result.success) {
+          setUser(result.user);
+        }
+      }
+    };
+
+    fetchUser();
+  }, [userId, getById]);
+
+  const getInitials = (name) => {
+    if (!name) return "";
+    return name
+      .split(" ")
+      .map((part) => part.charAt(0).toUpperCase())
+      .join("");
+  };
 
   const handleNavigation = (path) => {
-    router.push(`${path}`);
+    router.push(`/${currentLang}${path}`);
+  };
+
+  const isActiveRoute = (route) => {
+    return pathname?.includes(route);
   };
 
   return (
-    <div className="w-64 border-r bg-[#5DB075] p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src="/api/placeholder/32/32" alt="User" />
-          <AvatarFallback>YB</AvatarFallback>
-        </Avatar>
-        <span className="text-white font-semibold hover:cursor-pointer">
-          <HoverSpecializationPopup
-            name="Yash Buddhadev"
-            specialization="Supervisor"
+    <aside className="flex h-screen w-64 flex-col justify-between bg-[#5DB075] p-6">
+      {/* Header */}
+      <div className="flex flex-col gap-y-6">
+        <div className="flex items-center gap-x-3">
+          <Image
+            src={logo}
+            className="h-12 w-auto mb-4 cursor-pointer object-contain"
+            alt="Logo"
           />
-        </span>
+          {/* <AvatarFallback className="bg-[#54C174] text-white font-mono">
+              VV
+            </AvatarFallback> */}
+          <span className="text-white font-semibold hover:cursor-pointer">
+            <span className="text-lg font-medium font-mono cursor-pointer hover:text-black transition-colors">
+              VANI VIKAS
+            </span>
+          </span>
+        </div>
+
+        {/* Navigation */}
+        <nav className="space-y-2">
+          {sidebarData.map((item) => {
+            const IconComponent = iconMap[item.icon];
+            const active = isActiveRoute(item.route);
+
+            return (
+              <Button
+                key={item._id}
+                variant="ghost"
+                className={`w-full justify-start text-base transition-all duration-200 ${
+                  active
+                    ? "bg-[#54C174] text-white hover:bg-[#54C174]"
+                    : "text-white hover:bg-white/90 hover:text-[#5DB075]"
+                }`}
+                onClick={() => handleNavigation(item.route)}
+              >
+                {IconComponent && (
+                  <IconComponent
+                    className={`mr-2 h-4 w-4 ${
+                      active
+                        ? "text-white"
+                        : "text-white group-hover:text-[#5DB075]"
+                    }`}
+                  />
+                )}
+                <span className="capitalize">{item.name}</span>
+              </Button>
+            );
+          })}
+        </nav>
       </div>
 
-      {/* <nav className="space-y-2">
-        {navigationItems.map((item) => (
-          <Button
-            key={item.label}
-            variant={currentPath === item.path ? "secondary" : "ghost"}
-            className={`w-full justify-start transition-colors duration-200 ${
-              currentPath === item.path
-                ? "bg-[#54C174] text-white hover:bg-[#54C174]"
-                : "text-white hover:bg-[#FEFEFE] hover:text-[#5DB075]"
-            }`}
-            onClick={() => handleNavigation(item.path)}
-          >
-            {item.icon}
-            <span className="ml-2">{item.label}</span>
-          </Button>
-        ))}
-      </nav> */}
-
-      <nav className="space-y-2">
-        {sidebarData.map((item) => {
-          const IconComponent = iconMap[item.icon];
-          return (
+      {/* Event Card */}
+      <div className="space-y-6">
+        <Card className="bg-[#54C174] border-none text-white">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">
+              Upcoming Event
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between mb-4">
+              <time className="text-2xl font-bold">8:45</time>
+              <span className="text-sm">→</span>
+              <time className="text-2xl font-bold">10:45</time>
+            </div>
             <Button
-              key={item._id}
-              variant={currentPath === item.route ? "secondary" : "ghost"}
-              className={`w-full justify-start transition-colors duration-200 ${
-                currentPath === item.route
-                  ? "bg-[#54C174] text-white hover:bg-[#54C174]"
-                  : "text-white hover:bg-[#FEFEFE] hover:text-[#5DB075]"
-              }`}
-              onClick={() => handleNavigation(`/${currentLang}/${item.route}`)}
+              className="w-full bg-white text-[#5DB075] hover:bg-gray-100"
+              variant="secondary"
             >
-              {IconComponent && <IconComponent className="h-4 w-4" />}
-              <span className="ml-2 capitalize">{item.name}</span>
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Go to meet link
             </Button>
-          );
-        })}
-      </nav>
+          </CardContent>
+        </Card>
 
-      {/* <Card className="mt-6 bg-[#54C174] border-none text-white">
-        <CardHeader>
-          <CardTitle className="text-sm font-medium">Upcoming Event</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-2xl font-bold">8:45</div>
-            <div className="text-sm">→</div>
-            <div className="text-2xl font-bold">10:45</div>
+        {/* User Profile */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="p-2 font-serif">
+                {user?.name ? getInitials(user.name) : ""}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-white font-semibold hover:cursor-pointer">
+              <HoverSpecializationPopup
+                name={user?.name}
+                specialization={ROLE_PREFIXES[userType]}
+              />
+            </span>
           </div>
-          <Button className="w-full bg-white text-green-600 hover:bg-gray-100">
-            <ExternalLink className="h-4 w-4 mr-2" />
-            Go to meet link
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-[#54C174]"
+          >
+            <LogOut className="h-4 w-4" />
           </Button>
-        </CardContent>
-      </Card> */}
-    </div>
+        </div>
+      </div>
+    </aside>
   );
 };
 

@@ -14,3 +14,8 @@ export const ADD_PATIENT_ROUTE = `${PATIENT_ROUTE}/add-patient`;
 // Pre Therapy for Patient
 export const PRE_THERAPY_ROUTE = `${HOST}/pre_therapy`;
 export const GET_PATIENT_FROM_ID = `${PRE_THERAPY_ROUTE}/get-pre-therapy-user`;
+
+// Student Therapists
+export const STUDENT_THERAPIST_ROUTE = `${HOST}/student-therapist`;
+export const ADD_STUDENT_THERAPIST_ROUTE = `${STUDENT_THERAPIST_ROUTE}/add-student`;
+export const GET_USER_BY_ID_ROUTE = `${STUDENT_THERAPIST_ROUTE}/get-student-by-id`;
