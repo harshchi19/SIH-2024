@@ -103,12 +103,10 @@ export const getStudentsById = async (req, res) => {
 
   try {
     const hashedStudentTherapistId = generateHashedData(student_therapist_id);
-    console.log("Hashed Student Therapist ID:", hashedStudentTherapistId);
 
     const studentTherapist = await StudentTherapist.findOne({
       student_therapist_id_hash: hashedStudentTherapistId,
     });
-    console.log("Student Therapist:", studentTherapist);
 
     if (!studentTherapist) {
       return res.status(400).json({ message: "usr-not-fnd" });

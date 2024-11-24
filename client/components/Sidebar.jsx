@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useById } from "@/hooks/useById.js";
 import Image from "next/image";
 import { logo } from "@/assets";
+import { useLogout } from "@/hooks/useLogout";
 
 const iconMap = {
   LayoutDashboard,
@@ -33,6 +34,8 @@ const Sidebar = ({ sidebarData }) => {
   const pathname = usePathname();
   const { currentLang } = useLanguage();
 
+  const { logout, loading, error } = useLogout();
+
   const userId = localStorage.getItem("user");
   const userType = localStorage.getItem("userType");
   const ROLE_PREFIXES = {
@@ -43,19 +46,19 @@ const Sidebar = ({ sidebarData }) => {
 
   const { getById } = useById();
   const [user, setUser] = useState(null);
+  console.log(userId);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (userId) {
-        const result = await getById(userId);
-        if (result.success) {
-          setUser(result.user);
-        }
+  const fetchUser = async () => {
+    if (userId) {
+      const result = await getById(userId, userType);
+      if (result.success) {
+        setUser(result.user);
       }
-    };
-
+    }
+  };
+  useEffect(() => {
     fetchUser();
-  }, [userId, getById]);
+  }, [userId]);
 
   const getInitials = (name) => {
     if (!name) return "";
@@ -71,6 +74,13 @@ const Sidebar = ({ sidebarData }) => {
 
   const isActiveRoute = (route) => {
     return pathname?.includes(route);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    localStorage.removeItem("user");
+    localStorage.removeItem("userType");
+    router.push(`/${currentLang}/sign-in`);
   };
 
   return (
@@ -169,7 +179,9 @@ const Sidebar = ({ sidebarData }) => {
             variant="ghost"
             size="icon"
             className="text-white hover:bg-[#54C174]"
+            onClick={handleLogout}
           >
+            {loading && <span className="animate-spin">⏳</span>}
             <LogOut className="h-4 w-4" />
           </Button>
         </div>
