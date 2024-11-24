@@ -80,7 +80,9 @@ const RangeSelector = ({ selected, setSelected }) => {
               selected === range.value && getBackgroundColor(range.value)
             } hover:opacity-80 transition`}
           >
-            <span className={`text-3xl ${getEmojiColor(range.value)}`}>
+            <span
+              className={`text-3xl ${getEmojiColor(range.value)} select-none`}
+            >
               {range.emoji}
             </span>
           </div>

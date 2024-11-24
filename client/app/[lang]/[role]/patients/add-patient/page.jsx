@@ -53,7 +53,7 @@ const TimelineComponent = ({ currentTimeline, setCurrentTimeline }) => {
             <h1
               className={`text-lg font-medium w-full px-2 py-1 rounded-md cursor-pointer ${
                 currentTimeline === data.value
-                  ? "border-[2px] border-green-500"
+                  ? "border-[2px] border-green-500 font-semibold bg-green-500 text-white"
                   : ""
               }`}
             >
@@ -74,9 +74,12 @@ export default function AddPatientPage() {
       name: "",
       password: "",
       phone_no: "",
+      email: "",
       date_of_birth: "",
       sex: "",
       preferred_language: "",
+      supervisor: "",
+      summary: "",
       user_image: null,
     },
     addressDetails: {
@@ -142,29 +145,38 @@ export default function AddPatientPage() {
     );
   }
 
-  const updateFormData = (e) => {
+  console.log(formData);
+
+  const updateFormData = (section, key, value) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.id]: e.target.value,
+      [section]: {
+        ...prev[section],
+        [key]: value,
+      },
     }));
   };
 
-  console.log("DATA: ", formData);
+  const updateRangeData = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = () => {};
 
   return (
-    <div className="px-8 flex overflow-y-scroll pb-10">
+    <div className="px-8 flex pb-10">
       <TimelineComponent
         currentTimeline={currentTimeline}
         setCurrentTimeline={setCurrentTimeline}
       />
-      <div className="w-full h-fit flex flex-col gap-y-10 justify-between border-2 rounded-xl px-8 py-6">
+      <div className="actual-receipt w-full h-fit flex flex-col gap-y-10 justify-between border-2 rounded-xl px-8 py-6">
         <div>
           {currentTimeline === 1 && (
             <BasicDetails
               data={formData.basicDetails}
-              updateData={(value) => updateFormData("basicDetails", value)}
+              updateData={(key, value) =>
+                updateFormData("basicDetails", key, value)
+              }
             />
           )}
           {currentTimeline === 2 && (
@@ -193,7 +205,7 @@ export default function AddPatientPage() {
             <ArticulationPhoneticLevelDetails
               data={formData.articulationPhoneticLevel}
               updateData={(value) =>
-                updateFormData("articulationPhoneticLevel", value)
+                updateRangeData("articulationPhoneticLevel", value)
               }
             />
           )}
@@ -215,7 +227,7 @@ export default function AddPatientPage() {
             <ReadingWritingSkills
               data={formData.readingWritingSkills}
               updateData={(value) =>
-                updateFormData("readingWritingSkills", value)
+                updateRangeData("readingWritingSkills", value)
               }
             />
           )}

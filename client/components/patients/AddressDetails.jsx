@@ -7,11 +7,13 @@ import { useLanguage } from "@/context/LanguageContext";
 const AddressDetails = ({ data, updateData }) => {
   const { dict } = useLanguage();
 
-  const handleChange = (e) => {
-    updateData({
-      ...data,
-      [e.target.id]: e.target.value,
-    });
+  const handleChange = (e, id, value) => {
+    if (e?.target) {
+      const { id: eventId, value: eventValue } = e.target;
+      updateData(eventId, eventValue);
+    } else if (id && value !== undefined) {
+      updateData(id, value);
+    }
   };
 
   return (

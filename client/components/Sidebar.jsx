@@ -1,5 +1,4 @@
 import { useRouter, usePathname } from "next/navigation";
-import { useLanguage } from "@/context/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +13,7 @@ import {
   LogOut,
 } from "lucide-react";
 import HoverSpecializationPopup from "./HoverSpecializationPopup";
+import { useLanguage } from "@/context/LanguageContext";
 import { useEffect, useState } from "react";
 import { useById } from "@/hooks/useById.js";
 import Image from "next/image";
