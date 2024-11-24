@@ -14,7 +14,10 @@ import {
 } from "@/components/patients";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { ADD_PATIENT_ROUTE } from "@/utils/constants";
+import { toast } from "@/hooks/use-toast";
 
 const TimelineComponent = ({ currentTimeline, setCurrentTimeline }) => {
   const { dict } = useLanguage();
@@ -68,7 +71,7 @@ const TimelineComponent = ({ currentTimeline, setCurrentTimeline }) => {
 
 export default function AddPatientPage() {
   const [currentTimeline, setCurrentTimeline] = useState(1);
-  const { dict } = useLanguage();
+  const { dict, currentLang } = useLanguage();
   const [formData, setFormData] = useState({
     basicDetails: {
       name: "",
@@ -77,7 +80,10 @@ export default function AddPatientPage() {
       email: "",
       date_of_birth: "",
       sex: "",
-      preferred_language: "",
+      date_of_assignment: "",
+      preferred_language1: "",
+      preferred_language2: "",
+      preferred_language3: "",
       supervisor: "",
       summary: "",
       user_image: null,
@@ -136,16 +142,8 @@ export default function AddPatientPage() {
       spontaneous_writing: "",
     },
   });
-
-  if (!dict) {
-    return (
-      <>
-        <Loader />
-      </>
-    );
-  }
-
-  console.log(formData);
+  const router = useRouter();
+  const { role } = useParams();
 
   const updateFormData = (section, key, value) => {
     setFormData((prev) => ({
@@ -161,10 +159,34 @@ export default function AddPatientPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {
+    const response = await fetch(ADD_PATIENT_ROUTE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      toast({ title: data.message });
+      router.push(
+        `/${currentLang}/${role}/patients/pre-therapy/${data.patientId}`
+      );
+    }
+  };
+
+  if (!dict) {
+    return (
+      <>
+        <Loader />
+      </>
+    );
+  }
 
   return (
-    <div className="px-8 flex pb-10">
+    <div className="px-8 flex overflow-y-scroll pb-10">
       <TimelineComponent
         currentTimeline={currentTimeline}
         setCurrentTimeline={setCurrentTimeline}
@@ -182,59 +204,65 @@ export default function AddPatientPage() {
           {currentTimeline === 2 && (
             <AddressDetails
               data={formData.addressDetails}
-              updateData={(value) => updateFormData("addressDetails", value)}
+              updateData={(key, value) =>
+                updateFormData("addressDetails", key, value)
+              }
             />
           )}
           {currentTimeline === 3 && (
             <SpeechDevelopmentHistoryDetails
               data={formData.speechDevelopmentHistory}
-              updateData={(value) =>
-                updateFormData("speechDevelopmentHistory", value)
+              updateData={(key, value) =>
+                updateFormData("speechDevelopmentHistory", key, value)
               }
             />
           )}
           {currentTimeline === 4 && (
             <NonVerbalCommunicationDetails
               data={formData.nonVerbalCommunication}
-              updateData={(value) =>
-                updateFormData("nonVerbalCommunication", value)
+              updateData={(key, value) =>
+                updateFormData("nonVerbalCommunication", key, value)
               }
             />
           )}
           {currentTimeline === 5 && (
             <ArticulationPhoneticLevelDetails
               data={formData.articulationPhoneticLevel}
-              updateData={(value) =>
-                updateRangeData("articulationPhoneticLevel", value)
+              updateData={(key, value) =>
+                updateRangeData("articulationPhoneticLevel", key, value)
               }
             />
           )}
           {currentTimeline === 6 && (
             <VoiceDetails
               data={formData.voiceDetails}
-              updateData={(value) => updateFormData("voiceDetails", value)}
+              updateData={(key, value) =>
+                updateFormData("voiceDetails", key, value)
+              }
             />
           )}
           {currentTimeline === 7 && (
             <SuprasegmentalAspectsDetails
               data={formData.suprasegmentalAspects}
-              updateData={(value) =>
-                updateFormData("suprasegmentalAspects", value)
+              updateData={(key, value) =>
+                updateFormData("suprasegmentalAspects", key, value)
               }
             />
           )}
           {currentTimeline === 8 && (
             <ReadingWritingSkills
               data={formData.readingWritingSkills}
-              updateData={(value) =>
-                updateRangeData("readingWritingSkills", value)
+              updateData={(key, value) =>
+                updateRangeData("readingWritingSkills", key, value)
               }
             />
           )}
           {currentTimeline === 9 && (
             <MedicalDetails
               data={formData.medicalDetails}
-              updateData={(value) => updateFormData("medicalDetails", value)}
+              updateData={(key, value) =>
+                updateFormData("medicalDetails", key, value)
+              }
             />
           )}
         </div>

@@ -13,6 +13,8 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from datetime import datetime
+import uuid
 
 # Configuration and API Keys (Replace with your actual keys)
 OPENAI_API_KEY = "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"  # Replace with your actual OpenAI API key
@@ -70,6 +72,38 @@ def extract_text_from_pdf(pdf_file):
         for page in pdf.pages:
             extracted_text += page.extract_text() or ""
     return extracted_text
+
+def process_multiple_files(files):
+    """Process multiple uploaded files and return their extracted data"""
+    results = []
+    for file in files:
+        try:
+            if file.type == "application/pdf":
+                extracted_text = extract_text_from_pdf(file)
+            else:
+                image = Image.open(file)
+                extracted_text = extract_text_with_gpt_vision(image)
+            
+
+            case_data = extract_case_info_with_gpt(extracted_text)
+            
+            file.seek(0)
+            file_content = file.read()
+            
+            results.append({
+                'file_name': file.name,
+                'file_type': file.type,
+                'file_content': file_content,
+                'extracted_text': extracted_text,
+                'case_data': case_data,
+                'is_pdf': file.type == "application/pdf"
+            })
+            
+        except Exception as e:
+            st.error(f"Error processing {file.name}: {str(e)}")
+            continue
+            
+    return results
 
 def extract_case_info_with_gpt(text):
     """Extract structured medical case information using GPT-4o"""

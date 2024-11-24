@@ -70,6 +70,38 @@ def extract_text_from_pdf(pdf_file):
             extracted_text += page.extract_text() or ""
     return extracted_text
 
+def process_multiple_files(files):
+    """Process multiple uploaded files and return their extracted data"""
+    results = []
+    for file in files:
+        try:
+            if file.type == "application/pdf":
+                extracted_text = extract_text_from_pdf(file)
+            else:
+                image = Image.open(file)
+                extracted_text = extract_text_with_gpt_vision(image)
+            
+
+            case_data = extract_case_info_with_gpt(extracted_text)
+            
+            file.seek(0)
+            file_content = file.read()
+            
+            results.append({
+                'file_name': file.name,
+                'file_type': file.type,
+                'file_content': file_content,
+                'extracted_text': extracted_text,
+                'case_data': case_data,
+                'is_pdf': file.type == "application/pdf"
+            })
+            
+        except Exception as e:
+            print(f"Error processing {file.name}: {str(e)}")
+            continue
+            
+    return results
+
 def extract_case_info_with_gpt(text):
     """Extract structured medical case information using GPT-4o"""
     try:
@@ -261,6 +293,42 @@ def create_pdf_report(records_df):
     doc.build(elements)
     buffer.seek(0)
     return buffer
+
+def process_batch_upload(uploaded_files):
+    """Process multiple files in a batch and return consolidated results"""
+    batch_results = []
+    
+    # Process all files first
+    for uploaded_file in uploaded_files:
+        try:
+            if uploaded_file.type == "application/pdf":
+                extracted_text = extract_text_from_pdf(uploaded_file)
+                uploaded_file.seek(0)
+                file_content = uploaded_file.read()
+                is_pdf = True
+            else:
+                image = Image.open(uploaded_file)
+                extracted_text = extract_text_with_gpt_vision(image)
+                buffer = BytesIO()
+                image.save(buffer, format='PNG')
+                file_content = buffer.getvalue()
+                is_pdf = False
+            
+            case_data = extract_case_info_with_gpt(extracted_text)
+            
+            batch_results.append({
+                'file_name': uploaded_file.name,
+                'case_data': case_data,
+                'file_content': file_content,
+                'extracted_text': extracted_text,
+                'is_pdf': is_pdf
+            })
+            
+        except Exception as e:
+            print(f"Error in process_batch_upload: {e}")
+            continue
+
+    return batch_results
 
 def generate_pre_therapy(uploaded_file):
     case_data = []

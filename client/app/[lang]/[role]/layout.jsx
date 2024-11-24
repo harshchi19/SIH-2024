@@ -4,16 +4,23 @@ import FloatingChatbot from "@/components/FloatingChatbot";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
 import Sidebar from "@/components/Sidebar";
+import { useLanguage } from "@/context/LanguageContext";
 import { SIDEBAR_DATA_ROUTE } from "@/utils/constants";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function RoleLayout({ children }) {
   const params = useParams();
   const [sidebarData, setSidebarData] = useState();
+  const { currentLang } = useLanguage();
+  const router = useRouter();
 
   useEffect(() => {
     const userType = localStorage.getItem("userType");
+
+    if (!userType) {
+      router.push(`/${currentLang}/sign-in`);
+    }
 
     const getSidebarData = async () => {
       const response = await fetch(`${SIDEBAR_DATA_ROUTE}/${userType}`, {
@@ -41,7 +48,7 @@ export default function RoleLayout({ children }) {
     );
   }
   return (
-    <div className="relative min-h-screen flex bg-slate-50">
+    <div className="relative h-screen flex bg-slate-50">
       <Sidebar sidebarData={sidebarData} />
       <div className="flex flex-col w-screen">
         <Header />

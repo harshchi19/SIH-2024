@@ -34,6 +34,11 @@ const patientsSchema = new Schema({
         of: String,
         required: true
     },
+    date_of_assignment: {
+        type: Map,
+        of: String,
+        required: true
+    },
     age: {
         type: Map,
         of: String,
@@ -45,7 +50,17 @@ const patientsSchema = new Schema({
         required: true,
         enum: ['M', 'F', 'O']
     },
-    preferred_language: {
+    preferred_language1: {
+        type: Map,
+        of: String,
+        required: true
+    },
+    preferred_language2: {
+        type: Map,
+        of: String,
+        required: true
+    },
+    preferred_language3: {
         type: Map,
         of: String,
         required: true

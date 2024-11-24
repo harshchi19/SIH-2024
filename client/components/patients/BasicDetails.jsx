@@ -29,8 +29,12 @@ const BasicDetails = ({ data, updateData }) => {
     }
   };
 
-  const handleDateChange = (selectedDate) => {
-    handleInputChange(null, "date_of_birth", selectedDate);
+  const handleDateChange = (selectedDate, selectedType) => {
+    if (selectedType === "date_of_birth") {
+      updateData("date_of_birth", selectedDate);
+    } else if (selectedType === "date_of_assignment") {
+      updateData("date_of_assignment", selectedDate);
+    }
   };
 
   const supervisorData = [
@@ -137,7 +141,7 @@ const BasicDetails = ({ data, updateData }) => {
               <Calendar
                 mode="single"
                 selected={data.date_of_birth}
-                onSelect={handleDateChange}
+                onSelect={(date) => handleDateChange(date, "date_of_birth")}
                 initialFocus
               />
             </PopoverContent>
@@ -172,17 +176,37 @@ const BasicDetails = ({ data, updateData }) => {
 
       <div className="w-full flex-row-center gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-5">
         <div className="space-y-1 w-full">
-          <Label htmlFor="preferred_language" className="text-gray-700 text-md">
-            {dict?.addPatient?.pref_lang}
+          <Label htmlFor="date_of_assignment" className="text-gray-700 text-md">
+            {dict?.addPatient?.date_of_assg}
           </Label>
-          <Input
-            type="text"
-            id="preferred_language"
-            value={data.preferred_language}
-            placeholder={dict?.addPatient?.pref_lang_pchldr}
-            onChange={handleInputChange}
-            className="border-gray-200 w-full h-12 text-md"
-          />
+          <Popover>
+            <PopoverTrigger className="w-full h-12 bg-transparent" asChild>
+              <Button
+                variant={"outline"}
+                className={`
+                  "w-[280px] justify-start text-left font-normal",
+                  ${!data.date_of_assignment && "text-muted-foreground"}
+                `}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {data.date_of_assignment ? (
+                  format(data.date_of_assignment, "PPP")
+                ) : (
+                  <span>{dict?.addPatient?.doa_plchldr}</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={data.date_of_assignment}
+                onSelect={(date) =>
+                  handleDateChange(date, "date_of_assignment")
+                }
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="space-y-1 w-full">
@@ -210,6 +234,59 @@ const BasicDetails = ({ data, updateData }) => {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
+      </div>
+
+      <div className="w-full flex-row-center gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-5">
+        <div className="space-y-1 w-full">
+          <Label
+            htmlFor="preferred_language1"
+            className="text-gray-700 text-md flex items-center"
+          >
+            {dict?.addPatient?.pref_lang} 1
+          </Label>
+          <Input
+            type="text"
+            id="preferred_language1"
+            value={data.preferred_language1}
+            placeholder={dict?.addPatient?.pref_lang_plchldr}
+            onChange={handleInputChange}
+            className="border-gray-200 w-full h-12 text-md"
+          />
+        </div>
+
+        <div className="space-y-1 w-full">
+          <Label
+            htmlFor="preferred_language2"
+            className="text-gray-700 text-md flex items-center"
+          >
+            {dict?.addPatient?.pref_lang} 2
+          </Label>
+          <Input
+            type="text"
+            id="preferred_language2"
+            value={data.preferred_language2}
+            placeholder={dict?.addPatient?.pref_lang_plchldr}
+            onChange={handleInputChange}
+            className="border-gray-200 w-full h-12 text-md"
+          />
+        </div>
+
+        <div className="space-y-1 w-full">
+          <Label
+            htmlFor="preferred_language3"
+            className="text-gray-700 text-md flex items-center"
+          >
+            {dict?.addPatient?.pref_lang} 3
+          </Label>
+          <Input
+            type="text"
+            id="preferred_language3"
+            value={data.preferred_language3}
+            placeholder={dict?.addPatient?.pref_lang_plchldr}
+            onChange={handleInputChange}
+            className="border-gray-200 w-full h-12 text-md"
+          />
         </div>
       </div>
 
