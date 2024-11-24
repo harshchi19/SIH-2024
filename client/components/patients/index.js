@@ -7,5 +7,8 @@ import ReadingWritingSkills from "./ReadingWritingSkills";
 import SpeechDevelopmentHistoryDetails from "./SpeechDevelopmentHistoryDetails";
 import SuprasegmentalAspectsDetails from "./SuprasegmentalAspectsDetails";
 import VoiceDetails from "./VoiceDetails";
+import ClinicalDetails from "./pre-therapy/ClinicalDetails";
+import PatientDetails from "./pre-therapy/PatientDetails";
+import UploadDocument from "./pre-therapy/UploadDocument";
 
-export { AddressDetails, ArticulationPhoneticLevelDetails, BasicDetails, MedicalDetails, NonVerbalCommunicationDetails, ReadingWritingSkills, SpeechDevelopmentHistoryDetails, SuprasegmentalAspectsDetails, VoiceDetails };
+export { AddressDetails, ArticulationPhoneticLevelDetails, BasicDetails, ClinicalDetails, MedicalDetails, NonVerbalCommunicationDetails, PatientDetails, ReadingWritingSkills, SpeechDevelopmentHistoryDetails, SuprasegmentalAspectsDetails, UploadDocument, VoiceDetails };
