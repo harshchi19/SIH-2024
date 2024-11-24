@@ -87,7 +87,6 @@ export const encryptSection = (section, key, iv) => {
     } else {
       modifiedValue = value === null ? "" : value;
     }
-    console.log("Modified Value: ", modifiedValue);
 
     const encryptedValue = encryptPatientData(modifiedValue, key, iv);
     encryptedSection[item] = encryptedValue;

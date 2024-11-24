@@ -59,6 +59,7 @@ export const onboardPatient = async (req, res, next) => {
     basicDetails["case_no"] = newCaseNo;
 
     const dob = new Date(basicDetails.date_of_birth);
+
     if (!isNaN(dob.getTime())) {
       const now = new Date();
       let age = now.getFullYear() - dob.getFullYear();
@@ -97,6 +98,7 @@ export const onboardPatient = async (req, res, next) => {
       phone_no: encryptedBasicDetails.phone_no,
       email: encryptedBasicDetails.email,
       date_of_birth: encryptedBasicDetails.date_of_birth,
+      age: encryptedBasicDetails.age,
       sex: encryptedBasicDetails.sex,
       preferred_language: encryptedBasicDetails.preferred_language,
       user_image: encryptedBasicDetails.user_image,
