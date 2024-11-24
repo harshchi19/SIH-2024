@@ -13,16 +13,16 @@
     "patients": "All Patients",
     "add-patient": "Add Patient"
   },
-    "errors": {
-        "int_ser_err": "Internal Server Error",
-        "try_lat_err": "Please try again later",
-        "usr-not-fnd": "User not found",
-        "corr-pass": "Please enter correct password"
-    },
-    "success": {
-        "login_succ": "Login Successful. Welcome to VaaniVikas!",
-        "user-alr-ext": "User already exists!"
-    },
+  "errors": {
+    "int_ser_err": "Internal Server Error",
+    "try_lat_err": "Please try again later",
+    "usr-not-fnd": "User not found",
+    "corr-pass": "Please enter correct password"
+  },
+  "success": {
+    "login_succ": "Login Successful. Welcome to VaaniVikas!",
+    "user-alr-ext": "User already exists!"
+  },
   "login": {
     "header": "Login to you account",
     "description1": "Whether you’re a Patient, Student Therapist, or Supervisor, choose your role to unlock personalized features and proceed.",
@@ -207,5 +207,30 @@
     "previous": "Previous",
     "next": "Next",
     "view_report": "View Report"
+  },
+  "addStudentTherapist": {
+    "personal": "Personal Details",
+    "professional": "Professional Details",
+    "name": "Name",
+    "name_plchldr": "Rishab Shyam Mehta",
+    "email": "Email",
+    "email_plchldr": "rishabmehta@gmail.com",
+    "sex": "Sex",
+    "age": "Age",
+    "age_plchldr": "25",
+    "pref_lang": "Preferred Language",
+    "pref_lang_pchldr": "English / Hindi / Marathi / Urdu / Bengali / Gujrati / ...",
+    "address_line1": "Address Line 1",
+    "address_line1_plchldr": "124, Ramji Bldg., Shake Cooker Street",
+    "address_line2": "Address Line 2",
+    "address_line2_plchldr": "Ground Floor, Room No - 2",
+    "city": "City",
+    "city_plchldr": "Mumbai Suburban",
+    "state": "State",
+    "state_plchldr": "Maharashtra",
+    "postal_code": "Postal Code",
+    "postal_code_plchldr": "400004",
+    "country": "Country",
+    "country_plchldr": "India"
   }
 }
