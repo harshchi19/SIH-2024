@@ -98,9 +98,12 @@ export const onboardPatient = async (req, res, next) => {
       phone_no: encryptedBasicDetails.phone_no,
       email: encryptedBasicDetails.email,
       date_of_birth: encryptedBasicDetails.date_of_birth,
+      date_of_assignment: encryptedBasicDetails.date_of_assignment,
       age: encryptedBasicDetails.age,
       sex: encryptedBasicDetails.sex,
-      preferred_language: encryptedBasicDetails.preferred_language,
+      preferred_language1: encryptedBasicDetails.preferred_language1,
+      preferred_language2: encryptedBasicDetails.preferred_language2,
+      preferred_language3: encryptedBasicDetails.preferred_language3,
       user_image: encryptedBasicDetails.user_image,
       case_no: encryptedBasicDetails.case_no,
       patient_id_hash: hashedPatientId,
@@ -119,7 +122,7 @@ export const onboardPatient = async (req, res, next) => {
 
     await newPatient.save();
 
-    return res.status(200).json({ message: "pat-onb-suc" });
+    return res.status(200).json({ patientId: newPatientId, message: "pat-onb-suc" });
   } catch (error) {
     console.error("Error in onboardPatient: ", error);
     return res.status(400).json({ message: "int-ser-err" });

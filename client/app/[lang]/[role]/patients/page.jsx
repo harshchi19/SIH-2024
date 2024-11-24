@@ -48,7 +48,7 @@ const StudentPatients = () => {
   return (
     <>
       {/* Main Content Area */}
-      <div className="flex-1 overflow-auto px-6">
+      <div className="flex-1 overflow-y-scroll px-6">
         <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm">
           <div>
             <h1 className="text-2xl font-bold">Patients Overview</h1>

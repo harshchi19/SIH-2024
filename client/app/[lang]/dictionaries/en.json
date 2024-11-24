@@ -24,16 +24,6 @@
     "login_succ": "Login Successful. Welcome to VaaniVikas!",
     "user-alr-ext": "User already exists!"
   },
-  "errors": {
-    "int_ser_err": "Internal Server Error",
-    "try_lat_err": "Please try again later",
-    "usr-not-fnd": "User not found",
-    "corr-pass": "Please enter correct password"
-  },
-  "success": {
-    "login_succ": "Login Successful. Welcome to VaaniVikas!",
-    "user-alr-ext": "User already exists!"
-  },
   "login": {
     "header": "Login to you account",
     "description1": "Whether you’re a Patient, Student Therapist, or Supervisor, choose your role to unlock personalized features and proceed.",
@@ -81,10 +71,12 @@
     "email_plchldr": "abc123@example.com",
     "date_of_birth": "Date Of Birth",
     "dob_plchldr": "Pick a Date",
+    "date_of_assg": "Date of Assignment",
+    "doa_plchldr": "Date of Assignment",
     "sex": "Sex",
     "sex_plchldr": "Please select gender of the patient",
     "pref_lang": "Preferred Language",
-    "pref_lang_pchldr": "English / Hindi / Marathi / Urdu / Bengali / Gujrati / ...",
+    "pref_lang_plchldr": "English / Hindi / Marathi / Urdu / Bengali / Gujrati / ...",
     "pass_info": "Please let the patient enter this field",
     "sel_sup": "Select the Supervisor for the patient",
     "sel_sup_plchldr": "Click to open the Supervisor List",
@@ -231,7 +223,11 @@
     "document": "Upload your Pre-Therapy Report",
     "patient": "Patient Details",
     "clinical": "Clinical Details",
-    "no_patient": "No patient has been selected"
+    "no_patient": "No patient has been selected",
+    "upload_doc": "Upload Document",
+    "drag_n_drop": "Drag & drop or click to upload documents",
+    "uploaded_docs": "Uploaded Documents",
+    "files_proc": "file(s) ready to be processed"
   },
   "addStudentTherapist": {
     "personal": "Personal Details",

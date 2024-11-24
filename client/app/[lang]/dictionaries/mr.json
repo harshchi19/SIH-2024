@@ -11,7 +11,18 @@
     "calendar": "कॅलेंडर",
     "reports": "अहवाल",
     "patients": "सर्व रुग्ण",
-    "add-patient": "पेशंट जोडा"
+    "add-patient": "पेशंट जोडा",
+    "pre-therapy": "प्री-थेरपी"
+  },
+  "errors": {
+    "int_ser_err": "अंतर्गत सर्व्हर त्रुटी",
+    "try_lat_err": "कृपया नंतर पुन्हा प्रयत्न करा",
+    "usr-not-fnd": "वापरकर्ता सापडला नाही",
+    "corr-pass": "कृपया योग्य पासवर्ड टाका"
+  },
+  "success": {
+    "login_succ": "लॉगिन यशस्वी. ",
+    "user-alr-ext": "वापरकर्ता आधीच अस्तित्वात आहे!"
   },
   "login": {
     "header": "तुमच्या खात्यात लॉग इन करा",
@@ -56,12 +67,20 @@
     "submit": "सबमिट करा",
     "name": "रुग्णाचे नाव",
     "age": "वय",
+    "email": "ईमेल",
+    "email_plchldr": "abc123@example.com",
     "date_of_birth": "जन्मतारीख",
     "dob_plchldr": "एक तारीख निवडा",
     "sex": "लिंग",
+    "sex_plchldr": "कृपया रुग्णाचे लिंग निवडा",
     "pref_lang": "पसंतीची भाषा",
     "pref_lang_pchldr": "इंग्रजी / हिंदी / मराठी / उर्दू / बंगाली / गुजराती / ...",
     "pass_info": "कृपया रुग्णाला या क्षेत्रात येऊ द्या",
+    "sel_sup": "रुग्णासाठी पर्यवेक्षक निवडा",
+    "sel_sup_plchldr": "पर्यवेक्षक सूची उघडण्यासाठी क्लिक करा",
+    "summary": "रुग्णाचा सारांश",
+    "summary_plchldr": "कृपया रुग्णाने ओळखलेल्या समस्या प्रविष्ट करा",
+    "summary_info": "कृपया रुग्ण/पालकांना तपशील प्रविष्ट करू द्या",
     "address_line1": "पत्ता ओळ 1",
     "address_line1_plchldr": "124, रामजी बिल्डिंग., शेक कुकर स्ट्रीट",
     "address_line2": "पत्ता ओळ 2",
@@ -81,7 +100,7 @@
     "details_to_pay_attention_plchldr": "कृपया डेटा प्रविष्ट करा",
     "details_to_pay_attention_info": "",
     "language_evaluation": "भाषा मूल्यमापन",
-    "language_evaluation_plchldr": "संबंधित भाषा, शब्दार्थ, व्यावहारिकता",
+    "language_evaluation_plchldr": "संबंधित भाषा, अर्थशास्त्र, व्यावहारिकता",
     "language_evaluation_info": "",
     "auditory_skills": "श्रवण कौशल्य",
     "auditory_skills_plchldr": "कृपया विश्लेषणानंतर डेटा प्रविष्ट करा",
@@ -197,5 +216,40 @@
     "previous": "मागील",
     "next": "पुढे",
     "view_report": "अहवाल पहा"
+  },
+  "pre_therapy": {
+    "document": "तुमचा प्री-थेरपी अहवाल अपलोड करा",
+    "patient": "रुग्णाचे तपशील",
+    "clinical": "क्लिनिकल तपशील",
+    "no_patient": "एकही रुग्ण निवडलेला नाही",
+    "upload_doc": "दस्तऐवज अपलोड करा",
+    "drag_n_drop": "दस्तऐवज अपलोड करण्यासाठी ड्रॅग आणि ड्रॉप किंवा क्लिक करा",
+    "uploaded_docs": "अपलोड केलेले दस्तऐवज",
+    "files_proc": "फाईल्स प्रक्रिया करण्यासाठी तयार आहेत"
+  },
+  "addStudentTherapist": {
+    "personal": "वैयक्तिक तपशील",
+    "professional": "व्यावसायिक तपशील",
+    "name": "नाव",
+    "name_plchldr": "ऋषभ श्याम मेहता",
+    "email": "ईमेल",
+    "email_plchldr": "rishabmehta@gmail.com",
+    "sex": "लिंग",
+    "age": "वय",
+    "age_plchldr": "२५",
+    "pref_lang": "पसंतीची भाषा",
+    "pref_lang_pchldr": "इंग्रजी / हिंदी / मराठी / उर्दू / बंगाली / गुजराती / ...",
+    "address_line1": "पत्ता ओळ 1",
+    "address_line1_plchldr": "124, रामजी बिल्डिंग., शेक कुकर स्ट्रीट",
+    "address_line2": "पत्ता ओळ 2",
+    "address_line2_plchldr": "तळमजला, खोली क्रमांक - 2",
+    "city": "शहर",
+    "city_plchldr": "मुंबई उपनगर",
+    "state": "राज्य",
+    "state_plchldr": "महाराष्ट्र",
+    "postal_code": "पोस्टल कोड",
+    "postal_code_plchldr": "४००००४",
+    "country": "देश",
+    "country_plchldr": "भारत"
   }
 }

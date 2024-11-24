@@ -57,7 +57,7 @@ const StudentDashboardPage = () => {
   return (
     <>
       {/* Main Content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-y-scroll">
         <div className="p-6">
           {/* Stats Cards */}
           <div className="grid grid-cols-4 gap-4 mb-6">
@@ -120,7 +120,9 @@ const StudentDashboardPage = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>{dict?.dashboard?.patient_distribution_by_therapy_type}</CardTitle>
+                <CardTitle>
+                  {dict?.dashboard?.patient_distribution_by_therapy_type}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
