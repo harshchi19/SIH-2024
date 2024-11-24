@@ -35,7 +35,7 @@ const Header = () => {
 
     const breadcrumbList = pathParts.map((part, index) => {
       const normalizedPart = part.trim().toLowerCase();
-      let label = dict?.breadcrumb?.[normalizedPart];
+      let label = dict?.breadcrumb?.[normalizedPart] || normalizedPart;
 
       const isRole = ["student-therapist", "supervisor", "patient"].includes(
         normalizedPart

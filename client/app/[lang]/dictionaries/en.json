@@ -11,18 +11,19 @@
     "calendar": "Calendar",
     "reports": "Reports",
     "patients": "All Patients",
-    "add-patient": "Add Patient"
+    "add-patient": "Add Patient",
+    "pre-therapy": "Pre-Therapy"
   },
-    "errors": {
-        "int_ser_err": "Internal Server Error",
-        "try_lat_err": "Please try again later",
-        "usr-not-fnd": "User not found",
-        "corr-pass": "Please enter correct password"
-    },
-    "success": {
-        "login_succ": "Login Successful. Welcome to VaaniVikas!",
-        "user-alr-ext": "User already exists!"
-    },
+  "errors": {
+    "int_ser_err": "Internal Server Error",
+    "try_lat_err": "Please try again later",
+    "usr-not-fnd": "User not found",
+    "corr-pass": "Please enter correct password"
+  },
+  "success": {
+    "login_succ": "Login Successful. Welcome to VaaniVikas!",
+    "user-alr-ext": "User already exists!"
+  },
   "login": {
     "header": "Login to you account",
     "description1": "Whether you’re a Patient, Student Therapist, or Supervisor, choose your role to unlock personalized features and proceed.",
@@ -66,12 +67,20 @@
     "submit": "Submit",
     "name": "Patient Name",
     "age": "Age",
+    "email": "Email",
+    "email_plchldr": "abc123@example.com",
     "date_of_birth": "Date Of Birth",
     "dob_plchldr": "Pick a Date",
     "sex": "Sex",
+    "sex_plchldr": "Please select gender of the patient",
     "pref_lang": "Preferred Language",
     "pref_lang_pchldr": "English / Hindi / Marathi / Urdu / Bengali / Gujrati / ...",
     "pass_info": "Please let the patient enter this field",
+    "sel_sup": "Select the Supervisor for the patient",
+    "sel_sup_plchldr": "Click to open the Supervisor List",
+    "summary": "Patient Summary",
+    "summary_plchldr": "Please enter the issues identified by the Patient",
+    "summary_info": "Please let the Patient/Guardian enter the details",
     "address_line1": "Address Line 1",
     "address_line1_plchldr": "124, Ramji Bldg., Shake Cooker Street",
     "address_line2": "Address Line 2",
@@ -207,5 +216,11 @@
     "previous": "Previous",
     "next": "Next",
     "view_report": "View Report"
+  },
+  "pre_therapy": {
+    "document": "Upload your Pre-Therapy Report",
+    "patient": "Patient Details",
+    "clinical": "Clinical Details",
+    "no_patient": "No patient has been selected"
   }
 }
