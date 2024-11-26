@@ -110,6 +110,7 @@ export const onboardPatient = async (req, res, next) => {
       phone_hash: hashedPhone,
       email_hash: hashedEmail,
       case_no_hash: hashedCaseNo,
+      patient_issue: encryptedBasicDetails.patient_issue,
       address: encryptedAddressDetails,
       medical_details: encryptedMedicalDetails,
       speech_development_history: encryptedSpeechDevelopmentHistory,

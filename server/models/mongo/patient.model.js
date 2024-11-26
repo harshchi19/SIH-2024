@@ -1,3 +1,5 @@
+// Encrypted
+
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
@@ -89,6 +91,11 @@ const patientsSchema = new Schema({
     },
     case_no_hash: {
         type: String,
+        required: true
+    },
+    patient_issue: {
+        type: Map,
+        of: String,
         required: true
     },
 

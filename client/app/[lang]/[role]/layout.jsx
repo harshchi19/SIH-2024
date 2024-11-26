@@ -15,11 +15,23 @@ export default function RoleLayout({ children }) {
   const { currentLang } = useLanguage();
   const router = useRouter();
 
+  const checkUserType = {
+    patient: "PAT",
+    "student-therapist": "STT",
+    supervisor: "SUP",
+  };
+
   useEffect(() => {
     const userType = localStorage.getItem("userType");
 
     if (!userType) {
       router.push(`/${currentLang}/sign-in`);
+    }
+
+    const expectedRole = checkUserType[params.role];
+    if (expectedRole !== userType) {
+      router.push(`/${currentLang}/sign-in`);
+      return;
     }
 
     const getSidebarData = async () => {
@@ -36,7 +48,6 @@ export default function RoleLayout({ children }) {
         setSidebarData(result.sidebarData);
       }
     };
-
     getSidebarData();
   }, [params.role]);
 

@@ -20,8 +20,9 @@ export const getPreTherapyUserById = async (req, res, next) => {
 }
 
 export const uploadPreTherapyDetails = (req, res, next) => {
+    const { } = req.body;
     try {
-        console.log("hello");
+
     } catch (error) {
         console.error("Error in uploadPreTherapyDetails: ", error);
         return res.status(400).json({ message: "int-ser-err" });

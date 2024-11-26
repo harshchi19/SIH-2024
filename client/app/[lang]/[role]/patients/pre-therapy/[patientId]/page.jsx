@@ -129,7 +129,7 @@ export default function PreTherapyPage() {
   const handleSubmit = () => {};
 
   return (
-    <div className="px-8 flex pb-10">
+    <div className="px-8 flex pb-10 overflow-y-scroll">
       <TimelineComponent
         currentTimeline={currentTimeline}
         setCurrentTimeline={setCurrentTimeline}

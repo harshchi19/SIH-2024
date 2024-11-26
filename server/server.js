@@ -9,6 +9,7 @@ import patientRouter from "./routes/patient.route.js";
 import userRouter from "./routes/user.route.js";
 import studentRouter from "./routes/student-therapist.route.js";
 import preTherapyRouter from "./routes/pre_therapy.route.js";
+import supervisorRouter from "./routes/supervisor.route.js";
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use("/patient", patientRouter);
 app.use("/auth", userRouter);
 app.use("/student-therapist", studentRouter);
 app.use("/pre_therapy", preTherapyRouter);
+app.use("/supervisor", supervisorRouter);
 
 const PORT = process.env.PORT || 4224;
 
