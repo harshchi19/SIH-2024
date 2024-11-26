@@ -184,7 +184,7 @@ const SignInPage = () => {
             </div>
           </div>
           <div className="text-center text-xs text-gray-400 pb-4">
-            Vaani Vikas © {new Date().getFullYear()} All Rights Reserved
+            Vani Vikas © {new Date().getFullYear()} All Rights Reserved
           </div>
         </div>
       </div>

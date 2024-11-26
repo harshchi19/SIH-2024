@@ -22,6 +22,7 @@
   },
   "success": {
     "login_succ": "Login Successful. Welcome to VaaniVikas!",
+    "sup_onb_suc": "You have been registered!",
     "user-alr-ext": "User already exists!"
   },
   "login": {
@@ -50,7 +51,12 @@
     "password": "Password",
     "pat_pchldr_pass": "abc@123",
     "go_back": "Go Back",
-    "forgot_pass": "Forgot Password?"
+    "reg_sup": "Register",
+    "want_reg": "Want to register yourself as a Supervisor?",
+    "forgot_pass": "Forgot Password?",
+    "reg_sup_head": "Register yourself as a Supervisor",
+    "reg_sup_desc": "Please fill in the details and wait for the approval of the Admin",
+    "sup_name": "Supervisor Name"
   },
   "addPatient": {
     "basic": "Basic Details",

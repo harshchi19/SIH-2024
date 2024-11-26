@@ -5,13 +5,20 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import Link from "next/link";
 import Loader from "../Loader";
+import { useRouter } from "next/navigation";
 
 const SupervisorForm = ({ data, updateData, setCurrentStep, handleSubmit }) => {
   const { dict, currentLang } = useLanguage();
+  const [register, setRegister] = useState(false);
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     updateData(id, value);
+  };
+
+  const handleRegister = () => {
+    router.push(`/${currentLang}/register`);
   };
 
   if (!dict) {
@@ -71,19 +78,34 @@ const SupervisorForm = ({ data, updateData, setCurrentStep, handleSubmit }) => {
         </div>
 
         <div className="flex items-center justify-between pt-2">
-          <Button
-            variant="outline"
-            onClick={() => setCurrentStep(1)}
-            className="px-4 py-2 text-sm border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 transition-colors"
-          >
-            {dict?.login?.go_back}
-          </Button>
+          <div className="flex-row-center gap-x-2">
+            <Button
+              variant="outline"
+              onClick={() => setCurrentStep(1)}
+              className="px-4 py-2 text-sm border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 transition-colors"
+            >
+              {dict?.login?.go_back}
+            </Button>
+          </div>
           <Link
             href={`/${currentLang}/forgot-password`}
             className="text-sm font-medium text-green-600 hover:text-green-700 transition-colors"
           >
             {dict?.login?.forgot_pass}
           </Link>
+        </div>
+
+        <div className="flex justify-start items-center">
+          <h1 className="font-medium text-gray-500 text-sm">
+            {dict?.login?.want_reg}
+          </h1>
+          <Button
+            variant="ghost"
+            onClick={handleRegister}
+            className="-ml-2 font-semibold hover:bg-transparent text-green-500 hover:text-green-600"
+          >
+            {dict?.login?.reg_sup}
+          </Button>
         </div>
 
         <Button

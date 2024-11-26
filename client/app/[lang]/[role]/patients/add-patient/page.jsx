@@ -170,7 +170,8 @@ export default function AddPatientPage() {
 
     if (response.ok) {
       const data = await response.json();
-      toast({ title: data.message });
+
+      toast({ title: dict?.success?.sup_onb_suc });
       router.push(
         `/${currentLang}/${role}/patients/pre-therapy/${data.patientId}`
       );
