@@ -30,7 +30,7 @@ export default function StudentCalendar() {
   });
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen">
       {/* Main Content */}
       <div className="w-full p-4 bg-white rounded-lg shadow">
         {/* Calendar Header */}

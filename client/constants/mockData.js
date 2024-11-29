@@ -1,0 +1,93 @@
+export const studentTherapistData = {
+  personalDetails: {
+    age: 20,
+    email: "rishabmehta@gmail.com",
+    name: "Rishab Mehta",
+    password: "RishabMehta",
+    phone_no: "9819021848",
+    sex: "M",
+  },
+  professionalDetails: {
+    availability: [
+      "Mon 09:00",
+      "Mon 10:00",
+      "Mon 11:00",
+      "Mon 12:00",
+      "Thu 09:00",
+      "Thu 10:00",
+      "Thu 11:00",
+      "Thu 12:00",
+    ],
+    experience_years: 2,
+    location: {
+      city: "Mumbai",
+      state: "Maharashtra",
+      country: "India",
+    },
+    qualifications: ["Vocal", "Speech", "Autism"],
+    specialization: ["M.Sc.", "B.Sc."],
+    spoken_languages: ["English", "Hindi", "Telugu"],
+    client_coursework: ["Autism 1year", "Vocal 2years"],
+  },
+  patients: [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      age: 12,
+      condition: "Speech Therapy",
+      startDate: "2024-01-15",
+      progress: 75,
+      nextAppointment: "2024-03-20",
+      status: "Active",
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      age: 8,
+      condition: "Autism",
+      startDate: "2023-11-10",
+      progress: 60,
+      nextAppointment: "2024-03-22",
+      status: "Active",
+    },
+    {
+      id: 3,
+      name: "Emma Davis",
+      age: 15,
+      condition: "Vocal Training",
+      startDate: "2023-12-01",
+      progress: 90,
+      nextAppointment: "2024-03-25",
+      status: "Completing",
+    },
+  ],
+  feedback: [
+    {
+      id: 1,
+      date: "2024-03-15",
+      supervisor: "Dr. Sarah Smith",
+      rating: 4.5,
+      comments:
+        "Excellent progress with speech therapy patients. Shows great patience and innovative techniques.",
+      areas: ["Patient Communication", "Treatment Planning"],
+    },
+    {
+      id: 2,
+      date: "2024-02-28",
+      supervisor: "Dr. James Wilson",
+      rating: 4.0,
+      comments:
+        "Good handling of autism cases. Need to work on documentation thoroughness.",
+      areas: ["Clinical Skills", "Documentation"],
+    },
+    {
+      id: 3,
+      date: "2024-02-15",
+      supervisor: "Dr. Emily Brown",
+      rating: 4.8,
+      comments:
+        "Outstanding vocal training methods. Students show remarkable improvement.",
+      areas: ["Teaching Methods", "Progress Tracking"],
+    },
+  ],
+};

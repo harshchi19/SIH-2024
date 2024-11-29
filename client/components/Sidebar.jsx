@@ -46,7 +46,6 @@ const Sidebar = ({ sidebarData }) => {
 
   const { getById } = useById();
   const [user, setUser] = useState(null);
-  console.log(userId);
 
   const fetchUser = async () => {
     if (userId) {

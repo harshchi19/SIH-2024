@@ -33,7 +33,7 @@ const PersonalDetails = ({ data, updateData }) => {
           <Input
             type="text"
             id="name"
-            value={data.name}
+            value={data.name || ""}
             placeholder={dict?.login?.pat_pchldr_name}
             onChange={(e) => handleChange("name", e.target.value)}
             className="border-gray-200 w-full h-12 text-md"
@@ -46,7 +46,7 @@ const PersonalDetails = ({ data, updateData }) => {
           <Input
             type="tel"
             id="phone_no"
-            value={data.phone_no}
+            value={data.phone_no || ""}
             placeholder={dict?.login?.pat_pchldr_phon}
             onChange={(e) => handleChange("phone_no", e.target.value)}
             className="border-gray-200 w-full h-12 text-md"
@@ -62,7 +62,7 @@ const PersonalDetails = ({ data, updateData }) => {
           <Input
             type="email"
             id="email"
-            value={data.email}
+            value={data.email || ""}
             placeholder={dict?.login?.pat_pchldr_email}
             onChange={(e) => handleChange("email", e.target.value)}
             className="border-gray-200 w-full h-12 text-md"
@@ -73,7 +73,7 @@ const PersonalDetails = ({ data, updateData }) => {
             {dict?.addStudentTherapist?.sex}
           </Label>
           <Select
-            value={data.sex}
+            value={data.sex || ""}
             onValueChange={(value) => handleChange("sex", value)}
           >
             <SelectTrigger className="w-full h-12">
@@ -99,7 +99,7 @@ const PersonalDetails = ({ data, updateData }) => {
           <Input
             type="number"
             id="age"
-            value={data.age}
+            value={data.age || ""}
             placeholder={dict?.addStudentTherapist?.age_plchldr}
             onChange={(e) => handleChange("age", Number(e.target.value))}
             className="border-gray-200 w-full h-12 text-md"
@@ -115,7 +115,7 @@ const PersonalDetails = ({ data, updateData }) => {
           <Input
             type="password"
             id="password"
-            value={data.password}
+            value={data.password || ""}
             placeholder={dict?.login?.pat_pchldr_pass}
             onChange={(e) => handleChange("password", e.target.value)}
             className="border-gray-200 w-full h-12 text-md"

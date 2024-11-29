@@ -5,7 +5,8 @@
   },
   "breadcrumb": {
     "patient": "मरीज़",
-    "student-therapist": "छात्र चिकित्सक",
+    "student-therapists": "छात्र चिकित्सक",
+    "add-student-therapist": "छात्र चिकित्सक जोड़ें",
     "supervisor": "पर्यवेक्षक",
     "dashboard": "डैशबोर्ड",
     "calendar": "कैलेंडर",
