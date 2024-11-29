@@ -32,14 +32,12 @@ const Header = () => {
 
     const breadcrumbList = pathParts.map((part, index) => {
       const normalizedPart = part.trim();
-      console.log("normalizedPart", normalizedPart);
 
       // Check if the part matches the role format (e.g., STT-xxxx-xxxxx)
       if (/^(STT|PAT|SUP)-[a-z0-9]{8}-[A-Z]{6}$/.test(normalizedPart)) {
         const extractedRole = normalizedPart.split("-")[0];
         setRole(extractedRole);
         setUserId(normalizedPart);
-        console.log("Matched role: ", extractedRole);
       }
 
       let label = dict?.breadcrumb?.[normalizedPart] || normalizedPart;
@@ -81,7 +79,7 @@ const Header = () => {
   };
   useEffect(() => {
     fetchUser();
-  }, [userId, role]); // Dependency on userId and role to re-fetch when these change
+  }, [userId]); // Dependency on userId and role to re-fetch when these change
 
   if (isLoading || !dict) {
     return <Loader />;

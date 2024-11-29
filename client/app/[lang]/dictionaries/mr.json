@@ -5,7 +5,8 @@
   },
   "breadcrumb": {
     "patient": "पेशंट",
-    "student-therapist": "विद्यार्थी थेरपिस्ट",
+    "student-therapists": "विद्यार्थी थेरपिस्ट",
+    "add-student-therapist": "विद्यार्थी थेरपिस्ट जोडा",
     "supervisor": "पर्यवेक्षक",
     "dashboard": "डॅशबोर्ड",
     "calendar": "कॅलेंडर",

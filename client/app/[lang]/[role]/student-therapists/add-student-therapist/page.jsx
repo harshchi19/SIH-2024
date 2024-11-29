@@ -7,6 +7,9 @@ import {
 } from "@/components/student-therapist";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
+import { toast } from "@/hooks/use-toast";
+import { ADD_STUDENT_THERAPIST_ROUTE } from "@/utils/constants";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 const TimelineComponent = ({ currentTimeline, setCurrentTimeline }) => {
@@ -54,7 +57,9 @@ const TimelineComponent = ({ currentTimeline, setCurrentTimeline }) => {
 
 export default function AddPatientPage() {
   const [currentTimeline, setCurrentTimeline] = useState(1);
-  const { dict } = useLanguage();
+  const { dict, currentLang } = useLanguage();
+  const role = useParams().role;
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     personalDetails: {
@@ -66,13 +71,16 @@ export default function AddPatientPage() {
       sex: "",
     },
     professionalDetails: {
-      spoken_languages: [],
+      preferred_language1: "",
+      preferred_language2: "",
+      preferred_language3: "",
       specialization: [],
       qualifications: [],
       experience_years: null,
       availability: [],
       training_and_education: [],
       location: "",
+      client_coursework: "",
     },
   });
 
@@ -90,9 +98,23 @@ export default function AddPatientPage() {
     }));
   };
 
-  const handleSubmit = () => {
-    // Validation logic can be added here
-    console.log("Final Form Data:", formData);
+  const handleSubmit = async () => {
+    const response = await fetch(ADD_STUDENT_THERAPIST_ROUTE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      toast({ title: dict?.success?.sup_onb_suc });
+      router.push(
+        `/${currentLang}/${role}/student-therapists/add-student-therapist`
+      );
+    } else {
+      console.error("Error adding student therapist:", response);
+    }
   };
 
   return (

@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import {
-  ProfileSection,
   PatientsSection,
-} from "@/components/student-therapist/profiles";
+  ProfessionalSection,
+  PersonalSection,
+  AvailabilitySection,
+} from "@/components/profiles";
 import { studentTherapistData } from "@/constants/mockData";
 import { usePathname } from "next/navigation";
 import { useById } from "@/hooks/useById";
@@ -50,7 +52,27 @@ const ProfilePage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Side - Profile */}
           <div className="lg:col-span-5">
-            <ProfileSection studentDetails={student} />
+            <div className="space-y-6">
+              <PersonalSection
+                name={student.name}
+                email={student.email}
+                phone_no={student.phone_no}
+                age={student.age}
+                role="Student Therapist"
+              />
+
+              <ProfessionalSection
+                location={student.location}
+                experience_years={student.experience_years}
+                qualifications={student.qualifications}
+                specialization={student.specialization}
+                preferred_language1={student.preferred_language1}
+                preferred_language2={student.preferred_language2}
+                preferred_language3={student.preferred_language3}
+              />
+
+              <AvailabilitySection availability={student.availability} />
+            </div>
           </div>
 
           {/* Right Side - Patients & Feedback */}
