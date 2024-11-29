@@ -1,3 +1,4 @@
+import { id } from "date-fns/locale";
 import {
   decryptSection,
   encryptSection,
@@ -18,10 +19,6 @@ export const addStudent = async (req, res) => {
 
     const { location, ...updatedProfessionalDetails } = professionalDetails;
 
-    // Now, you can use updatedProfessionalDetails and location separately
-    console.log("Updated Professional Details:", updatedProfessionalDetails);
-    console.log("Location:", location);
-
     let findDuplicateEntries = await StudentTherapist.findOne({
       $or: [{ email_hash: hashedEmail }, { phone_hash: hashedPhone }],
     }).select("_id");
@@ -34,27 +31,18 @@ export const addStudent = async (req, res) => {
       collectionName: "student-therapists",
     });
 
-    console.log("Key is: ", findEncryptionKey);
-
     const key = unwrapKey(
       findEncryptionKey.encryptedKey,
       findEncryptionKey.encryptedIV,
       findEncryptionKey.encryptedAuthTag
     );
 
-    console.log("Key is: ", key);
-
     const iv = generateKeyAndIV();
 
     const newStudentTherapistId = generateEncryptedUniqueId("stt");
     personalDetails["student_therapist_id"] = newStudentTherapistId;
-    console.log("New Student Therapist ID:", newStudentTherapistId);
 
     const hashedStudentTherapistId = generateHashedData(newStudentTherapistId);
-
-    console.log("Address Details:", location);
-    console.log("Personal Details:", personalDetails);
-    console.log("Professional Details:", updatedProfessionalDetails);
 
     const encryptedPersonalDetails = encryptSection(personalDetails, key, iv);
     const encryptedProfessionalDetails = encryptSection(
@@ -73,7 +61,9 @@ export const addStudent = async (req, res) => {
       phone_no: encryptedPersonalDetails.phone_no,
       age: encryptedPersonalDetails.age,
       sex: encryptedPersonalDetails.sex,
-      spoken_languages: encryptedProfessionalDetails.spoken_languages,
+      preferred_language1: encryptedProfessionalDetails.preferred_language1,
+      preferred_language2: encryptedProfessionalDetails.preferred_language2,
+      preferred_language3: encryptedProfessionalDetails.preferred_language3,
       specialization: encryptedProfessionalDetails.specialization,
       qualifications: encryptedProfessionalDetails.qualifications,
       experience_years: encryptedProfessionalDetails.experience_years,
@@ -84,7 +74,6 @@ export const addStudent = async (req, res) => {
         state: encryptedAddressDetails.state,
         country: encryptedAddressDetails.country,
       },
-      supervisor_id: encryptedProfessionalDetails.supervisor_id,
       email_hash: hashedEmail,
       phone_hash: hashedPhone,
       student_therapist_id_hash: hashedStudentTherapistId,
@@ -128,7 +117,15 @@ export const getStudentsById = async (req, res) => {
       phone_no: Object.fromEntries(studentTherapist.phone_no),
       age: Object.fromEntries(studentTherapist.age),
       sex: Object.fromEntries(studentTherapist.sex),
-      spoken_languages: Object.fromEntries(studentTherapist.spoken_languages),
+      preferred_language1: Object.fromEntries(
+        studentTherapist.preferred_language1
+      ),
+      preferred_language2: Object.fromEntries(
+        studentTherapist.preferred_language2
+      ),
+      preferred_language3: Object.fromEntries(
+        studentTherapist.preferred_language3
+      ),
       specialization: Object.fromEntries(studentTherapist.specialization),
       qualifications: Object.fromEntries(studentTherapist.qualifications),
       experience_years: Object.fromEntries(studentTherapist.experience_years),
@@ -143,3 +140,61 @@ export const getStudentsById = async (req, res) => {
     console.log(error);
   }
 };
+
+export const getAllStudents = async (req, res) => {
+  try {
+    const studentTherapists = await StudentTherapist.find();
+
+    if (!studentTherapists) {
+      return res.status(400).json({ message: "usr-not-fnd" });
+    }
+
+    const findEncryptionKey = await EncryptionKey.findOne({
+      collectionName: "student-therapists",
+    });
+
+    const key = unwrapKey(
+      findEncryptionKey.encryptedKey,
+      findEncryptionKey.encryptedIV,
+      findEncryptionKey.encryptedAuthTag
+    );
+
+    const decryptedStudentTherapists = studentTherapists.map(
+      (studentTherapist) => {
+        const decryptData = {
+          id: Object.fromEntries(studentTherapist.student_therapist_id),
+          name: Object.fromEntries(studentTherapist.name),
+          email: Object.fromEntries(studentTherapist.email),
+          phone_no: Object.fromEntries(studentTherapist.phone_no),
+          age: Object.fromEntries(studentTherapist.age),
+          sex: Object.fromEntries(studentTherapist.sex),
+          preferred_language1: Object.fromEntries(
+            studentTherapist.preferred_language1
+          ),
+          preferred_language2: Object.fromEntries(
+            studentTherapist.preferred_language2
+          ),
+          preferred_language3: Object.fromEntries(
+            studentTherapist.preferred_language3
+          ),
+          specialization: Object.fromEntries(studentTherapist.specialization),
+          qualifications: Object.fromEntries(studentTherapist.qualifications),
+          experience_years: Object.fromEntries(
+            studentTherapist.experience_years
+          ),
+          availability: Object.fromEntries(studentTherapist.availability),
+          client_coursework: Object.fromEntries(
+            studentTherapist.client_coursework
+          ),
+        };
+
+        return decryptSection(decryptData, key);
+      }
+    );
+
+    res.status(200).json(decryptedStudentTherapists);
+  } catch (error) {
+    console.log(error);
+  }
+};
+  
