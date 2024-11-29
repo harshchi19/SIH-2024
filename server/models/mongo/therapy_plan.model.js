@@ -5,20 +5,17 @@ const Schema = mongoose.Schema();
 
 const TherapyPlanSchema = new Schema({
     supervisor_id: {
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "supervisor"
     },
     student_therapist_id: {
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "student_therapist"
     },
     patient_id: {
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "patient"
     },

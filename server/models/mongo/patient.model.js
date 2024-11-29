@@ -137,16 +137,14 @@ const patientsSchema = new Schema({
     medical_details: {
         supervisor_id: [
             {
-                type: Map,
-                of: String,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: "Supervisor",
             },
         ],
         student_therapist_id: [
             {
-                type: Map,
-                of: String,
-                ref: "StudentTherapist",
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Student_Therapist",
             },
         ],
         multilingual_factors: {
