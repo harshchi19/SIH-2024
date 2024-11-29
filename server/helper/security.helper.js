@@ -99,13 +99,17 @@ export const encryptSection = (section, key, iv) => {
 export const decryptSection = (section, key) => {
   const decryptedSection = {};
   for (const [item, value] of Object.entries(section)) {
-    const decryptedValue = decryptPatientData(
-      value.encryptedData,
-      key,
-      value.iv,
-      value.authTag
-    );
-    decryptedSection[item] = decryptedValue;
+    if (typeof value === "string" || Array.isArray(value) || item === "_id") {
+      decryptedSection[item] = value;
+    } else {
+      const decryptedValue = decryptPatientData(
+        value.encryptedData,
+        key,
+        value.iv,
+        value.authTag
+      );
+      decryptedSection[item] = decryptedValue;
+    }
   }
 
   return decryptedSection;
