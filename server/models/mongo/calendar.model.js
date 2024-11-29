@@ -4,11 +4,6 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const CalendarSchema = new Schema({
-    calendar_id: {
-        type: String,
-        required: true,
-        unique: true
-    },
     userId: {
         type: Schema.Types.ObjectId,
         required: true,
@@ -17,6 +12,11 @@ const CalendarSchema = new Schema({
         type: String,
         required: true,
         enum: ["patient", "student_therapist", "supervisor"],
+    },
+    messageType: {
+        type: String,
+        required: true,
+        enum: ["reminder", "appointments"]
     },
     selected_date: {
         type: Date,
@@ -41,6 +41,11 @@ const CalendarSchema = new Schema({
         type: String,
         required: true,
         default: true
+    },
+    color: {
+        type: String,
+        required: true,
+        default: "#9D00FF"
     }
 });
 

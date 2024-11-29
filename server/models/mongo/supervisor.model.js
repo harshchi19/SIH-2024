@@ -81,32 +81,28 @@ const supervisorSchema = new Schema({
     },
     allocated_therapists: [
         {
-            type: Map,
-            of: String,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "student_therapist",
             default: null,
         }
     ],
     allocated_patients_active: [
         {
-            type: Map,
-            of: String,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "patient",
             default: null,
         }
     ],
     allocated_patients_inactive: [
         {
-            type: Map,
-            of: String,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "patient",
             default: null,
         }
     ],
     reports_assessed: [
         {
-            type: Map,
-            of: String,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "report",
             default: null,
         }

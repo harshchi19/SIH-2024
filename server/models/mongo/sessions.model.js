@@ -2,14 +2,8 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const SessionsSchema = new Schema({
-    report_id: {
-        type: Map,
-        of: String,
-        required: true,
-    },
     student_therapist_id: {
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "student_therapist"
     },
@@ -29,8 +23,7 @@ const SessionsSchema = new Schema({
         required: true,
     },
     patient_id: {
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "patient"
     },
@@ -92,8 +85,7 @@ const SessionsSchema = new Schema({
         of: String,
     },
     next_session_therapist: { // All
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "student_therapist"
     },
     to_do_before_next_session: [ // All

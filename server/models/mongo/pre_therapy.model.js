@@ -5,8 +5,7 @@ const Schema = mongoose.Schema();
 
 const PreTherapyDetails = new Schema({
     patient_id: {
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "patient"
     },
@@ -32,14 +31,12 @@ const PreTherapyDetails = new Schema({
         required: true
     },
     student_therapist_id: {
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "student_therapist"
     },
     supervisor_id: {
-        type: Map,
-        of: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "supervisor"
     },
