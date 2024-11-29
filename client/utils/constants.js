@@ -12,6 +12,7 @@ export const SIDEBAR_DATA_ROUTE = `${HOST}/sidebar/get-sidebar-data`;
 export const PATIENT_ROUTE = `${HOST}/patient`;
 export const ADD_PATIENT_ROUTE = `${PATIENT_ROUTE}/add-patient`;
 export const GET_PAT_BY_ID_ROUTE = `${PATIENT_ROUTE}/get-patient-by-id`;
+export const GET_ALL_PAT_ROUTE = `${PATIENT_ROUTE}/get-all-patients`;
 
 // Pre Therapy for Patient
 export const PRE_THERAPY_ROUTE = `${HOST}/pre_therapy`;
@@ -21,8 +22,10 @@ export const GET_PATIENT_FROM_ID = `${PRE_THERAPY_ROUTE}/get-pre-therapy-user`;
 export const STUDENT_THERAPIST_ROUTE = `${HOST}/student-therapist`;
 export const ADD_STUDENT_THERAPIST_ROUTE = `${STUDENT_THERAPIST_ROUTE}/add-student`;
 export const GET_STT_BY_ID_ROUTE = `${STUDENT_THERAPIST_ROUTE}/get-student-by-id`;
+export const GET_ALL_STT_ROUTE = `${STUDENT_THERAPIST_ROUTE}/get-all-students`;
 
 // Supervisors
 export const SUPERVISOR_ROUTE = `${HOST}/supervisor`;
 export const ADD_SUPERVISOR_ROUTE = `${SUPERVISOR_ROUTE}/add-supervisor`;
 export const GET_SUP_BY_ID_ROUTE = `${SUPERVISOR_ROUTE}/get-supervisor-by-id`;
+export const GET_ALL_SUP_ROUTE = `${SUPERVISOR_ROUTE}/get-all-supervisors`;
