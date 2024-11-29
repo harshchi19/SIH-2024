@@ -38,7 +38,17 @@ const studentTherapistSchema = new Schema({
     of: String,
     required: true,
   },
-  spoken_languages: {
+  preferred_language1: {
+    type: Map,
+    of: String,
+    required: true,
+  },
+  preferred_language2: {
+    type: Map,
+    of: String,
+    required: true,
+  },
+  preferred_language3: {
     type: Map,
     of: String,
     required: true,
@@ -83,9 +93,14 @@ const studentTherapistSchema = new Schema({
     },
   },
   supervisor_id: {
-    type: Map,
+    type: mongoose.Schema.Types.ObjectId,
     of: String,
     ref: "Supervisor",
+  },
+  patientId: {
+    type: mongoose.Schema.Types.ObjectId,
+    of: String,
+    ref: "Patient",
   },
   // Hashed Details
   student_therapist_id_hash: {
