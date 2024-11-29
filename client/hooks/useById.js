@@ -22,7 +22,7 @@ export const useById = () => {
     try {
       const route = ROLE_PREFIXES[role];
 
-      const response = await fetch(`${GET_STT_BY_ID_ROUTE}/${id}`, {
+      const response = await fetch(`${route}/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

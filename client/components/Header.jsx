@@ -15,27 +15,33 @@ import {
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import Loader from "./Loader";
+import { useById } from "@/hooks/useById";
 
 const Header = () => {
   const pathname = usePathname();
   const { dict, currentLang } = useLanguage();
   const [breadcrumbItems, setBreadcrumbItems] = useState([]);
-
-  if (!dict) {
-    return (
-      <>
-        <Loader />;
-      </>
-    );
-  }
+  const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const { getById, isLoading, error } = useById();
+  const [role, setRole] = useState(null); // State to store role
 
   useEffect(() => {
     const pathWithoutLang = pathname.replace(/^\/[a-z]{2}\//, "");
     const pathParts = pathWithoutLang.split("/").filter((part) => part !== "");
-    console.log(pathParts);
 
     const breadcrumbList = pathParts.map((part, index) => {
-      const normalizedPart = part.trim().toLowerCase();
+      const normalizedPart = part.trim();
+      console.log("normalizedPart", normalizedPart);
+
+      // Check if the part matches the role format (e.g., STT-xxxx-xxxxx)
+      if (/^(STT|PAT|SUP)-[a-z0-9]{8}-[A-Z]{6}$/.test(normalizedPart)) {
+        const extractedRole = normalizedPart.split("-")[0];
+        setRole(extractedRole);
+        setUserId(normalizedPart);
+        console.log("Matched role: ", extractedRole);
+      }
+
       let label = dict?.breadcrumb?.[normalizedPart] || normalizedPart;
 
       const isRole = ["student-therapist", "supervisor", "patient"].includes(
@@ -48,11 +54,38 @@ const Header = () => {
       return {
         label,
         href,
+        originalLabel: label, // Store the original label to revert to if needed
       };
     });
-
     setBreadcrumbItems(breadcrumbList);
   }, [pathname, dict]);
+
+  const fetchUser = async () => {
+    if (userId && role) {
+      const result = await getById(userId, role);
+      if (result.success) {
+        setUser(result.user);
+
+        // Update breadcrumb labels with user names
+        setBreadcrumbItems((prevBreadcrumbItems) =>
+          prevBreadcrumbItems.map((item) => {
+            if (item.originalLabel === userId) {
+              // If the part is an ID, update the label with the user's name
+              return { ...item, label: result.user.name || item.originalLabel };
+            }
+            return item;
+          })
+        );
+      }
+    }
+  };
+  useEffect(() => {
+    fetchUser();
+  }, [userId, role]); // Dependency on userId and role to re-fetch when these change
+
+  if (isLoading || !dict) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex justify-between items-center mb-6 px-8 mt-10">
