@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "../../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-calendars/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-inputs/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-lists/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-navigations/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-popups/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-react-schedule/styles/material.css";
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -84,4 +95,33 @@ body {
     justify-content: center;
     align-items: center;
   }
+}
+
+.e-calendar {
+  background-color: peachpuff;
+  border: 3px solid red;
+}
+
+.e-schedule .e-appointment-details {
+  padding: 0 !important;
+}
+
+.calendar-container {
+  padding: 0 0.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+h2:first-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px 0;
 }

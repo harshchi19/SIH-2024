@@ -1,122 +1,229 @@
 "use client";
 
-import React, { useState } from "react";
-import { ChevronLeft, ChevronRight, Clock, Plus } from "lucide-react";
-import EventCard from "@/components/EventCard.jsx";
-import RightSidebar from "@/components/RightSidebar";
-import { days, meetings } from "@/constants/meetings";
-import Header from "@/components/Header";
+import React, { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { format, startOfWeek } from "date-fns";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+import DayView from "@/components/calendar/DayView";
+import WeekView from "@/components/calendar/WeekView";
+import MonthView from "@/components/calendar/MonthView";
+import EventModal from "@/components/calendar/EventModal";
 import { useLanguage } from "@/context/LanguageContext";
+import { useRouter } from "next/navigation";
+import {
+  GET_USER_CALENDAR_EVENTS_ROUTE,
+  GET_USER_OBJ_ID,
+} from "@/utils/constants";
 
-export default function StudentCalendar() {
-  const { dict } = useLanguage();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentDate] = useState("July 17");
-  const [currentTime] = useState("7:10 PM IST");
+export default function AdvancedCalendar() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [viewMode, setViewMode] = useState("week");
+  const [events, setEvents] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [currentUser, setCurrentUser] = useState("");
+  const { dict, currentLang } = useLanguage();
+  const router = useRouter();
 
-  const day = {
-    Monday: dict?.calendar?.monday,
-    Tuesday: dict?.calendar?.tuesday,
-    Wednesday: dict?.calendar?.wednesday,
-    Thursday: dict?.calendar?.thursday,
-    Friday: dict?.calendar?.friday,
-    Saturday: dict?.calendar?.saturday,
+  useEffect(() => {
+    const userId = localStorage.getItem("user");
+
+    if (!userId) router.push(`/${currentLang}/sign-in`);
+
+    const getUserEvents = async () => {
+      const response = await fetch(
+        `${GET_USER_CALENDAR_EVENTS_ROUTE}/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data.userEvents);
+      }
+    };
+
+    const getUserObjId = async () => {
+      const response = await fetch(`${GET_USER_OBJ_ID}/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentUser(data.userId);
+      }
+    };
+
+    getUserEvents();
+    getUserObjId();
+  }, []);
+
+  const changeDate = (direction) => {
+    const newDate = new Date(currentDate);
+    const increment = direction === "next" ? 1 : -1;
+
+    switch (viewMode) {
+      case "day":
+        newDate.setDate(newDate.getDate() + increment);
+        break;
+      case "week":
+        const adjustedDate = startOfWeek(newDate, { weekStartsOn: 1 });
+        newDate.setDate(adjustedDate.getDate() + increment * 7);
+        break;
+      case "month":
+        newDate.setMonth(newDate.getMonth() + increment);
+        break;
+      default:
+        break;
+    }
+
+    setCurrentDate(newDate);
   };
-  const days = Object.entries(day);
 
-  const timeSlots = Array.from({ length: 8 }, (_, i) => {
-    const hour = 9 + i;
-    return `${hour.toString().padStart(2, "0")}:00 AM`;
-  });
+  const modes = ["day", "week", "month"];
+
+  const renderView = () => {
+    switch (viewMode) {
+      case "day":
+        return (
+          <DayView
+            currentDate={currentDate}
+            events={events}
+            setSelectedSlot={setSelectedSlot}
+            userId={currentUser}
+          />
+        );
+      case "week":
+        return (
+          <WeekView
+            currentDate={currentDate}
+            events={events}
+            setSelectedSlot={setSelectedSlot}
+            userId={currentUser}
+          />
+        );
+      case "month":
+        return (
+          <MonthView
+            currentDate={currentDate}
+            events={events}
+            setCurrentDate={setCurrentDate}
+            setViewMode={setViewMode}
+            userId={currentUser}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="flex h-screen">
-      {/* Main Content */}
-      <div className="w-full p-4 bg-white rounded-lg shadow">
-        {/* Calendar Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-4">
-            <select className="px-3 py-2 border rounded-md">
-              <option>{dict?.calendar?.today}</option>
-              <option>{currentDate}</option>
-            </select>
-            <div className="flex items-center space-x-2">
-              <Clock className="w-4 h-4" />
-              <span>{currentTime}</span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button className="p-2 hover:bg-gray-100 rounded-full">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
-              <ChevronRight className="w-5 h-5" />
-            </button>
-            <select className="px-3 py-2 border rounded-md">
-              <option>{dict?.calendar?.this_week}</option>
-            </select>
-            <button className="flex items-center px-3 py-2 space-x-2 text-white bg-green-500 rounded-md">
-              <Plus className="w-4 h-4" />
-              <span>{dict?.calendar?.add_event}</span>
-            </button>
-          </div>
-        </div>
+    <div className="bg-gray-50 px-8 pb-6 overflow-y-auto">
+      <Card className="shadow-xl">
+        <CardContent className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <TooltipProvider>
+              <div className="flex items-center space-x-5">
+                <div className="flex gap-x-3">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => changeDate("prev")}
+                        className="bg-gray-100"
+                      >
+                        <ChevronLeft className="h-6 w-6" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{dict?.calendar?.prev}</TooltipContent>
+                  </Tooltip>
 
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-0 border border-gray-200 rounded-lg">
-          {/* Time column */}
-          <div className="space-y-6 border-r border-gray-200 pr-2 bg-gray-50">
-            <div className="h-8 pt-2" /> {/* Empty header space */}
-            {timeSlots.map((time) => (
-              <div key={time} className="text-sm text-gray-500 px-2">
-                {time}
-              </div>
-            ))}
-          </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => changeDate("next")}
+                        className="bg-gray-100"
+                      >
+                        <ChevronRight className="h-6 w-6" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{dict?.calendar?.next}</TooltipContent>
+                  </Tooltip>
+                </div>
 
-          {/* Days columns */}
-          {days.map(([dayKey, dayValue], index) => (
-            <div
-              key={dayKey}
-              className="flex-1 border-r border-gray-200 last:border-r-0"
-            >
-              <div className="h-8 font-medium px-2 py-1 border-b border-gray-200 bg-gray-50">
-                {dayValue}
+                <h2 className="text-2xl font-bold">
+                  {viewMode === "day"
+                    ? format(currentDate, "MMMM d, yyyy")
+                    : viewMode === "week"
+                    ? format(currentDate, "MMMM, yyyy")
+                    : format(currentDate, "MMMM, yyyy")}
+                </h2>
               </div>
-              <div className="relative h-full">
-                {/* Hour grid lines */}
-                {timeSlots.map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="absolute w-full border-b border-gray-100"
-                    style={{ top: `${idx * 48}px`, height: "48px" }}
-                  />
+            </TooltipProvider>
+
+            <div className="flex items-center space-x-4">
+              <ToggleGroup
+                type="single"
+                value={viewMode}
+                onValueChange={(value) => value && setViewMode(value)}
+                className="border rounded-lg p-1"
+              >
+                {modes.map((mode) => (
+                  <ToggleGroupItem
+                    key={mode}
+                    value={mode}
+                    className={`capitalize px-4 py-2 rounded-md transition-colors 
+                      ${
+                        viewMode === mode
+                          ? "data-[state=on]:bg-green-500 data-[state=on]:text-white data-[state=on]:font-bold"
+                          : "text-green-500 font-semibold hover:bg-green-100"
+                      }`}
+                  >
+                    {mode}
+                  </ToggleGroupItem>
                 ))}
+              </ToggleGroup>
 
-                {/* Meetings */}
-                {meetings
-                  .filter((meeting) => meeting.day === dayKey)
-                  .map((meeting, idx) => (
-                    <div
-                      key={idx}
-                      className="absolute w-full"
-                      style={{
-                        top: `${(parseInt(meeting.time) - 9) * 48}px`,
-                        height: "40px",
-                      }}
-                    >
-                      <EventCard meeting={meeting} />
-                    </div>
-                  ))}
-              </div>
+              <Button
+                onClick={() => setSelectedSlot({ date: currentDate })}
+                className="flex items-center bg-white text-green-500 border-2 border-green-500 hover:border-green-500 hover:bg-green-500 hover:text-white rounded-md px-4 py-5"
+              >
+                <Plus className="h-7 w-auto" />
+                <span className="text-[1rem] leading-3 font-bold">
+                  {dict?.calendar?.add}
+                </span>
+              </Button>
             </div>
-          ))}
-        </div>
-      </div>
-      {/* Right Sidebar */}
-      <RightSidebar
-        isOpen={sidebarOpen}
-        onToggle={() => setSidebarOpen(!sidebarOpen)}
+          </div>
+
+          {renderView()}
+        </CardContent>
+      </Card>
+
+      <EventModal
+        selectedSlot={selectedSlot}
+        setSelectedSlot={setSelectedSlot}
+        events={events}
+        setEvents={setEvents}
       />
     </div>
   );
