@@ -34,7 +34,7 @@ const Header = () => {
       const normalizedPart = part.trim();
 
       // Check if the part matches the role format (e.g., STT-xxxx-xxxxx)
-      if (/^(STT|PAT|SUP)-[a-z0-9]{8}-[A-Z]{6}$/.test(normalizedPart)) {
+      if (/^(STT|PAT|SUP)-[a-z0-9]{8}-[A-Z0-9]{6}$/.test(normalizedPart)) {
         const extractedRole = normalizedPart.split("-")[0];
         setRole(extractedRole);
         setUserId(normalizedPart);

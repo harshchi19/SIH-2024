@@ -30,7 +30,7 @@ const StudentTherapistCard = (student) => {
   const specialization = extractTextFromString(student?.specialization);
 
   const handleProfile = () => {
-    navigate.push(`${pathname}/${student?.id}`);
+    navigate.push(`${pathname}/${student?.student_therapist_id}`);
   };
 
   return (
@@ -68,29 +68,37 @@ const StudentTherapistCard = (student) => {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-sm text-gray-500">Patient Progress</p>
-              <span className="text-sm font-medium">
-                {student?.patientsCount}/{student?.targetPatients}
-                {/* Adding from Patients data */}
-              </span>
-            </div>
-            <Progress value={progress} className="h-2" />
-            <div className="flex items-center justify-between mt-4">
-              <div className="flex items-center space-x-2">
-                <Users className="h-4 w-4 text-gray-400" />
-                <span className="text-sm text-gray-500">
-                  {student?.patientsCount} active patients
-                </span>
+            {student.patientsCount ? (
+              <>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm text-gray-500">Patient Progress</p>
+                  <span className="text-sm font-medium">
+                    {student?.patientsCount}/{student?.targetPatients}
+                    {/* Adding from Patients data */}
+                  </span>
+                </div>
+                <Progress value={progress} className="h-2" />
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center space-x-2">
+                    <Users className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-500">
+                      {student?.patientsCount} active patients
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-500">
+                      Next: {student?.nextSession}
+                      {/* Adding from therapy schema */}
+                    </span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="bg-secondary/30 p-1 rounded-md flex justify-center items-center">
+                <span>No Patients Assigned</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4 text-gray-400" />
-                <span className="text-sm text-gray-500">
-                  Next: {student?.nextSession}
-                  {/* Adding from therapy schema */}
-                </span>
-              </div>
-            </div>
+            )}
           </div>
 
           <div className="pt-4">
