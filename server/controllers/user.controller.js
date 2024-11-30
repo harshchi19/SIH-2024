@@ -118,9 +118,7 @@ export const loginUser = async (req, res, next) => {
         userId: decryptedData.student_therapist_id,
         userType: userType,
       });
-    }
-
-    else if (userType === "SUP") {
+    } else if (userType === "SUP") {
       const existingUser = await Supervisor.findOne({
         phone_hash: hashedPhone,
       }).select("supervisor_id password");
@@ -160,6 +158,7 @@ export const loginUser = async (req, res, next) => {
         message: "Login successful",
         userId: decryptedData.supervisor_id,
         userType: userType,
+        userName: decryptData.name,
       });
     }
   } catch (error) {

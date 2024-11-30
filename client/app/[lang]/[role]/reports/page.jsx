@@ -73,7 +73,7 @@ const StudentReportsPage = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Avatar className="h-6 w-6">
-                        <AvatarImage src="/api/placeholder/24/24" />
+                        {/* <AvatarImage src="/api/placeholder/24/24" /> */}
                         <AvatarFallback>
                           {report.therapist
                             .split(" ")

@@ -1,0 +1,37 @@
+API Documentation: Get Sidebar Data
+
+API Name: Get Sidebar Data
+
+Endpoint: GET /sidebar/get-sidebar-data/:userType
+Description: Retrieves sidebar data for the specified userType.
+
+Details:
+
+	1.	Request Parameter:
+	•	userType (String): Type of user (e.g., admin, user, therapist).
+	2.	Success Response:
+	•	Status: 200 OK
+	•	Response Body:
+
+{
+  "sidebarData": {
+    "sections": [
+      { "name": "Dashboard", "url": "/dashboard" },
+      { "name": "Settings", "url": "/settings" }
+    ]
+  }
+}
+
+
+	3.	Failure Responses:
+	•	Missing userType:
+	•	Status: 400 Bad Request
+	•	Message: "not-a-user"
+	•	Database Error:
+	•	Status: 400 Bad Request
+	•	Message: "Error fetching Sidebar Data"
+
+Notes:
+
+	•	Ensure Sidebar collection contains valid data.
+	•	Test for both success and error scenarios to confirm API behavior.

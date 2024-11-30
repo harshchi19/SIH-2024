@@ -8,12 +8,10 @@ import { usePathname, useRouter } from "next/navigation";
 
 const StudentTherapistCard = (student) => {
   // Calculate progress percentage
-  console.log("student", student);
   const targetPatients = 20;
   const progress = (student?.patientsCount / targetPatients) * 100;
   const navigate = useRouter();
   const pathname = usePathname();
-  console.log("currentPath", pathname);
 
   const extractTextFromString = (inputString) => {
     try {
