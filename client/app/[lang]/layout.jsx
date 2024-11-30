@@ -3,6 +3,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthContextProvider } from "@/context/AuthContext";
+import { registerLicense } from "@syncfusion/ej2-base";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,6 +23,9 @@ export const metadata = {
 
 export default async function RootLayout({ children, params }) {
   const { lang } = await params;
+  const syncfusionKey = process.env.NEXT_PUBLIC_SYNCFUSION_KEY;
+
+  if (syncfusionKey) registerLicense(syncfusionKey);
 
   return (
     <html lang={lang || "en"} suppressHydrationWarning>

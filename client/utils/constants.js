@@ -29,3 +29,9 @@ export const SUPERVISOR_ROUTE = `${HOST}/supervisor`;
 export const ADD_SUPERVISOR_ROUTE = `${SUPERVISOR_ROUTE}/add-supervisor`;
 export const GET_SUP_BY_ID_ROUTE = `${SUPERVISOR_ROUTE}/get-supervisor-by-id`;
 export const GET_ALL_SUP_ROUTE = `${SUPERVISOR_ROUTE}/get-all-supervisors`;
+
+// Calendar
+export const CALENDAR_ROUTE = `${HOST}/calendar`;
+export const ADD_CALENDAR_EVENT_ROUTE = `${CALENDAR_ROUTE}/add-calendar-event`;
+export const GET_USER_CALENDAR_EVENTS_ROUTE = `${CALENDAR_ROUTE}/get-calendar-events`;
+export const GET_USER_OBJ_ID = `${CALENDAR_ROUTE}/get-user-obj-id`

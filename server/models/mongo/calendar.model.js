@@ -11,12 +11,27 @@ const CalendarSchema = new Schema({
     userType: {
         type: String,
         required: true,
-        enum: ["patient", "student_therapist", "supervisor"],
+        enum: ["PAT", "STT", "SUP"],
     },
     messageType: {
         type: String,
         required: true,
         enum: ["reminder", "appointments"]
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    supervisor_id: {
+        type: Schema.Types.ObjectId,
+        ref: "supervisor"
+    },
+    patient_id: {
+        type: Schema.Types.ObjectId,
+        ref: "patient"
+    },
+    room_no: {
+        type: String,
     },
     selected_date: {
         type: Date,
@@ -30,23 +45,20 @@ const CalendarSchema = new Schema({
         type: String,
         required: true
     },
-    topic: {
+    description: {
         type: String,
         required: true
     },
-    description: {
+    color: {
         type: String,
+        required: true,
+        default: "#E48E58"
     },
     reminder: {
         type: String,
         required: true,
         default: true
     },
-    color: {
-        type: String,
-        required: true,
-        default: "#9D00FF"
-    }
 });
 
 export const Calendar = mongoose.model("calendar", CalendarSchema);

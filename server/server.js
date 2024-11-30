@@ -10,13 +10,14 @@ import userRouter from "./routes/user.route.js";
 import studentRouter from "./routes/student-therapist.route.js";
 import preTherapyRouter from "./routes/pre_therapy.route.js";
 import supervisorRouter from "./routes/supervisor.route.js";
+import calendarRouter from "./routes/calendar.route.js";
 
 dotenv.config();
 
 const app = express();
 
 const corsOptions = {
-  origin: "*",
+  origin: "http://localhost:3000",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -35,6 +36,7 @@ app.use("/auth", userRouter);
 app.use("/student-therapist", studentRouter);
 app.use("/pre_therapy", preTherapyRouter);
 app.use("/supervisor", supervisorRouter);
+app.use("/calendar", calendarRouter);
 
 const PORT = process.env.PORT || 4224;
 
