@@ -108,7 +108,7 @@ const RightSidebar = ({ isOpen, onToggle }) => {
               {appointments.map((appointment, index) => (
                 <div key={index} className="flex items-center gap-3 mb-4">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={`/api/placeholder/${32 + index}/32`} />
+                    {/* <AvatarImage src={`/api/placeholder/${32 + index}/32`} /> */}
                     <AvatarFallback>
                       {appointment.name
                         .split(" ")
@@ -137,7 +137,7 @@ const RightSidebar = ({ isOpen, onToggle }) => {
               {therapists.map((therapist, index) => (
                 <div key={index} className="flex items-center gap-3 mb-4">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={`/api/placeholder/${32 + index}/32`} />
+                    {/* <AvatarImage src={`/api/placeholder/${32 + index}/32`} /> */}
                     <AvatarFallback>
                       {therapist
                         .split(" ")

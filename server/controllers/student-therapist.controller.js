@@ -112,6 +112,10 @@ export const getStudentsById = async (req, res) => {
     );
 
     const decryptData = {
+      _id: studentTherapist._id,
+      student_therapist_id: Object.fromEntries(
+        studentTherapist.student_therapist_id
+      ),
       name: Object.fromEntries(studentTherapist.name),
       email: Object.fromEntries(studentTherapist.email),
       phone_no: Object.fromEntries(studentTherapist.phone_no),
@@ -133,7 +137,16 @@ export const getStudentsById = async (req, res) => {
       client_coursework: Object.fromEntries(studentTherapist.client_coursework),
     };
 
+    const decryptLocation = {
+      city: Object.fromEntries(studentTherapist.location.city),
+      state: Object.fromEntries(studentTherapist.location.state),
+      country: Object.fromEntries(studentTherapist.location.country),
+    };
+
+    const decryptedLocation = decryptSection(decryptLocation, key);
+
     const decryptedStudentTherapist = decryptSection(decryptData, key);
+    decryptedStudentTherapist["location"] = decryptedLocation;
 
     res.status(200).json(decryptedStudentTherapist);
   } catch (error) {
@@ -162,7 +175,10 @@ export const getAllStudents = async (req, res) => {
     const decryptedStudentTherapists = studentTherapists.map(
       (studentTherapist) => {
         const decryptData = {
-          id: Object.fromEntries(studentTherapist.student_therapist_id),
+          _id: studentTherapist._id,
+          student_therapist_id: Object.fromEntries(
+            studentTherapist.student_therapist_id
+          ),
           name: Object.fromEntries(studentTherapist.name),
           email: Object.fromEntries(studentTherapist.email),
           phone_no: Object.fromEntries(studentTherapist.phone_no),
@@ -188,7 +204,17 @@ export const getAllStudents = async (req, res) => {
           ),
         };
 
-        return decryptSection(decryptData, key);
+        const decryptedData = decryptSection(decryptData, key);
+        const decryptLocation = {
+          city: Object.fromEntries(studentTherapist.location.city),
+          state: Object.fromEntries(studentTherapist.location.state),
+          country: Object.fromEntries(studentTherapist.location.country),
+        };
+
+        const decryptedLocation = decryptSection(decryptLocation, key);
+
+        decryptedData["location"] = decryptedLocation;
+        return decryptedData;
       }
     );
 
@@ -197,4 +223,3 @@ export const getAllStudents = async (req, res) => {
     console.log(error);
   }
 };
-  

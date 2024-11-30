@@ -158,6 +158,7 @@ export const getSupervisorById = async (req, res, next) => {
     );
 
     const decryptData = {
+      _id: supervisor._id,
       supervisor_id: Object.fromEntries(supervisor.supervisor_id),
       name: Object.fromEntries(supervisor.name),
       email: Object.fromEntries(supervisor.email),
