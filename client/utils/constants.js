@@ -28,12 +28,13 @@ export const GET_ALL_STT_ROUTE = `${STUDENT_THERAPIST_ROUTE}/get-all-students`;
 export const SUPERVISOR_ROUTE = `${HOST}/supervisor`;
 export const ADD_SUPERVISOR_ROUTE = `${SUPERVISOR_ROUTE}/add-supervisor`;
 export const GET_SUP_BY_ID_ROUTE = `${SUPERVISOR_ROUTE}/get-supervisor-by-id`;
+export const GET_ALL_SUP_ROUTE = `${SUPERVISOR_ROUTE}/get-all-supervisors`;
 
 //Contacts
 export const CONTACTS_ROUTE = `${HOST}/contacts`;
 export const GET_CONTACTS = `${CONTACTS_ROUTE}/get-contacts`;
 
-export const GET_ALL_SUP_ROUTE = `${SUPERVISOR_ROUTE}/get-all-supervisors`;
+
 
 // Calendar
 export const CALENDAR_ROUTE = `${HOST}/calendar`;
