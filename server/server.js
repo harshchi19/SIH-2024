@@ -10,6 +10,8 @@ import userRouter from "./routes/user.route.js";
 import studentRouter from "./routes/student-therapist.route.js";
 import preTherapyRouter from "./routes/pre_therapy.route.js";
 import supervisorRouter from "./routes/supervisor.route.js";
+import contactRoutes from "./routes/contacts.route.js";
+import setupSocket from "./socket.js";
 import calendarRouter from "./routes/calendar.route.js";
 
 dotenv.config();
@@ -36,12 +38,14 @@ app.use("/auth", userRouter);
 app.use("/student-therapist", studentRouter);
 app.use("/pre_therapy", preTherapyRouter);
 app.use("/supervisor", supervisorRouter);
+app.use("/contacts", contactRoutes);
 app.use("/calendar", calendarRouter);
 
 const PORT = process.env.PORT || 4224;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server listening to PORT ${PORT}`);
+  setupSocket(server);
 });
 
 connectToDatabase();
