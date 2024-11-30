@@ -89,7 +89,9 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
   const removeFromList = (field, index) => {
     const fieldMap = {
-      language: "spoken_languages",
+      preferred_language1: "preferred_language1",
+      preferred_language2: "preferred_language2",
+      preferred_language3: "preferred_language3",
       specialization: "specialization",
       qualification: "qualifications",
       training: "training_and_education",
@@ -138,44 +140,68 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
         {/* Spoken Languages */}
         <div className="space-y-4">
-          <Label>Spoken Languages</Label>
-          <div className="flex gap-2">
-            <Input
-              value={newItem.language}
-              onChange={(e) =>
-                setNewItem((prev) => ({
-                  ...prev,
-                  language: e.target.value,
-                }))
-              }
-              placeholder="Enter language"
-              className="flex-grow"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addToList("language")}
-              className="whitespace-nowrap"
-            >
-              Add
-            </Button>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {(data.spoken_languages || []).map((lang, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1"
-              >
-                <span>{lang}</span>
-                <button
-                  onClick={() => removeFromList("language", index)}
-                  className="p-1 hover:bg-gray-200 rounded-full"
+          <Label>Preferred Languages (Up to 3)</Label>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="flex gap-2">
+              <Input
+                value={data.preferred_language1 || ""}
+                onChange={(e) =>
+                  updateData("preferred_language1", e.target.value)
+                }
+                placeholder="First Language"
+                className="w-full"
+              />
+              {data.preferred_language1 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-0 hover:bg-red-100"
+                  onClick={() => removeFromList("preferred_language1", 0)}
                 >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
+                  <X size={16} className="text-red-500" />
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                value={data.preferred_language2 || ""}
+                onChange={(e) =>
+                  updateData("preferred_language2", e.target.value)
+                }
+                placeholder="Second Language"
+                className="w-full"
+              />
+              {data.preferred_language2 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-0 hover:bg-red-100"
+                  onClick={() => removeFromList("preferred_language2", 0)}
+                >
+                  <X size={16} className="text-red-500" />
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                value={data.preferred_language3 || ""}
+                onChange={(e) =>
+                  updateData("preferred_language3", e.target.value)
+                }
+                placeholder="Third Language"
+                className="w-full"
+              />
+              {data.preferred_language3 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-0 hover:bg-red-100"
+                  onClick={() => removeFromList("preferred_language3", 0)}
+                >
+                  <X size={16} className="text-red-500" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -208,15 +234,17 @@ const ProfessionalDetails = ({ data, updateData }) => {
             {(data.specialization || []).map((spec, index) => (
               <div
                 key={index}
-                className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1"
+                className="flex items-center bg-gray-100 px-2 py-1 rounded-md"
               >
-                <span>{spec}</span>
-                <button
-                  onClick={() => removeFromList("specialization", index)}
-                  className="p-1 hover:bg-gray-200 rounded-full"
+                {spec}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="ml-2 p-0 hover:bg-red-100"
+                  onClick={() => removeFromList("qualification", index)}
                 >
-                  <X className="text-red-500" />
-                </button>
+                  <X size={16} className="text-red-500" />
+                </Button>
               </div>
             ))}
           </div>
