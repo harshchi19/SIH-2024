@@ -7,7 +7,8 @@ import ChatArea from "./ChatArea";
 import useSocket from "@/context/SocketContext";
 
 const MessagingInterface = () => {
-  const socket = useSocket();
+  const userId = localStorage.getItem("user");
+  const socket = useSocket(userId);
   const [selectedContact, setSelectedContact] = useState(null);
   const [conversations, setConversations] = useState([
     {

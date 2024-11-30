@@ -1,6 +1,6 @@
 "use client";
 
-import FloatingChatbot from "@/components/FloatingChatbot";
+import FloatingChatbot from "@/components/chatbot/FloatingChatbot";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
 import Sidebar from "@/components/Sidebar";

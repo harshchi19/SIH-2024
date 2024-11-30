@@ -291,5 +291,11 @@
     "postal_code_plchldr": "400004",
     "country": "Country",
     "country_plchldr": "India"
+  },
+  "chatbot": {
+    "title": "Ask your doubts to Vani.ai",
+    "desc": "Type a sentence or use your voice to speak, and Vani.ai will respond.",
+    "ask": "Ask",
+    "placeholder": "What is the treatment for Lisp disorder?"
   }
 }
