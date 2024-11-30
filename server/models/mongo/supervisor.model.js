@@ -43,6 +43,11 @@ const supervisorSchema = new Schema({
         required: true,
         enum: ['M', 'F', 'O']
     },
+    department: {
+        type: Map,
+        of: String,
+        required: true
+    },
     preferred_language1: {
         type: Map,
         of: String,

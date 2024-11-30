@@ -20,6 +20,7 @@ export const onboardSupervisor = async (req, res, next) => {
     email,
     date_of_birth,
     sex,
+    department,
     preferred_language1,
     preferred_language2,
     preferred_language3,
@@ -34,6 +35,7 @@ export const onboardSupervisor = async (req, res, next) => {
         email,
         date_of_birth,
         sex,
+        department,
         preferred_language1,
         preferred_language2,
         preferred_language3,
@@ -67,8 +69,8 @@ export const onboardSupervisor = async (req, res, next) => {
     const newSupervisorId = generateEncryptedUniqueId("sup");
     const hashedSupervisorId = generateHashedData(newSupervisorId);
 
-    const pdfFileName = `${newSupervisorId}_supervisor_details.pdf`;
-    await generatePdf(dataForPdf, pdfFileName);
+    // const pdfFileName = `${newSupervisorId}_supervisor_details.pdf`;
+    // await generatePdf(dataForPdf, pdfFileName);
 
     const dob = new Date(date_of_birth);
 
@@ -99,6 +101,7 @@ export const onboardSupervisor = async (req, res, next) => {
       date_of_birth: date_of_birth,
       age: age,
       sex: sex,
+      department: department,
       preferred_language1: preferred_language1,
       preferred_language2: preferred_language2,
       preferred_language3: preferred_language3,
@@ -115,6 +118,7 @@ export const onboardSupervisor = async (req, res, next) => {
       date_of_birth: encryptedBasicDetails.date_of_birth,
       age: encryptedBasicDetails.age,
       sex: encryptedBasicDetails.sex,
+      department: encryptedBasicDetails.department,
       preferred_language1: encryptedBasicDetails.preferred_language1,
       preferred_language2: encryptedBasicDetails.preferred_language2,
       preferred_language3: encryptedBasicDetails.preferred_language3,
@@ -166,6 +170,7 @@ export const getSupervisorById = async (req, res, next) => {
       age: Object.fromEntries(supervisor.age),
       date_of_birth: Object.fromEntries(supervisor.date_of_birth),
       sex: Object.fromEntries(supervisor.sex),
+      department: Object.fromEntries(supervisor.department),
       preferred_language1: Object.fromEntries(supervisor.preferred_language1),
       preferred_language2: Object.fromEntries(supervisor.preferred_language2),
       preferred_language3: Object.fromEntries(supervisor.preferred_language3),
@@ -209,6 +214,7 @@ export const getAllSupervisors = async (req, res, next) => {
         age: Object.fromEntries(supervisor.age),
         date_of_birth: Object.fromEntries(supervisor.date_of_birth),
         sex: Object.fromEntries(supervisor.sex),
+        department: Object.fromEntries(supervisor.department),
         preferred_language1: Object.fromEntries(supervisor.preferred_language1),
         preferred_language2: Object.fromEntries(supervisor.preferred_language2),
         preferred_language3: Object.fromEntries(supervisor.preferred_language3),
