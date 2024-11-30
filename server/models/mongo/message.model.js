@@ -4,12 +4,10 @@ const { Schema } = mongoose;
 const messageSchema = new Schema({
   sender_id: {
     type: Schema.Types.ObjectId,
-
     required: true,
   },
   recipient_id: {
     type: Schema.Types.ObjectId,
-
     required: true,
   },
   senderType: {
@@ -36,4 +34,4 @@ const messageSchema = new Schema({
   },
 });
 
-export const Messages = mongoose.model("Message", MessagesSchema);
+export const Messages = mongoose.model("Message", messageSchema);
