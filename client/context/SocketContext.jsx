@@ -3,12 +3,17 @@ import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import { HOST } from "@/utils/constants";
 
-const useSocket = () => {
+const useSocket = (userId) => {
   const socket = useRef(null);
 
   useEffect(() => {
+    if (!userId) {
+      console.error("Usr ID is required to establish socket connection");
+      return;
+    }
     console.log(HOST);
     socket.current = io(HOST, {
+      query: { userId },
       //   withCredentials: true,
     });
 
@@ -36,7 +41,7 @@ const useSocket = () => {
       socket.current.disconnect();
       console.log("Socket connection closed");
     };
-  }, []);
+  }, [userId]);
 
   return socket.current;
 };
