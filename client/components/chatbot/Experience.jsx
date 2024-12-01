@@ -1,5 +1,5 @@
 import {
-  CameraControls,
+  // CameraControls,
   Environment,
   Gltf,
   Html,
@@ -12,29 +12,31 @@ import { Suspense, useState } from "react";
 import { TypingBox } from "./TypingBox";
 import MessageBox from "./MessageBox";
 import { useLanguage } from "@/context/LanguageContext";
+import { thinking } from "@/assets";
+import Image from "next/image";
 
-const CameraManager = () => {
-  return (
-    <CameraControls
-      minZoom={1}
-      maxZoom={2}
-      polarRotateSpeed={-0.3}
-      azimuthRotateSpeed={-0.3}
-      mouseButtons={{
-        left: 1,
-        wheel: 16,
-      }}
-      touches={{
-        one: 32,
-        two: 512,
-      }}
-      minAzimuthAngle={degToRad(-10)}
-      maxAzimuthAngle={degToRad(10)}
-      minPolarAngle={degToRad(90)}
-      maxPolarAngle={degToRad(100)}
-    />
-  );
-};
+// const CameraManager = () => {
+//   return (
+//     <CameraControls
+//       minZoom={1}
+//       maxZoom={2}
+//       polarRotateSpeed={-0.3}
+//       azimuthRotateSpeed={-0.3}
+//       mouseButtons={{
+//         left: 1,
+//         wheel: 16,
+//       }}
+//       touches={{
+//         one: 32,
+//         two: 512,
+//       }}
+//       minAzimuthAngle={degToRad(-10)}
+//       maxAzimuthAngle={degToRad(10)}
+//       minPolarAngle={degToRad(90)}
+//       maxPolarAngle={degToRad(100)}
+//     />
+//   );
+// };
 
 const Loader = ({ progress }) => {
   const { dict } = useLanguage();
@@ -56,6 +58,7 @@ const Loader = ({ progress }) => {
 
 const Experience = () => {
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const { progress } = useProgress();
 
   return (
@@ -65,14 +68,27 @@ const Experience = () => {
           Math.round(progress) !== 100 ? "hidden" : ""
         }`}
       >
-        <TypingBox setMessage={setMessage} />
+        <TypingBox
+          setMessage={setMessage}
+          loading={loading}
+          setLoading={setLoading}
+        />
       </div>
       <div
-        className={`z-10 md:justify-center absolute top-10 right-12 flex gap-3 flex-wrap justify-stretch ${
+        className={`z-10 md:justify-center absolute top-10 right-12 ${
           Math.round(progress) !== 100 ? "hidden" : ""
         }`}
       >
         <MessageBox message={message} />
+      </div>
+      <div
+        className={`z-10 md:justify-center absolute top-3 left-48 flex flex-wrap justify-stretch ${
+          Math.round(progress) !== 100 ? "hidden" : ""
+        }`}
+      >
+        {loading && (
+          <Image src={thinking} alt="thinking" className="h-10 w-auto" />
+        )}
       </div>
       <Canvas
         camera={{
@@ -92,7 +108,7 @@ const Experience = () => {
             scale={2}
           />
           <Doctor
-            position={[-0.5, 0.89, 0.55]}
+            position={[-0.55, 0.89, 0.55]}
             scale={0.5}
             rotation-x={degToRad(5)}
             rotation-y={degToRad(20)}

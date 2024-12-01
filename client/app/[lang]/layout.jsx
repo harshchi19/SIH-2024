@@ -23,9 +23,6 @@ export const metadata = {
 
 export default async function RootLayout({ children, params }) {
   const { lang } = await params;
-  const syncfusionKey = process.env.NEXT_PUBLIC_SYNCFUSION_KEY;
-
-  if (syncfusionKey) registerLicense(syncfusionKey);
 
   return (
     <html lang={lang || "en"} suppressHydrationWarning>
@@ -35,7 +32,7 @@ export default async function RootLayout({ children, params }) {
         <AuthContextProvider>
           <LanguageProvider initialLang={lang}>
             {children}
-            <Toaster />
+            <Toaster position="top-right" />
           </LanguageProvider>
         </AuthContextProvider>
       </body>

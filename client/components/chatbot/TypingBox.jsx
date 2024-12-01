@@ -2,10 +2,10 @@ import { useLanguage } from "@/context/LanguageContext";
 import { Mic, AudioLines } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { VANI_AI_ROUTE } from "@/utils/ai.constants";
+import { toast } from "@/hooks/use-toast";
 
-export const TypingBox = ({ setMessage }) => {
+export const TypingBox = ({ setMessage, loading, setLoading }) => {
   const [question, setQuestion] = useState("");
-  const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const recognition = useRef(null);
   const audioRef = useRef(null);
@@ -45,9 +45,18 @@ export const TypingBox = ({ setMessage }) => {
   };
 
   const handleAsk = async () => {
-    setLoading(true);
+    if (question.trim() === "") {
+      toast({
+        variant: "destructive",
+        title: dict?.chatbot?.empty,
+        description: dict?.chatbot?.empty_desc,
+      });
+      return;
+    }
 
     try {
+      setLoading(true);
+
       const formData = new FormData();
       formData.append("message", question.trim());
 
@@ -101,9 +110,9 @@ export const TypingBox = ({ setMessage }) => {
 
       {loading ? (
         <div className="flex justify-center items-center">
-          <span className="relative flex h-4 w-4">
+          <span className="relative flex h-6 w-6">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-white"></span>
+            <span className="relative inline-flex rounded-full h-6 w-6 bg-white"></span>
           </span>
         </div>
       ) : (
