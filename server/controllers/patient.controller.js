@@ -62,9 +62,9 @@ export const onboardPatient = async (req, res, next) => {
     const iv = generateKeyAndIV();
 
     const newpatient_id = generateEncryptedUniqueId("pat");
-    basicDetails["patient_id"] = newPatientId;
+    basicDetails["patient_id"] = newpatient_id;
 
-    const pdfFileName = `${newPatientId}_patient_details.pdf`;
+    const pdfFileName = `${newpatient_id}_patient_details.pdf`;
     await generatePdf(dataForPdf, pdfFileName);
 
     const newCaseNo = generateUniqueCaseNo();
@@ -91,7 +91,7 @@ export const onboardPatient = async (req, res, next) => {
     }
 
     const hashedCaseNo = generateHashedData(newCaseNo);
-    const hashedPatientId = generateHashedData(newPatientId);
+    const hashedPatientId = generateHashedData(newpatient_id);
 
     const encryptedBasicDetails = encryptSection(basicDetails, key, iv);
     const encryptedAddressDetails = encryptSection(addressDetails, key, iv);
@@ -157,7 +157,7 @@ export const onboardPatient = async (req, res, next) => {
 
     return res
       .status(200)
-      .json({ patientId: newPatientId, message: "pat-onb-suc" });
+      .json({ patientId: newpatient_id, message: "pat-onb-suc" });
   } catch (error) {
     console.error("Error in onboardPatient: ", error);
     return res.status(400).json({ message: "int-ser-err" });
@@ -353,7 +353,7 @@ export const getPatientById = async (req, res, next) => {
   }
 };
 
-export const getPatients = async (req, res, next) => {
+export const getAllPatients = async (req, res, next) => {
   try {
     const findEncryptionKey = await EncryptionKey.findOne({
       collectionName: "patients",
