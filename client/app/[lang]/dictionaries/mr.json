@@ -3,6 +3,13 @@
     "nav_login": "लॉगिन वर जा",
     "read": "आमचे दस्तऐवज वाचा"
   },
+  "colors": {
+    "red": "लाल",
+    "yellow": "पिवळा",
+    "purple": "जांभळा",
+    "green": "हिरवा",
+    "blue": "निळा"
+  },
   "breadcrumb": {
     "patient": "पेशंट",
     "student-therapists": "विद्यार्थी थेरपिस्ट",
@@ -24,6 +31,7 @@
   },
   "success": {
     "login_succ": "लॉगिन यशस्वी. ",
+    "sup_onb_suc": "तुमची नोंदणी झाली आहे!",
     "user-alr-ext": "वापरकर्ता आधीच अस्तित्वात आहे!"
   },
   "login": {
@@ -52,7 +60,12 @@
     "password": "पासवर्ड",
     "pat_pchldr_pass": "abc@123",
     "go_back": "परत जा",
-    "forgot_pass": "पासवर्ड विसरलात?"
+    "reg_sup": "नोंदणी करा",
+    "want_reg": "पर्यवेक्षक म्हणून स्वतःची नोंदणी करू इच्छिता?",
+    "forgot_pass": "पासवर्ड विसरलात?",
+    "reg_sup_head": "पर्यवेक्षक म्हणून स्वतःची नोंदणी करा",
+    "reg_sup_desc": "कृपया तपशील भरा आणि प्रशासनाच्या मंजुरीची प्रतीक्षा करा",
+    "sup_name": "पर्यवेक्षकाचे नाव"
   },
   "addPatient": {
     "basic": "मूलभूत तपशील",
@@ -73,10 +86,12 @@
     "email_plchldr": "abc123@example.com",
     "date_of_birth": "जन्मतारीख",
     "dob_plchldr": "एक तारीख निवडा",
+    "date_of_assg": "असाइनमेंटची तारीख",
+    "doa_plchldr": "असाइनमेंटची तारीख",
     "sex": "लिंग",
     "sex_plchldr": "कृपया रुग्णाचे लिंग निवडा",
     "pref_lang": "पसंतीची भाषा",
-    "pref_lang_pchldr": "इंग्रजी / हिंदी / मराठी / उर्दू / बंगाली / गुजराती / ...",
+    "pref_lang_plchldr": "इंग्रजी / हिंदी / मराठी / उर्दू / बंगाली / गुजराती / ...",
     "pass_info": "कृपया रुग्णाला या क्षेत्रात येऊ द्या",
     "sel_sup": "रुग्णासाठी पर्यवेक्षक निवडा",
     "sel_sup_plchldr": "पर्यवेक्षक सूची उघडण्यासाठी क्लिक करा",
@@ -126,7 +141,7 @@
     "first_word": "पहिला शब्द",
     "first_word_plchldr": "रुग्णाचा पहिला शब्द प्रविष्ट करा",
     "first_sentence": "पहिले वाक्य",
-    "first_sentence_plchldr": "पेशंटचे पहिले वाक्य एंटर करा",
+    "first_sentence_plchldr": "रुग्णाचे पहिले वाक्य प्रविष्ट करा",
     "first_sentence_info": "",
     "expression_level": "अभिव्यक्ती पातळी",
     "expression_level_plchldr": "चिन्हे आणि जेश्चर",
@@ -194,16 +209,40 @@
     "recent_appointments": "अलीकडील भेटी"
   },
   "calendar": {
+    "add": "तयार करा",
     "today": "आज",
     "this_week": "या आठवड्यात",
     "add_event": "कार्यक्रम जोडा",
-    "monday": "सोमवार",
-    "tuesday": "मंगळवार",
-    "wednesday": "बुधवार",
-    "thursday": "गुरुवार",
-    "friday": "शुक्रवार",
-    "saturday": "शनिवार",
-    "sunday": "रविवार"
+    "Monday": "सोमवार",
+    "Tuesday": "मंगळवार",
+    "Wednesday": "बुधवार",
+    "Thursday": "गुरुवार",
+    "Friday": "शुक्रवार",
+    "Saturday": "शनिवार",
+    "Sunday": "रविवार",
+    "next": "पुढे",
+    "prev": "मागील",
+    "cancel": "रद्द करा",
+    "title_app": "नवीन अपॉइंटमेंट जोडा",
+    "title_rem": "नवीन स्मरणपत्र जोडा",
+    "appointment": "भेटी",
+    "reminder": "स्मरणपत्रे",
+    "app_title": "नियुक्तीचे शीर्षक",
+    "supervisor": "पर्यवेक्षक",
+    "patient": "पेशंट",
+    "room_no": "खोली क्र.",
+    "date": "तारीख",
+    "desc": "वर्णन",
+    "start_time": "प्रारंभ वेळ",
+    "end_time": "समाप्ती वेळ",
+    "event_color": "भेटीचा रंग",
+    "rem_title": "उर्वरित शीर्षक",
+    "time": "वेळ",
+    "sel_sup": "पर्यवेक्षक निवडा",
+    "sel_sup_plchldr": "पर्यवेक्षक निवडा",
+    "edit": "संपादित करा",
+    "no_sup": "पर्यवेक्षक उपलब्ध नाहीत",
+    "editEvent": "इव्हेंट संपादित करा"
   },
   "reports": {
     "report_id": "रिपोर्ट आयडी",
@@ -253,5 +292,12 @@
     "postal_code_plchldr": "४००००४",
     "country": "देश",
     "country_plchldr": "भारत"
+  },
+  "chatbot": {
+    "title": "vani.ai ला तुमच्या शंका विचारा",
+    "desc": "एक वाक्य टाइप करा किंवा बोलण्यासाठी तुमचा आवाज वापरा आणि vani.ai प्रतिसाद देईल.",
+    "ask": "विचारा",
+    "placeholder": "लिस्प डिसऑर्डरवर उपचार काय आहे?",
+    "loading": "लोड करत आहे..."
   }
 }

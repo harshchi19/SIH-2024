@@ -8,8 +8,10 @@ import {
 import { Canvas } from "@react-three/fiber";
 import Doctor from "./Doctor";
 import { degToRad } from "three/src/math/MathUtils";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { TypingBox } from "./TypingBox";
+import MessageBox from "./MessageBox";
+import { useLanguage } from "@/context/LanguageContext";
 
 const CameraManager = () => {
   return (
@@ -34,13 +36,18 @@ const CameraManager = () => {
   );
 };
 
-const Loader = () => {
-  const { progress } = useProgress();
-
+const Loader = ({ progress }) => {
+  const { dict } = useLanguage();
   return (
     <Html center>
-      <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow-md p-4">
-        <p className="text-xl font-semibold">Loading...</p>
+      <div className="flex flex-col items-center justify-center p-4 space-y-4 w-72">
+        <p className="text-xl font-semibold">{dict?.chatbot?.loading}</p>
+        <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div
+            className="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
         <p className="text-sm text-gray-500">{Math.round(progress)}%</p>
       </div>
     </Html>
@@ -48,10 +55,24 @@ const Loader = () => {
 };
 
 const Experience = () => {
+  const [message, setMessage] = useState("");
+  const { progress } = useProgress();
+
   return (
     <div className="h-full w-full relative overflow-hidden">
-      <div className="z-10 md:justify-center absolute bottom-4 left-4 right-4 flex gap-3 flex-wrap justify-stretch">
-        <TypingBox />
+      <div
+        className={`z-10 md:justify-center absolute bottom-4 left-4 right-4 flex gap-3 flex-wrap justify-stretch ${
+          Math.round(progress) !== 100 ? "hidden" : ""
+        }`}
+      >
+        <TypingBox setMessage={setMessage} />
+      </div>
+      <div
+        className={`z-10 md:justify-center absolute top-10 right-12 flex gap-3 flex-wrap justify-stretch ${
+          Math.round(progress) !== 100 ? "hidden" : ""
+        }`}
+      >
+        <MessageBox message={message} />
       </div>
       <Canvas
         camera={{
@@ -63,21 +84,22 @@ const Experience = () => {
         <Environment preset="sunset" />
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} intensity={0.5} />
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<Loader progress={progress} />}>
           <Gltf
             src="/models/doctors_office.glb"
-            position={[0, -0.6, 1]}
-            rotation-y={1}
+            position={[0.3, -0.6, 1]}
+            rotation-y={-29.854}
             scale={2}
           />
           <Doctor
-            position={[-0, 0.89, 0.5]}
+            position={[-0.5, 0.89, 0.55]}
             scale={0.5}
             rotation-x={degToRad(5)}
+            rotation-y={degToRad(20)}
             rotation-z={degToRad(-1)}
           />
         </Suspense>
-        <CameraManager />
+        {/* <CameraManager /> */}
       </Canvas>
     </div>
   );

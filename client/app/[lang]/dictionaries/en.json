@@ -241,7 +241,9 @@
     "time": "Time",
     "sel_sup": "Select the Supervisor",
     "sel_sup_plchldr": "Select Supervisor",
-    "edit": "Edit"
+    "edit": "Edit",
+    "no_sup": "No Supervisors available",
+    "editEvent": "Edit Event"
   },
   "reports": {
     "report_id": "Report Id",
@@ -293,9 +295,10 @@
     "country_plchldr": "India"
   },
   "chatbot": {
-    "title": "Ask your doubts to Vani.ai",
-    "desc": "Type a sentence or use your voice to speak, and Vani.ai will respond.",
+    "title": "Ask your doubts to vani.ai",
+    "desc": "Type a sentence or use your voice to speak, and vani.ai will respond.",
     "ask": "Ask",
-    "placeholder": "What is the treatment for Lisp disorder?"
+    "placeholder": "What is the treatment for Lisp disorder?",
+    "loading": "Loading..."
   }
 }

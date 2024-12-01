@@ -53,6 +53,8 @@
     "three": "^0.171.0",
     "uuid": "^11.0.3",
     "zustand": "4.5.2",
+    "use-debounce": "^10.0.4",
+    "uuid": "^11.0.3",
     "use-debounce": "^10.0.4"
   },
   "devDependencies": {

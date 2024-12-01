@@ -125,3 +125,21 @@ h2:first-child {
   align-items: center;
   margin: 5px 0;
 }
+
+/* Message Box Scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #e5e5e5;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

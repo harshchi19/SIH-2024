@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import EventInfoPopover from "./EventInfoPopup";
-import { Edit2 } from "lucide-react";
 
 const MonthView = ({
   currentDate,
@@ -10,6 +9,7 @@ const MonthView = ({
   setCurrentDate,
   setViewMode,
   userId,
+  setEditEvent,
 }) => {
   const [hoveredEventId, setHoveredEventId] = useState(null);
   const startOfCurrent = startOfMonth(currentDate);
@@ -85,7 +85,7 @@ const MonthView = ({
                     className="absolute top-1 right-1 text-white text-xs rounded px-1"
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("Hello");
+                      setEditEvent(event);
                     }}
                   >
                     <h5 className="text-xs text-gray-300 font-semibold">

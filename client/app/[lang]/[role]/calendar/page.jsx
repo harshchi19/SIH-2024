@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { format, startOfWeek } from "date-fns";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -13,7 +12,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 import DayView from "@/components/calendar/DayView";
 import WeekView from "@/components/calendar/WeekView";
 import MonthView from "@/components/calendar/MonthView";
@@ -23,6 +21,7 @@ import { useRouter } from "next/navigation";
 import {
   GET_USER_CALENDAR_EVENTS_ROUTE,
   GET_USER_OBJ_ID,
+  UPDATE_EVENT_BY_ID,
 } from "@/utils/constants";
 
 export default function AdvancedCalendar() {
@@ -31,8 +30,22 @@ export default function AdvancedCalendar() {
   const [events, setEvents] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [currentUser, setCurrentUser] = useState("");
+  const [editEvent, setEditEvent] = useState([]);
   const { dict, currentLang } = useLanguage();
   const router = useRouter();
+  const [data, setData] = useState({
+    _id: "",
+    title: "",
+    supervisor: "",
+    patient: "",
+    roomNo: "",
+    date: "",
+    startTime: "",
+    endTime: "",
+    description: "",
+    color: "#0000FF",
+    activeTab: "appointments",
+  });
 
   useEffect(() => {
     const userId = localStorage.getItem("user");
@@ -98,6 +111,21 @@ export default function AdvancedCalendar() {
 
   const modes = ["day", "week", "month"];
 
+  const handleEditEvent = async () => {
+    const response = await fetch(UPDATE_EVENT_BY_ID, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+    }
+  };
+
   const renderView = () => {
     switch (viewMode) {
       case "day":
@@ -107,6 +135,8 @@ export default function AdvancedCalendar() {
             events={events}
             setSelectedSlot={setSelectedSlot}
             userId={currentUser}
+            setEditEvent={setEditEvent}
+            setData={setData}
           />
         );
       case "week":
@@ -116,6 +146,7 @@ export default function AdvancedCalendar() {
             events={events}
             setSelectedSlot={setSelectedSlot}
             userId={currentUser}
+            setEditEvent={setEditEvent}
           />
         );
       case "month":
@@ -126,6 +157,7 @@ export default function AdvancedCalendar() {
             setCurrentDate={setCurrentDate}
             setViewMode={setViewMode}
             userId={currentUser}
+            setEditEvent={setEditEvent}
           />
         );
       default:
@@ -224,6 +256,10 @@ export default function AdvancedCalendar() {
         setSelectedSlot={setSelectedSlot}
         events={events}
         setEvents={setEvents}
+        editEvent={editEvent}
+        handleEditEvent={handleEditEvent}
+        data={data}
+        setData={setData}
       />
     </div>
   );
