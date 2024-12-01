@@ -89,6 +89,7 @@ export const addCalendarEvent = async (req, res, next) => {
 
 export const getAllCalendarEvents = async (req, res, next) => {
     const { userId } = req.params;
+
     try {
         const userType = userId.split('-')[0];
 
@@ -141,6 +142,69 @@ export const getUserObjId = async (req, res, next) => {
         return res.status(200).json({ userId: currentUser._id });
     } catch (error) {
         console.error(`Error in getUserObjId: ${error}`);
+        return res.status(500).json({ message: "int-ser-err" });
+    }
+}
+
+export const updateEventById = async (req, res, next) => {
+    const { _id, title, supervisor, patient, roomNo, date, startTime, endTime, color, description, } = req.body;
+    console.log(req.body)
+
+    try {
+        if (!_id) {
+            return res.status(400).json({ error: "event-id-reqd" });
+        }
+
+        const [startHour, startMinute] = startTime.split(":").map(Number);
+        if (isNaN(startHour) || isNaN(startMinute)) {
+            return res.status(400).json({ message: "Invalid start time format." });
+        }
+
+        const startDateTime = new Date(date);
+        startDateTime.setHours(startHour, startMinute);
+
+        let endDateTime;
+        if (endTime) {
+            const [endHour, endMinute] = endTime.split(":").map(Number);
+            if (isNaN(endHour) || isNaN(endMinute)) {
+                return res.status(400).json({ message: "Invalid end time format." });
+            }
+            endDateTime = new Date(date);
+            endDateTime.setHours(endHour, endMinute);
+        } else {
+            endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
+        }
+
+        if (endDateTime <= startDateTime) {
+            return res.status(400).json({ message: "End time must be after start time." });
+        }
+
+        const updatedEvent = await Calendar.findByIdAndUpdate(
+            _id,
+            {
+                title,
+                supervisor_id: supervisor,
+                patient_id: patient,
+                room_no: roomNo,
+                selected_date: date,
+                start_time: startDateTime,
+                end_time: endDateTime,
+                description,
+                color,
+            },
+            { new: true }
+        );
+
+        if (!updatedEvent) {
+            return res.status(404).json({ error: "Event not found." });
+        }
+
+        res.status(200).json({
+            message: "Event updated successfully.",
+            event: updatedEvent,
+        });
+    } catch (error) {
+        console.error(`Error in updateEventById: ${error}`);
         return res.status(500).json({ message: "int-ser-err" });
     }
 }

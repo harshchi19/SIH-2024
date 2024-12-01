@@ -20,24 +20,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from "../ui/textarea";
 
-const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
-  const [data, setData] = useState({
-    title: "",
-    supervisor: "",
-    patient: "",
-    roomNo: "",
-    date: "",
-    startTime: "",
-    endTime: "",
-    description: "",
-    color: "#0000FF",
-    activeTab: "appointments",
-  });
+const EventModal = ({
+  selectedSlot,
+  setSelectedSlot,
+  events,
+  setEvents,
+  editEvent,
+  handleEditEvent,
+  data,
+  setData,
+}) => {
   const [supervisorData, setSupervisorData] = useState([]);
   const { dict } = useLanguage();
 
   useEffect(() => {
-    const supervisorData = async () => {
+    const getSupervisorData = async () => {
       const response = await fetch(GET_ALL_SUP_ROUTE, {
         method: "GET",
         headers: {
@@ -51,7 +48,7 @@ const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
       }
     };
 
-    supervisorData();
+    getSupervisorData();
   }, []);
 
   if (!selectedSlot) return null;
@@ -112,6 +109,16 @@ const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
     closeModal();
   };
 
+  const formattedDate = selectedSlot.date
+    ? new Date(selectedSlot.date).toISOString().slice(0, 10)
+    : "";
+  let startTime, endTime;
+  if (selectedSlot.time) {
+    [startTime, endTime] = selectedSlot?.time.split(" - ").map((t) => t.trim());
+  }
+
+  console.log(data);
+
   return (
     <Dialog open={!!selectedSlot} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-4/5">
@@ -164,10 +171,7 @@ const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
               </div>
 
               <div className="space-y-1 w-full">
-                <Label
-                  htmlFor="preferred_language"
-                  className="text-gray-700 text-sm"
-                >
+                <Label htmlFor="supervisor" className="text-gray-700 text-sm">
                   {dict?.calendar?.sel_sup}
                 </Label>
                 <DropdownMenu>
@@ -192,7 +196,7 @@ const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
                       ))
                     ) : (
                       <DropdownMenuItem disabled>
-                        No supervisors available
+                        {dict?.calendar?.no_sup}
                       </DropdownMenuItem>
                     )}
                   </DropdownMenuContent>
@@ -231,7 +235,7 @@ const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
                   id="date"
                   name="date"
                   type="date"
-                  value={data.date}
+                  value={data.date || formattedDate}
                   onChange={handleInputChange}
                   required
                 />
@@ -245,9 +249,11 @@ const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
                     id="startTime"
                     name="startTime"
                     type="time"
-                    value={data.startTime}
+                    value={data.startTime || startTime}
                     onChange={handleInputChange}
                     required
+                    min="08:00"
+                    max="20:00"
                   />
                 </div>
                 <div className="grid w-full items-center gap-2">
@@ -256,9 +262,11 @@ const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
                     id="endTime"
                     name="endTime"
                     type="time"
-                    value={data.endTime}
+                    value={data.endTime || endTime}
                     onChange={handleInputChange}
                     required
+                    min="08:00"
+                    max="20:00"
                   />
                 </div>
               </div>
@@ -375,17 +383,31 @@ const EventModal = ({ selectedSlot, setSelectedSlot, events, setEvents }) => {
           >
             {dict?.calendar?.cancel || "Cancel"}
           </Button>
-          <Button
-            form={
-              data.activeTab === "appointments"
-                ? "appointmentsForm"
-                : "remindersForm"
-            }
-            className="bg-green-400 hover:bg-green-600"
-            onClick={handleFormSubmit}
-          >
-            {dict?.calendar?.addEvent || "Add Event"}
-          </Button>
+          {editEvent ? (
+            <Button
+              form={
+                data.activeTab === "appointments"
+                  ? "appointmentsForm"
+                  : "remindersForm"
+              }
+              className="bg-green-400 hover:bg-green-600"
+              onClick={handleEditEvent}
+            >
+              {dict?.calendar?.editEvent || "Edit Event"}
+            </Button>
+          ) : (
+            <Button
+              form={
+                data.activeTab === "appointments"
+                  ? "appointmentsForm"
+                  : "remindersForm"
+              }
+              className="bg-green-400 hover:bg-green-600"
+              onClick={handleFormSubmit}
+            >
+              {dict?.calendar?.addEvent || "Add Event"}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

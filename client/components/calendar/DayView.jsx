@@ -2,7 +2,14 @@ import { useState } from "react";
 import EventInfoPopup from "./EventInfoPopup";
 import { useLanguage } from "@/context/LanguageContext";
 
-const DayView = ({ currentDate, events, setSelectedSlot, userId }) => {
+const DayView = ({
+  currentDate,
+  events,
+  setSelectedSlot,
+  userId,
+  setEditEvent,
+  setData,
+}) => {
   const [hoveredEventId, setHoveredEventId] = useState(null);
   const { dict } = useLanguage();
 
@@ -82,7 +89,24 @@ const DayView = ({ currentDate, events, setSelectedSlot, userId }) => {
                       className="absolute top-0.5 right-1 text-white text-xs rounded px-1"
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log("Hello");
+                        setEditEvent(event);
+                        setData({
+                          _id: event._id || "",
+                          title: event.title || "",
+                          supervisor: event.supervisor_id || "",
+                          patient: event.patient_id || "",
+                          roomNo: event.room_no || "",
+                          date: event.selected_date || "",
+                          startTime: event.start_time || "",
+                          endTime: event.end_time || "",
+                          description: event.description || "",
+                          color: event.color || "#0000FF",
+                          activeTab: event.messageType,
+                        });
+                        setSelectedSlot({
+                          date: new Date(event.selected_date),
+                          time: `${event.start_time}-${event.end_time}`,
+                        });
                       }}
                     >
                       <h5 className="text-xs text-gray-300 font-semibold">

@@ -1,11 +1,17 @@
 import { startOfWeek, endOfWeek, eachDayOfInterval } from "date-fns";
 import { useLanguage } from "@/context/LanguageContext";
 import { Calendar } from "lucide-react";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import EventInfoPopup from "./EventInfoPopup";
 import { useState } from "react";
 
-const WeekView = ({ currentDate, events, setSelectedSlot, userId }) => {
+const WeekView = ({
+  currentDate,
+  events,
+  setSelectedSlot,
+  userId,
+  setEditEvent,
+}) => {
   const startOfCurrentWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
   const [hoveredEventId, setHoveredEventId] = useState(null);
   const endOfCurrentWeek = endOfWeek(currentDate, { weekStartsOn: 1 });
@@ -78,7 +84,7 @@ const WeekView = ({ currentDate, events, setSelectedSlot, userId }) => {
                   }`}
                   onClick={() =>
                     setSelectedSlot({
-                      date: day,
+                      date: addDays(day, 1),
                       time,
                     })
                   }
@@ -103,7 +109,7 @@ const WeekView = ({ currentDate, events, setSelectedSlot, userId }) => {
                             className="absolute top-1 right-1 text-white text-xs rounded px-1"
                             onClick={(e) => {
                               e.stopPropagation();
-                              console.log("Hello");
+                              setEditEvent(event);
                             }}
                           >
                             <h5 className="text-xs text-gray-300 font-semibold">

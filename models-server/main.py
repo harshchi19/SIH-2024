@@ -6,7 +6,7 @@ from typing import Optional
 from dotenv import load_dotenv
 from services.ocr import generate_pre_therapy
 from services.vaniai import text_to_speech, prepare_system_context, process_audio_file, text_to_speech_azure
-import tempfile
+import base64
 import os
 from groq import Groq
 
@@ -28,6 +28,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"], 
+    expose_headers=["X-Assistant-Reply"]
 )
 
 @app.post("/pre-therapy-report")
@@ -69,15 +70,18 @@ async def chat_with_bot(
         assistant_reply = chat_completion.choices[0].message.content
         chat_history.append({"role": "assistant", "content": assistant_reply})
 
-        print(assistant_reply)
-
         # speech_file_path = text_to_speech_azure(assistant_reply)
         speech_file_path = text_to_speech(assistant_reply)
 
         if speech_file_path:
-            return StreamingResponse(
-                open(speech_file_path, "rb"),
-                media_type="audio/mpeg"
+            with open(speech_file_path, "rb") as audio_file:
+                audio_base64 = base64.b64encode(audio_file.read()).decode("utf-8")
+
+            return JSONResponse(
+                content={
+                    "assistant_reply": assistant_reply,
+                    "audio_file": audio_base64, 
+                }
             )
         else:
             return JSONResponse(content={"error": "Failed to synthesize speech."}, status_code=500)

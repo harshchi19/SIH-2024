@@ -1,5 +1,6 @@
 import express from "express";
 import { loginUser, logoutUser } from "../controllers/user.controller.js";
+import { generateMasterKey } from "../controllers/keys.controller.js";
 
 const router = express.Router();
 

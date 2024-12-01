@@ -7,6 +7,7 @@ export const LOGOUT_ROUTE = `${AUTH_ROUTE}/logout-user`;
 
 // Sidebar
 export const SIDEBAR_DATA_ROUTE = `${HOST}/sidebar/get-sidebar-data`;
+export const GET_UPCOMING_EVENT_ROUTE = `${HOST}/sidebar/get-upcoming-event`;
 
 // Patients
 export const PATIENT_ROUTE = `${HOST}/patient`;
@@ -40,4 +41,5 @@ export const GET_CONTACTS = `${CONTACTS_ROUTE}/get-contacts`;
 export const CALENDAR_ROUTE = `${HOST}/calendar`;
 export const ADD_CALENDAR_EVENT_ROUTE = `${CALENDAR_ROUTE}/add-calendar-event`;
 export const GET_USER_CALENDAR_EVENTS_ROUTE = `${CALENDAR_ROUTE}/get-calendar-events`;
-export const GET_USER_OBJ_ID = `${CALENDAR_ROUTE}/get-user-obj-id`
+export const GET_USER_OBJ_ID = `${CALENDAR_ROUTE}/get-user-obj-id`;
+export const UPDATE_EVENT_BY_ID = `${CALENDAR_ROUTE}/update-event`;

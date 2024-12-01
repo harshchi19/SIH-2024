@@ -19,6 +19,7 @@ import { useById } from "@/hooks/useById.js";
 import Image from "next/image";
 import { logo } from "@/assets";
 import { useLogout } from "@/hooks/useLogout";
+import { GET_UPCOMING_EVENT_ROUTE } from "@/utils/constants";
 
 const iconMap = {
   LayoutDashboard,
@@ -33,6 +34,38 @@ const Sidebar = ({ sidebarData }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { currentLang } = useLanguage();
+  const [upcomingEvent, setUpcomingEvent] = useState([]);
+
+  const startTime = new Date(upcomingEvent.start_time);
+  const endTime = new Date(upcomingEvent.end_time);
+
+  const startTimeFormatted = `${startTime.getHours()}:${startTime
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
+  const endTimeFormatted = `${endTime.getHours()}:${endTime
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
+
+  const getEventStatus = (selectedDate) => {
+    const today = new Date();
+    const eventDate = new Date(selectedDate);
+
+    today.setHours(0, 0, 0, 0);
+    eventDate.setHours(0, 0, 0, 0);
+
+    const diffTime = eventDate - today;
+    const diffDays = diffTime / (1000 * 3600 * 24);
+
+    console.log(diffDays);
+
+    if (diffDays === 0) {
+      return "Today";
+    } else if (diffDays === 2) {
+      return "Tomorrow";
+    }
+  };
 
   const { logout, loading, error } = useLogout();
 
@@ -55,8 +88,23 @@ const Sidebar = ({ sidebarData }) => {
       }
     }
   };
+
+  const getCurrentData = async () => {
+    if (userId) {
+      const response = await fetch(`${GET_UPCOMING_EVENT_ROUTE}/${userId}`, {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setUpcomingEvent(result.event);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchUser();
+    getCurrentData();
   }, [userId]);
 
   const getInitials = (name) => {
@@ -83,7 +131,7 @@ const Sidebar = ({ sidebarData }) => {
   };
 
   return (
-    <aside className="flex h-screen w-64 flex-col justify-between bg-[#5DB075] p-6">
+    <aside className="flex h-screen w-64 flex-col justify-between bg-[#5DB075] p-6 px-3">
       {/* Header */}
       <div className="flex flex-col gap-y-6">
         <div className="flex items-center gap-x-3">
@@ -135,29 +183,14 @@ const Sidebar = ({ sidebarData }) => {
         </nav>
       </div>
 
-      {/* Event Card */}
       <div className="space-y-6">
-        <Card className="bg-[#54C174] border-none text-white">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Upcoming Event
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between mb-4">
-              <time className="text-2xl font-bold">8:45</time>
-              <span className="text-sm">→</span>
-              <time className="text-2xl font-bold">10:45</time>
-            </div>
-            <Button
-              className="w-full bg-white text-[#5DB075] hover:bg-gray-100"
-              variant="secondary"
-            >
-              <ExternalLink className="mr-2 h-4 w-4" />
-              Go to meet link
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="bg-black backdrop-blur-md bg-opacity-40 p-2 px-5 h-48 w-full flex flex-col items-start rounded-lg text-white">
+          <div className="flex items-center justify-between">
+            <h1 className="w-full text-md font-semibold overflow-hidden whitespace-nowrap text-ellipsis">
+              {upcomingEvent.title}
+            </h1>
+          </div>
+        </div>
 
         {/* User Profile */}
         <div className="flex items-center justify-between">

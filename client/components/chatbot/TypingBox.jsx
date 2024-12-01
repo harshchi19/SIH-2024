@@ -3,7 +3,7 @@ import { Mic, AudioLines } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { VANI_AI_ROUTE } from "@/utils/ai.constants";
 
-export const TypingBox = () => {
+export const TypingBox = ({ setMessage }) => {
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -57,10 +57,19 @@ export const TypingBox = () => {
       });
 
       if (response.ok) {
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
+        const result = await response.json();
 
+        const audioBlob = new Blob(
+          [Uint8Array.from(atob(result.audio_file), (c) => c.charCodeAt(0))],
+          { type: "audio/mpeg" }
+        );
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        const assistantReply = result.assistant_reply;
+
+        setMessage(assistantReply);
+
+        const audio = new Audio(audioUrl);
         audio.play();
 
         audio.addEventListener("play", () => {
@@ -102,14 +111,18 @@ export const TypingBox = () => {
           <div className="flex gap-4">
             {isRecording ? (
               <button
-                className="bg-red-600 p-2 rounded-full text-white"
+                className="h-10 w-10 bg-blue-400 p-2 rounded-full text-white flex items-center justify-center gap-x-0.5"
                 onClick={stopRecording}
               >
-                <AudioLines />
+                <div className="line h-1/2 w-1.5 bg-white rounded-xl animate-bounce" />
+                <div className="line h-5/6 w-1.5 bg-white rounded-xl animate-bounce delay-100" />
+                <div className="line h-3/5 w-1.5 bg-white rounded-xl animate-bounce delay-200" />
+                <div className="line h-2/3 w-1.5 bg-white rounded-xl animate-bounce delay-300" />
+                <div className="line h-1/2 w-1.5 bg-white rounded-xl animate-bounce delay-400" />
               </button>
             ) : (
               <button
-                className="bg-green-600 p-2 rounded-full text-white"
+                className="bg-green-400 p-2 rounded-full text-white flex items-center justify-center"
                 onClick={startRecording}
               >
                 <Mic />
