@@ -61,6 +61,7 @@ export default function RoleLayout({ children }) {
   return (
     <div className="relative h-screen flex bg-slate-50">
       <Sidebar sidebarData={sidebarData} />
+
       <div className="flex flex-col w-screen">
         <Header />
         {children}
