@@ -147,6 +147,7 @@ export default function AdvancedCalendar() {
             setSelectedSlot={setSelectedSlot}
             userId={currentUser}
             setEditEvent={setEditEvent}
+            setData={setData}
           />
         );
       case "month":
@@ -157,7 +158,9 @@ export default function AdvancedCalendar() {
             setCurrentDate={setCurrentDate}
             setViewMode={setViewMode}
             userId={currentUser}
+            setSelectedSlot={setSelectedSlot}
             setEditEvent={setEditEvent}
+            setData={setData}
           />
         );
       default:

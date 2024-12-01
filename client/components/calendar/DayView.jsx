@@ -84,36 +84,40 @@ const DayView = ({
                       minute: "2-digit",
                     })}
                   </h1>
-                  {userId === event.userId && (
-                    <button
-                      className="absolute top-0.5 right-1 text-white text-xs rounded px-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditEvent(event);
-                        setData({
-                          _id: event._id || "",
-                          title: event.title || "",
-                          supervisor: event.supervisor_id || "",
-                          patient: event.patient_id || "",
-                          roomNo: event.room_no || "",
-                          date: event.selected_date || "",
-                          startTime: event.start_time || "",
-                          endTime: event.end_time || "",
-                          description: event.description || "",
-                          color: event.color || "#0000FF",
-                          activeTab: event.messageType,
-                        });
-                        setSelectedSlot({
-                          date: new Date(event.selected_date),
-                          time: `${event.start_time}-${event.end_time}`,
-                        });
-                      }}
-                    >
-                      <h5 className="text-xs text-gray-300 font-semibold">
-                        {dict?.calendar?.edit}
-                      </h5>
-                    </button>
-                  )}
+                  {userId === event.userId &&
+                    new Date(event.selected_date) >=
+                      new Date(
+                        new Date().setDate(new Date().getDate() - 2)
+                      ) && (
+                      <button
+                        className="absolute top-0.5 right-1 text-white text-xs rounded px-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditEvent(event);
+                          setData({
+                            _id: event._id || "",
+                            title: event.title || "",
+                            supervisor: event.supervisor_id || "",
+                            patient: event.patient_id || "",
+                            roomNo: event.room_no || "",
+                            date: event.selected_date || "",
+                            startTime: event.start_time || "",
+                            endTime: event.end_time || "",
+                            description: event.description || "",
+                            color: event.color || "#0000FF",
+                            activeTab: event.messageType,
+                          });
+                          setSelectedSlot({
+                            date: new Date(event.selected_date),
+                            time: `${event.start_time}-${event.end_time}`,
+                          });
+                        }}
+                      >
+                        <h5 className="text-xs text-gray-300 font-semibold">
+                          {dict?.calendar?.edit}
+                        </h5>
+                      </button>
+                    )}
                   {hoveredEventId === event._id && (
                     <div
                       className="absolute z-10 bg-transparent"

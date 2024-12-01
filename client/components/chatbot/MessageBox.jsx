@@ -19,7 +19,7 @@ const MessageBox = ({ message }) => {
   };
 
   return (
-    <div className="z-10 max-w-[600px] h-40 w-72 flex space-y-6 flex-col bg-gradient-to-tr from-slate-300/30 via-gray-400/30 to-slate-600-400/30 p-2 backdrop-blur-md rounded-lg border border-slate-600/30">
+    <div className="z-10 max-w-[600px] h-40 w-72 flex space-y-6 flex-col bg-gradient-to-tr from-slate-400/30 via-gray-500/30 to-slate-600-400/30 p-2 backdrop-blur-md rounded-lg border border-slate-600/30">
       {message === "" ? (
         <div className="h-full w-full flex justify-center items-center gap-x-2">
           <Image src={logo} alt="Vaani.ai" className="h-10 w-auto" />

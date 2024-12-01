@@ -12,7 +12,7 @@
   },
   "breadcrumb": {
     "patient": "Patient",
-    "student-therapists": "Student Therapists",
+    "student-therapist": "Student Therapist",
     "add-student-therapist": "Add Student Therapist",
     "supervisor": "Supervisor",
     "supervisors": "Supervisors",
@@ -299,6 +299,8 @@
     "desc": "Type a sentence or use your voice to speak, and vani.ai will respond.",
     "ask": "Ask",
     "placeholder": "What is the treatment for Lisp disorder?",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "empty": "Empty message",
+    "empty_desc": "Please enter a question to ask vani.ai"
   }
 }

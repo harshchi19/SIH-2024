@@ -1,12 +1,10 @@
 import os
 from dotenv import load_dotenv
-from gtts import gTTS
 import speech_recognition as sr
 import tempfile
 from io import BytesIO
-import soundfile as sf
-import numpy as np
 import azure.cognitiveservices.speech as speechsdk
+import edge_tts
 
 load_dotenv()
 
@@ -44,11 +42,22 @@ def text_to_speech_azure(text: str) -> str:
             return None
 
 # Function to convert text to speech
-def text_to_speech(text):
-    tts = gTTS(text, lang='en')
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as temp_file:
-        tts.save(temp_file.name)
-        return temp_file.name
+async def text_to_speech(text):
+    try:
+        # Create a temporary file to store the audio
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as temp_audio:
+            temp_audio_path = temp_audio.name
+            # Initialize edge-tts with a male voice
+            communicate = edge_tts.Communicate(text, 'en-US-ChristopherNeural')
+            
+            # Generate audio and save to temporary file
+            await communicate.save(temp_audio_path)
+        
+        return temp_audio_path
+            
+    except Exception as e:
+        print(f"Error generating speech: {str(e)}")
+        return None
 
 # Function to recognize speech (convert speech to text)
 def speech_to_text(audio_file_path):
@@ -65,7 +74,7 @@ def speech_to_text(audio_file_path):
 # Fine-tuning context for Vani.AI
 def prepare_system_context():
     return """
-    You are Vani.AI, a specialized speech therapy assistant for the Ali Javar Yung Institute.
+    You are vani.ai, a specialized speech therapy assistant for the Ali Javar Yung Institute.
     Your responses should be concise, to the point, and professional, in 2-3 sentences.
     Key responsibilities:
     1. Provide supportive and professional speech therapy guidance
@@ -82,50 +91,3 @@ def prepare_system_context():
     - Session report generation
     - Supervisor report approval process
     """
-
-# Route for handling text input
-def chat():
-    user_input = request.json.get('message')
-    if not user_input:
-        return jsonify({"error": "Message content is required"}), 400
-
-    chat_history.append({"role": "user", "content": user_input})
-
-    messages = [
-        {"role": "system", "content": prepare_system_context()},
-        {"role": "user", "content": user_input}
-    ]
-
-    chat_completion = client.chat.completions.create(
-        messages=messages,
-        model="llama3-8b-8192",
-        stream=False,
-    )
-    assistant_reply = chat_completion.choices[0].message.content
-
-    chat_history.append({"role": "assistant", "content": assistant_reply})
-
-    return jsonify({"assistant_reply": assistant_reply, "chat_history": chat_history})
-
-def process_audio_file(uploaded_file):
-    data, samplerate = sf.read(uploaded_file)
-    
-    if len(data.shape) > 1:
-        data = data.mean(axis=1)
-    
-    data = (data * 32767).astype(np.int16)
-    
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_wav:
-        sf.write(temp_wav.name, data, samplerate)
-    
-    recognizer = sr.Recognizer()
-    with sr.AudioFile(temp_wav.name) as source:
-        audio = recognizer.record(source)
-    
-    try:
-        text = recognizer.recognize_google(audio)
-        return text
-    except sr.UnknownValueError:
-        return "Sorry, could not understand the audio. Please try again."
-    except sr.RequestError:
-        return "Error with the speech recognition service."

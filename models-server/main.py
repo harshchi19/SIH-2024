@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from dotenv import load_dotenv
 from services.ocr import generate_pre_therapy
-from services.vaniai import text_to_speech, prepare_system_context, process_audio_file, text_to_speech_azure
+from services.vaniai import text_to_speech, prepare_system_context, text_to_speech_azure
 import base64
 import os
 from groq import Groq
@@ -27,8 +27,7 @@ app.add_middleware(
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"], 
-    expose_headers=["X-Assistant-Reply"]
+    allow_headers=["*"]
 )
 
 @app.post("/pre-therapy-report")
@@ -48,7 +47,6 @@ async def pre_therapy_report(file: UploadFile = File(...)):
 async def chat_with_bot(
     message: Optional[str] = Form(None),
 ):  
-    print(message)
     try:
         if message:
             user_input = message
@@ -71,11 +69,13 @@ async def chat_with_bot(
         chat_history.append({"role": "assistant", "content": assistant_reply})
 
         # speech_file_path = text_to_speech_azure(assistant_reply)
-        speech_file_path = text_to_speech(assistant_reply)
+        speech_file_path = await text_to_speech(assistant_reply)
 
         if speech_file_path:
             with open(speech_file_path, "rb") as audio_file:
                 audio_base64 = base64.b64encode(audio_file.read()).decode("utf-8")
+            
+            os.unlink(speech_file_path)
 
             return JSONResponse(
                 content={

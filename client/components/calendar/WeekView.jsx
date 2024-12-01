@@ -11,6 +11,7 @@ const WeekView = ({
   setSelectedSlot,
   userId,
   setEditEvent,
+  setData,
 }) => {
   const startOfCurrentWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
   const [hoveredEventId, setHoveredEventId] = useState(null);
@@ -110,6 +111,23 @@ const WeekView = ({
                             onClick={(e) => {
                               e.stopPropagation();
                               setEditEvent(event);
+                              setData({
+                                _id: event._id || "",
+                                title: event.title || "",
+                                supervisor: event.supervisor_id || "",
+                                patient: event.patient_id || "",
+                                roomNo: event.room_no || "",
+                                date: event.selected_date || "",
+                                startTime: event.start_time || "",
+                                endTime: event.end_time || "",
+                                description: event.description || "",
+                                color: event.color || "#0000FF",
+                                activeTab: event.messageType,
+                              });
+                              setSelectedSlot({
+                                date: new Date(event.selected_date),
+                                time: `${event.start_time}-${event.end_time}`,
+                              });
                             }}
                           >
                             <h5 className="text-xs text-gray-300 font-semibold">

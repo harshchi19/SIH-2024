@@ -31,6 +31,8 @@ const EventModal = ({
   setData,
 }) => {
   const [supervisorData, setSupervisorData] = useState([]);
+  const [supervisorName, setSupervisorName] = useState("");
+  const [patientName, setPatientName] = useState("");
   const { dict } = useLanguage();
 
   useEffect(() => {
@@ -50,6 +52,14 @@ const EventModal = ({
 
     getSupervisorData();
   }, []);
+
+  useEffect(() => {
+    supervisorData.forEach((supervisor) => {
+      if (supervisor._id === data.supervisor) {
+        setSupervisorName(supervisor.name);
+      }
+    });
+  }, [data]);
 
   if (!selectedSlot) return null;
 
@@ -109,15 +119,21 @@ const EventModal = ({
     closeModal();
   };
 
-  const formattedDate = selectedSlot.date
-    ? new Date(selectedSlot.date).toISOString().slice(0, 10)
-    : "";
-  let startTime, endTime;
-  if (selectedSlot.time) {
-    [startTime, endTime] = selectedSlot?.time.split(" - ").map((t) => t.trim());
-  }
+  // To display date in a proper format
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "";
+    return date.toISOString().split("T")[0];
+  };
 
-  console.log(data);
+  // To display start date and end date in a proper format
+  const formatTime = (dateTimeString) => {
+    if (!dateTimeString) return "";
+    const date = new Date(dateTimeString);
+    if (isNaN(date)) return "";
+    return date.toTimeString().slice(0, 5);
+  };
 
   return (
     <Dialog open={!!selectedSlot} onOpenChange={closeModal}>
@@ -131,7 +147,9 @@ const EventModal = ({
         </DialogHeader>
 
         <Tabs
-          defaultValue="appointments"
+          defaultValue={
+            data.activeTab === "reminder" ? "reminders" : "appointments"
+          }
           onValueChange={(value) =>
             setData({
               title: "",
@@ -180,16 +198,17 @@ const EventModal = ({
                       !data.supervisor ? "text-gray-500" : ""
                     } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                   >
-                    {data.supervisor || dict?.calendar?.sel_sup_plchldr}
+                    {supervisorName || dict?.calendar?.sel_sup_plchldr}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     {supervisorData.length > 0 ? (
                       supervisorData.map((supervisor) => (
                         <DropdownMenuItem
                           key={supervisor.supervisor_id}
-                          onClick={() =>
-                            setData({ ...data, supervisor: supervisor._id })
-                          }
+                          onClick={() => {
+                            setData({ ...data, supervisor: supervisor._id });
+                            setSupervisorName(supervisor.name);
+                          }}
                         >
                           {supervisor.name}
                         </DropdownMenuItem>
@@ -235,11 +254,12 @@ const EventModal = ({
                   id="date"
                   name="date"
                   type="date"
-                  value={data.date || formattedDate}
+                  value={data.date ? formatDate(data.date) : ""}
                   onChange={handleInputChange}
                   required
                 />
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid w-full items-center gap-2">
                   <Label htmlFor="startTime">
@@ -249,7 +269,7 @@ const EventModal = ({
                     id="startTime"
                     name="startTime"
                     type="time"
-                    value={data.startTime || startTime}
+                    value={data.startTime ? formatTime(data.startTime) : ""}
                     onChange={handleInputChange}
                     required
                     min="08:00"
@@ -262,7 +282,7 @@ const EventModal = ({
                     id="endTime"
                     name="endTime"
                     type="time"
-                    value={data.endTime || endTime}
+                    value={data.endTime ? formatTime(data.endTime) : ""}
                     onChange={handleInputChange}
                     required
                     min="08:00"
@@ -336,7 +356,7 @@ const EventModal = ({
                   id="date"
                   name="date"
                   type="date"
-                  value={data.date}
+                  value={formatDate(data.date) || ""}
                   onChange={handleInputChange}
                   required
                 />
@@ -347,7 +367,7 @@ const EventModal = ({
                   id="startTime"
                   name="startTime"
                   type="time"
-                  value={data.startTime}
+                  value={data.startTime ? formatTime(data.startTime) : ""}
                   onChange={handleInputChange}
                   required
                 />
