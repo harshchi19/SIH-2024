@@ -4,6 +4,7 @@ export const HOST = process.env.NEXT_PUBLIC_SERVER_URL;
 export const AUTH_ROUTE = `${HOST}/auth`;
 export const LOGIN_USER_ROUTE = `${AUTH_ROUTE}/login-user`;
 export const LOGOUT_ROUTE = `${AUTH_ROUTE}/logout-user`;
+export const GET_USER_DETAILS_BY_ID_ROUTE = `${AUTH_ROUTE}/get-user-by-id`;
 
 // Sidebar
 export const SIDEBAR_DATA_ROUTE = `${HOST}/sidebar/get-sidebar-data`;
