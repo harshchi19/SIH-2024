@@ -181,3 +181,37 @@ export const logoutUser = async (req, res, next) => {
     return res.status(500).json({ message: "Logout Failed" });
   }
 };
+
+// export const getUserDetailsById = async (req, res, next) => {
+//   const { userId, userType } = req.params;
+
+//   try {
+//     let currentUser;
+
+//     if (userType === "PAT")
+//       currentUser = await Patient.findById(userId).select("name phone_no email date_of_birth date_of_assignment age sex");
+//     else if (userType === "STT")
+//       currentUser = await StudentTherapist.findById(userId).select("name phone_no email age sex");
+//     else if (userType === "SUP")
+//       currentUser = await Supervisor.findById(userId).select("name phone_no email date_of_birth age sex");
+
+//     const collection = userType === "PAT" ? "patient" : (userType === "SUP" ? "supervisors" : (userType === "STT" ? "student-therapists" : ""))
+
+//     const findEncryptionKey = await EncryptionKey.findOne({
+//       collectionName: collection,
+//     });
+//     const key = unwrapKey(
+//       findEncryptionKey.encryptedKey,
+//       findEncryptionKey.encryptedIV,
+//       findEncryptionKey.encryptedAuthTag
+//     );
+
+//     const decryptedSection = decryptSection(currentUser, key);
+
+//     console.log(decryptedSection);
+
+//   } catch (error) {
+//     console.error("Error in getUserDetailsById:", error);
+//     return res.status(500).json({ message: "Logout Failed" });
+//   }
+// }

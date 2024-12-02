@@ -1,9 +1,8 @@
 import { useRouter, usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  ExternalLink,
   LayoutDashboard,
   Users,
   Calendar,
@@ -11,6 +10,11 @@ import {
   FileText,
   MessageSquare,
   LogOut,
+  MoveRight,
+  Hospital,
+  Clock,
+  NotebookPen,
+  User,
 } from "lucide-react";
 import HoverSpecializationPopup from "./HoverSpecializationPopup";
 import { useLanguage } from "@/context/LanguageContext";
@@ -35,37 +39,6 @@ const Sidebar = ({ sidebarData }) => {
   const pathname = usePathname();
   const { currentLang } = useLanguage();
   const [upcomingEvent, setUpcomingEvent] = useState([]);
-
-  const startTime = new Date(upcomingEvent.start_time);
-  const endTime = new Date(upcomingEvent.end_time);
-
-  const startTimeFormatted = `${startTime.getHours()}:${startTime
-    .getMinutes()
-    .toString()
-    .padStart(2, "0")}`;
-  const endTimeFormatted = `${endTime.getHours()}:${endTime
-    .getMinutes()
-    .toString()
-    .padStart(2, "0")}`;
-
-  const getEventStatus = (selectedDate) => {
-    const today = new Date();
-    const eventDate = new Date(selectedDate);
-
-    today.setHours(0, 0, 0, 0);
-    eventDate.setHours(0, 0, 0, 0);
-
-    const diffTime = eventDate - today;
-    const diffDays = diffTime / (1000 * 3600 * 24);
-
-    console.log(diffDays);
-
-    if (diffDays === 0) {
-      return "Today";
-    } else if (diffDays === 2) {
-      return "Tomorrow";
-    }
-  };
 
   const { logout, loading, error } = useLogout();
 
@@ -107,6 +80,26 @@ const Sidebar = ({ sidebarData }) => {
     getCurrentData();
   }, [userId]);
 
+  // useEffect(() => {
+  //   const getUserById = async () => {
+  //     if (upcomingEvent.userId && upcomingEvent.userType) {
+  //       const response = await fetch(
+  //         `${GET_USER_DETAILS_BY_ID_ROUTE}/${upcomingEvent.userId}/${upcomingEvent.userType}`,
+  //         {
+  //           method: "GET",
+  //         }
+  //       );
+
+  //       if (response.ok) {
+  //         const result = await response.json();
+  //         console.log(result);
+  //       }
+  //     }
+  //   };
+
+  //   getUserById();
+  // }, [upcomingEvent]);
+
   const getInitials = (name) => {
     if (!name) return "";
     return name
@@ -129,6 +122,11 @@ const Sidebar = ({ sidebarData }) => {
     localStorage.removeItem("userType");
     router.push(`/${currentLang}/sign-in`);
   };
+
+  function formatTime(timeString) {
+    const date = new Date(timeString);
+    return date.toTimeString().slice(0, 5);
+  }
 
   return (
     <aside className="flex h-screen w-64 flex-col justify-between bg-[#5DB075] p-6 px-3">
@@ -184,13 +182,63 @@ const Sidebar = ({ sidebarData }) => {
       </div>
 
       <div className="space-y-6">
-        <div className="bg-black backdrop-blur-md bg-opacity-40 p-2 px-5 h-48 w-full flex flex-col items-start rounded-lg text-white">
-          <div className="flex items-center justify-between">
-            <h1 className="w-full text-md font-semibold overflow-hidden whitespace-nowrap text-ellipsis">
-              {upcomingEvent.title}
-            </h1>
-          </div>
-        </div>
+        <Card
+          className="w-full max-w-md overflow-hidden shadow-xl border-none transition-all duration-300"
+          style={{
+            background:
+              "linear-gradient(145deg, rgba(0,0,0,0.3), rgba(0,0,0,0.4))",
+            backdropFilter: "blur(15px)",
+            WebkitBackdropFilter: "blur(15px)",
+            borderRadius: "16px",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+          }}
+        >
+          <CardContent className="p-3 space-y-2">
+            <div className="flex justify-between items-center">
+              <h1 className="text-lg font-bold text-white truncate flex-grow pr-4">
+                {upcomingEvent.title}
+              </h1>
+            </div>
+
+            {user._id !== upcomingEvent.userId && (
+              <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg">
+                <User className="h-5 w-5 text-blue-300" />
+                <span className="text-md text-gray-100 font-semibold">
+                  {user?.name ? user.name : ""}
+                </span>
+              </div>
+            )}
+
+            {upcomingEvent.room_no && (
+              <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg">
+                <Hospital className="h-5 w-5 text-green-300" />
+                <span className="text-md text-gray-100 font-semibold">
+                  {upcomingEvent.room_no || "NA"}
+                </span>
+              </div>
+            )}
+
+            <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg">
+              <Clock className="h-5 w-5 text-purple-300" />
+              <div className="flex items-center space-x-2">
+                <span className="text-md font-semibold text-gray-100">
+                  {formatTime(upcomingEvent.start_time)}
+                </span>
+                <MoveRight className="text-gray-400 mx-2" />
+                <span className="text-md font-semibold text-gray-100">
+                  {formatTime(upcomingEvent.end_time)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg">
+              <NotebookPen className="h-5 w-5 text-red-300" />
+              <p className="text-md text-gray-300 truncate">
+                {upcomingEvent.description}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* User Profile */}
         <div className="flex items-center justify-between">
