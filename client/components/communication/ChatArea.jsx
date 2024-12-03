@@ -164,7 +164,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Send } from "lucide-react";
-import useSocket from "@/context/SocketContext"; // Importing useSocket
+import { useSocket } from "@/context/SocketContext.jsx"; // Importing useSocket
 
 const ChatHeader = ({ selectedContact }) => {
   if (!selectedContact) return null;
@@ -231,7 +231,8 @@ const ChatMessage = ({ message, isOutgoing }) => (
 
 const ChatArea = ({ selectedContact }) => {
   const userId = localStorage.getItem("user");
-  const socket = useSocket(userId); // Use the useSocket hook
+  // const socket = useSocket(userId); // Use the useSocket hook
+  const { socket, connected } = useSocket();
   const [messages, setMessages] = useState([]); // Initialize the messages state
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
