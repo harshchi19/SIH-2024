@@ -13,6 +13,7 @@ import supervisorRouter from "./routes/supervisor.route.js";
 import contactRoutes from "./routes/contacts.route.js";
 import setupSocket from "./socket.js";
 import calendarRouter from "./routes/calendar.route.js";
+import visualizationRouter from "./routes/visualizations.route.js";
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use("/pre_therapy", preTherapyRouter);
 app.use("/supervisor", supervisorRouter);
 app.use("/contacts", contactRoutes);
 app.use("/calendar", calendarRouter);
+app.use("/visualization", visualizationRouter);
 
 const PORT = process.env.PORT || 4224;
 

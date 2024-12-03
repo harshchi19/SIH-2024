@@ -108,7 +108,26 @@ export const getAllCalendarEvents = async (req, res, next) => {
             currentUser = await Supervisor.findOne({ supervisor_id_hash: hashedUserId }).select("_id");
         }
 
-        const userCalendar = await Calendar.find({ userId: currentUser }).select("-userType");
+        let userCalendar;
+        if (userType === "SUP") {
+            userCalendar = await Calendar.find({
+                $or: [
+                    { userId: currentUser._id },
+                    { supervisor_id: currentUser._id }
+                ],
+            }).select("-userType").exec();
+        } else if (userType === "STT") {
+            userCalendar = await Calendar.find({ userId: currentUser._id }).select("-userType").exec();
+        } else if (userType === "PAT") {
+            userCalendar = await Calendar.find({
+                $or: [
+                    { userId: currentUser._id },
+                    { patient_id: currentUser._id },
+                ],
+            })
+                .select("-userType")
+                .exec();
+        }
 
         return res.status(200).json({ userEvents: userCalendar, message: "Events fetched" });
 

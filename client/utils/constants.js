@@ -10,6 +10,10 @@ export const GET_USER_DETAILS_BY_ID_ROUTE = `${AUTH_ROUTE}/get-user-by-id`;
 export const SIDEBAR_DATA_ROUTE = `${HOST}/sidebar/get-sidebar-data`;
 export const GET_UPCOMING_EVENT_ROUTE = `${HOST}/sidebar/get-upcoming-event`;
 
+// Dashboard
+export const VISUALIZATION_ROUTE = `${HOST}/visualization`;
+export const GET_CALENDAR_VISUALS_ROUTE = `${VISUALIZATION_ROUTE}/get-calendar-data`;
+
 // Patients
 export const PATIENT_ROUTE = `${HOST}/patient`;
 export const ADD_PATIENT_ROUTE = `${PATIENT_ROUTE}/add-patient`;
