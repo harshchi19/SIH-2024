@@ -336,17 +336,28 @@ export const getPatientById = async (req, res, next) => {
       key
     );
 
-    return res.status(200).json({
-      patient: decryptedPatient,
-      address_details: decryptedAddressDetails,
-      medical_details: decryptedMedicalDetails,
-      speech_development_history: decryptedSpeechDevelopmentHistory,
-      non_verbal_communication: decryptedNonVerbalCommunication,
-      articulation_phonetic_level: decryptedArticulationPhoneticLevel,
-      voice_details: decryptedVoiceDetails,
-      suprasegmental_aspects: decryptedSuprasegmentalAspects,
-      reading_writing_skills: decryptedReadingWritingSkills,
-    });
+    decryptedPatient.address_details = decryptedAddressDetails;
+    decryptedPatient.medical_details = decryptedMedicalDetails;
+    decryptedPatient.speech_development_history =
+      decryptedSpeechDevelopmentHistory;
+    decryptedPatient.non_verbal_communication = decryptedNonVerbalCommunication;
+    decryptedPatient.articulation_phonetic_level =
+      decryptedArticulationPhoneticLevel;
+    decryptedPatient.voice_details = decryptedVoiceDetails;
+    decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
+    decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
+
+    return res.status(200).json(
+      decryptedPatient
+      // address_details: decryptedAddressDetails,
+      // medical_details: decryptedMedicalDetails,
+      // speech_development_history: decryptedSpeechDevelopmentHistory,
+      // non_verbal_communication: decryptedNonVerbalCommunication,
+      // articulation_phonetic_level: decryptedArticulationPhoneticLevel,
+      // voice_details: decryptedVoiceDetails,
+      // suprasegmental_aspects: decryptedSuprasegmentalAspects,
+      // reading_writing_skills: decryptedReadingWritingSkills,
+    );
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);
     return res.status(400).json({ message: "int-ser-err" });
