@@ -29,7 +29,6 @@ export const loginUser = async (req, res, next) => {
 
   try {
     const hashedPhone = generateHashedData(phone_no);
-    const hashedStudentTherapistId = generateHashedData(student_therapist_id);
 
     if (userType === "PAT") {
       const existingUser = await Patient.findOne({
@@ -73,6 +72,8 @@ export const loginUser = async (req, res, next) => {
         userType: userType,
       });
     } else if (userType === "STT") {
+      const hashedStudentTherapistId = generateHashedData(student_therapist_id);
+
       const existingUser = await StudentTherapist.findOne({
         phone_hash: hashedPhone,
         student_therapist_id_hash: hashedStudentTherapistId,
@@ -81,8 +82,6 @@ export const loginUser = async (req, res, next) => {
       if (!existingUser) {
         return res.status(400).json({ message: "usr-not-fnd" });
       }
-      console.log("Existing User:", hashedPhone);
-      console.log("Existing User:", hashedStudentTherapistId);
 
       const findEncryptionKey = await EncryptionKey.findOne({
         collectionName: "student-therapists",
@@ -119,8 +118,11 @@ export const loginUser = async (req, res, next) => {
         userType: userType,
       });
     } else if (userType === "SUP") {
+      const supervisorHashedId = generateHashedData(supervisor_id);
+
       const existingUser = await Supervisor.findOne({
         phone_hash: hashedPhone,
+        supervisor_id_hash: supervisorHashedId
       }).select("supervisor_id password");
 
       if (!existingUser) {

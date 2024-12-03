@@ -182,64 +182,61 @@ const Sidebar = ({ sidebarData }) => {
       </div>
 
       <div className="space-y-6">
-        <Card
-          className="w-full max-w-md overflow-hidden shadow-xl border-none transition-all duration-300"
-          style={{
-            background:
-              "linear-gradient(145deg, rgba(0,0,0,0.3), rgba(0,0,0,0.4))",
-            backdropFilter: "blur(15px)",
-            WebkitBackdropFilter: "blur(15px)",
-            borderRadius: "16px",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
-          }}
-        >
-          <CardContent className="p-3 space-y-2">
-            <div className="flex justify-between items-center">
-              <h1 className="text-lg font-bold text-white truncate flex-grow pr-4">
-                {upcomingEvent.title}
-              </h1>
-            </div>
-
-            {user._id !== upcomingEvent.userId && (
-              <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg">
-                <User className="h-5 w-5 text-blue-300" />
-                <span className="text-md text-gray-100 font-semibold">
-                  {user?.name ? user.name : ""}
-                </span>
+        {upcomingEvent && (
+          <Card
+            className="w-full max-w-md overflow-hidden transition-all duration-300 bg-white/10 border-[1px] border-white/20 backdrop-blur-xl shadow-2xl"
+            style={{
+              borderRadius: "12px",
+              boxShadow: "0 15px 35px rgba(0,0,0,0.3)",
+            }}
+          >
+            <CardContent className="p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <h1 className="text-xl font-extrabold text-white truncate flex-grow pr-4 drop-shadow-md">
+                  {upcomingEvent?.title}
+                </h1>
               </div>
-            )}
 
-            {upcomingEvent.room_no && (
-              <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg">
-                <Hospital className="h-5 w-5 text-green-300" />
-                <span className="text-md text-gray-100 font-semibold">
-                  {upcomingEvent.room_no || "NA"}
-                </span>
+              {user?._id !== upcomingEvent?.userId && (
+                <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
+                  <User className="h-6 w-6 text-blue-600 animate-pulse" />
+                  <span className="text-md text-gray-100 font-semibold tracking-wide">
+                    {user?.name || ""}
+                  </span>
+                </div>
+              )}
+
+              {upcomingEvent?.room_no && (
+                <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
+                  <Hospital className="h-6 w-6 text-green-600 animate-pulse" />
+                  <span className="text-md text-gray-100 font-semibold tracking-wide">
+                    {upcomingEvent.room_no || "NA"}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
+                <Clock className="h-6 w-6 text-purple-600 animate-pulse" />
+                <div className="flex items-center space-x-2">
+                  <span className="text-md font-semibold text-gray-100 tracking-wide">
+                    {formatTime(upcomingEvent?.start_time)}
+                  </span>
+                  <MoveRight className="text-gray-100 mx-2 opacity-70" />
+                  <span className="text-md font-semibold text-gray-100 tracking-wide">
+                    {formatTime(upcomingEvent?.end_time)}
+                  </span>
+                </div>
               </div>
-            )}
 
-            <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg">
-              <Clock className="h-5 w-5 text-purple-300" />
-              <div className="flex items-center space-x-2">
-                <span className="text-md font-semibold text-gray-100">
-                  {formatTime(upcomingEvent.start_time)}
-                </span>
-                <MoveRight className="text-gray-400 mx-2" />
-                <span className="text-md font-semibold text-gray-100">
-                  {formatTime(upcomingEvent.end_time)}
-                </span>
+              <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
+                <NotebookPen className="h-6 w-6 text-red-600 animate-pulse" />
+                <p className="text-md text-gray-100 font-semibold tracking-wide truncate">
+                  {upcomingEvent?.description}
+                </p>
               </div>
-            </div>
-
-            <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg">
-              <NotebookPen className="h-5 w-5 text-red-300" />
-              <p className="text-md text-gray-300 truncate">
-                {upcomingEvent.description}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
+            </CardContent>
+          </Card>
+        )}
         {/* User Profile */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
