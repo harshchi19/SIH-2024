@@ -7,44 +7,57 @@
 //   const socket = useRef(null);
 
 //   useEffect(() => {
+//     // Ensure userId is valid
 //     if (!userId) {
-//       console.error("Usr ID is required to establish socket connection");
+//       console.error("User ID is required to establish socket connection");
 //       return;
 //     }
-//     console.log(HOST);
-//     socket.current = io(HOST, {
-//       query: { userId },
-//       //   withCredentials: true,
-//     });
 
-//     socket.current.on("connect", () => {
-//       console.log("Connected to socket server:", socket.current.id);
-//     });
+//     // Log for debugging
+//     console.log(`Establishing socket connection for userId: ${userId}`);
 
-//     const handleRecieveMessage = (message) => {};
+//     // Check if socket already exists for this user
+//     if (!socket.current) {
+//       socket.current = io(HOST, {
+//         query: { userId },
+//       });
 
-//     socket.current.on("recieveMessage", handleRecieveMessage);
-//     socket.current.on("connect_error", (err) => {
-//       console.error("Socket connection error:", err);
-//     });
+//       socket.current.on("connect", () => {
+//         console.log("Connected to socket server:", socket.current.id);
+//       });
 
-//     socket.current.on("disconnect", () => {
-//       console.log("Disconnected from socket server");
-//     });
+//       // socket.current.on("recieveMessage", (message) => {
+//       //   // Handle incoming message
+//       //   setMessages((prevMessages) => [...prevMessages, message]);
+//       //   // console.log("Message received:", message);
+//       // });
 
-//     socket.current.on("reconnect_attempt", () => {
-//       console.log("Attempting to reconnect...");
-//     });
+//       socket.current.on("connect_error", (err) => {
+//         console.error("Socket connection error:", err);
+//       });
 
-//     socket.current.on("reconnect_failed", () => {
-//       console.error("Reconnection failed");
-//     });
+//       socket.current.on("disconnect", () => {
+//         console.log("Disconnected from socket server");
+//       });
 
+//       socket.current.on("reconnect_attempt", () => {
+//         console.log("Attempting to reconnect...");
+//       });
+
+//       socket.current.on("reconnect_failed", () => {
+//         console.error("Reconnection failed");
+//       });
+//     }
+
+//     // Cleanup when component unmounts or userId changes
 //     return () => {
-//       socket.current.disconnect();
-//       console.log("Socket connection closed");
+//       if (socket.current) {
+//         socket.current.disconnect();
+//         console.log("Socket connection closed");
+//         socket.current = null; // Reset the socket reference
+//       }
 //     };
-//   }, [userId]);
+//   }, [userId]); // Trigger the effect when userId changes
 
 //   return socket.current;
 // };
@@ -52,67 +65,68 @@
 // export default useSocket;
 
 "use client";
-import { useEffect, useRef } from "react";
+
+import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { HOST } from "@/utils/constants";
 
-const useSocket = (userId) => {
-  const socket = useRef(null);
+let socketInstance = null; // Singleton to store the socket instance
+
+const SocketContext = createContext(null);
+
+export const SocketProvider = ({ children }) => {
+  const [connected, setConnected] = useState(false);
+  const [socketId, setSocketId] = useState(null);
 
   useEffect(() => {
-    // Ensure userId is valid
+    const userId = localStorage.getItem("user");
+
     if (!userId) {
       console.error("User ID is required to establish socket connection");
       return;
     }
 
-    // Log for debugging
-    console.log(`Establishing socket connection for userId: ${userId}`);
-
-    // Check if socket already exists for this user
-    if (!socket.current) {
-      socket.current = io(HOST, {
+    // Create socket instance if it doesn't exist (Singleton)
+    if (!socketInstance) {
+      socketInstance = io(HOST, {
         query: { userId },
+        autoConnect: false, // Prevent auto-reconnection loops
       });
 
-      socket.current.on("connect", () => {
-        console.log("Connected to socket server:", socket.current.id);
+      socketInstance.connect(); // Explicitly connect the socket
+
+      // Listen for socket events
+      socketInstance.on("connect", () => {
+        console.log("Connected to socket server:", socketInstance.id);
+        setSocketId(socketInstance.id); // Set the socket ID
+        setConnected(true);
+        localStorage.setItem("socketId", socketInstance.id); // Store in local storage
       });
 
-      // socket.current.on("recieveMessage", (message) => {
-      //   // Handle incoming message
-      //   setMessages((prevMessages) => [...prevMessages, message]);
-      //   // console.log("Message received:", message);
-      // });
-
-      socket.current.on("connect_error", (err) => {
-        console.error("Socket connection error:", err);
-      });
-
-      socket.current.on("disconnect", () => {
+      socketInstance.on("disconnect", () => {
         console.log("Disconnected from socket server");
-      });
-
-      socket.current.on("reconnect_attempt", () => {
-        console.log("Attempting to reconnect...");
-      });
-
-      socket.current.on("reconnect_failed", () => {
-        console.error("Reconnection failed");
+        setConnected(false);
       });
     }
 
-    // Cleanup when component unmounts or userId changes
     return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-        console.log("Socket connection closed");
-        socket.current = null; // Reset the socket reference
-      }
+      // Don't destroy socketInstance on unmount
     };
-  }, [userId]); // Trigger the effect when userId changes
+  }, []);
 
-  return socket.current;
+  return (
+    <SocketContext.Provider
+      value={{ socket: socketInstance, connected, socketId }}
+    >
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
-export default useSocket;
+export const useSocket = () => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error("useSocket must be used within a SocketProvider");
+  }
+  return context;
+};
