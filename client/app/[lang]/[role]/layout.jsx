@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { SIDEBAR_DATA_ROUTE } from "@/utils/constants";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { SocketProvider } from "@/context/SocketContext";
 
 export default function RoleLayout({ children }) {
   const params = useParams();
@@ -63,8 +64,10 @@ export default function RoleLayout({ children }) {
       <Sidebar sidebarData={sidebarData} />
 
       <div className="flex flex-col w-screen">
-        <Header />
-        {children}
+        <SocketProvider>
+          <Header />
+          {children}
+        </SocketProvider>
       </div>
       <FloatingChatbot />
     </div>

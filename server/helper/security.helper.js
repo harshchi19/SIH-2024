@@ -97,6 +97,7 @@ export const encryptSection = (section, key, iv) => {
 export const decryptSection = (section, key) => {
   const decryptedSection = {};
   for (const [item, value] of Object.entries(section)) {
+    console.log("hello", item, value);
     if (typeof value === "string" || Array.isArray(value) || item === "_id") {
       decryptedSection[item] = value;
     } else {

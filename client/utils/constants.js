@@ -40,6 +40,11 @@ export const GET_ALL_SUP_ROUTE = `${SUPERVISOR_ROUTE}/get-all-supervisors`;
 //Contacts
 export const CONTACTS_ROUTE = `${HOST}/contacts`;
 export const GET_CONTACTS = `${CONTACTS_ROUTE}/get-contacts`;
+export const GET_CONTACTS_ROUTE = `${CONTACTS_ROUTE}/get-contacts`;
+
+//Messages
+export const MESSAGES_ROUTE = `${HOST}/messages`;
+export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTE}/get-messages`;
 
 // Calendar
 export const CALENDAR_ROUTE = `${HOST}/calendar`;

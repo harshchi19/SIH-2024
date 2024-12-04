@@ -1,6 +1,4 @@
-// import { disconnect } from "mongoose";
 // import { Server as SocketIOServer } from "socket.io";
-// import crypto from "crypto";
 // import { Messages } from "./models/mongo/message.model.js";
 // import { Supervisor } from "./models/mongo/supervisor.model.js";
 // import { StudentTherapist } from "./models/mongo/student_therapist.model.js";
@@ -10,9 +8,9 @@
 //   generateKeyAndIV,
 //   encryptSection,
 //   generateHashedData,
+//   decryptSection,
 // } from "./helper/security.helper.js";
 // import { unwrapKey } from "./controllers/keys.controller.js";
-// // import Message from "./models/mongo/communication.model.js";
 
 // const setupSocket = (server) => {
 //   const io = new SocketIOServer(server, {
@@ -26,27 +24,31 @@
 //   const userSocketMap = new Map();
 
 //   const hashAndFindUser = async (id, type) => {
-//     const hashedId = generateHashedData(id); // Hash the ID using your function
+//     const hashedId = generateHashedData(id);
 
 //     let user = null;
-
 //     switch (type) {
 //       case "SUP":
-//         user = await Supervisor.findOne({ hashedId });
+//         user = await Supervisor.findOne({
+//           supervisor_id_hash: hashedId,
+//         });
 //         break;
 //       case "STT":
-//         user = await StudentTherapist.findOne({ hashedId });
+//         user = await StudentTherapist.findOne({
+//           student_therapist_id_hash: hashedId,
+//         });
 //         break;
 //       case "PAT":
-//         user = await Patient.findOne({ hashedId });
+//         user = await Patient.findOne({
+//           patient_id_hash: hashedId,
+//         });
 //         break;
 //       default:
 //         throw new Error("Invalid user type");
 //     }
 
 //     if (!user) throw new Error(`${type} not found for hashedId: ${hashedId}`);
-
-//     return user._id; // Return ObjectId of the user
+//     return user._id;
 //   };
 
 //   const sendMessage = async (messageData) => {
@@ -59,10 +61,14 @@
 //         findEncryptionKey.encryptedIV,
 //         findEncryptionKey.encryptedAuthTag
 //       );
-//       const encryptedMessageContent = encryptSection(messageData.content, key);
+//       const iv = generateKeyAndIV();
+//       const messageContent = { message: messageData.content };
+//       const encryptedMessageContent = encryptSection(messageContent, key, iv);
+//       console.log("Message Data Recieved:", messageData);
+//       // console.log("Encrypted Content", encryptedMessageContent);
 
-//       const senderType = messageData.userId.split("-")[0]; // Extract sender type from userId
-//       const recipientType = messageData.recipientId.split("-")[0]; // Extract recipient type from userId
+//       const senderType = messageData.sender.split("-")[0];
+//       const recipientType = messageData.recipient.split("-")[0];
 
 //       const senderId = await hashAndFindUser(messageData.sender, senderType);
 //       const recipientId = await hashAndFindUser(
@@ -70,52 +76,59 @@
 //         recipientType
 //       );
 
-//       // Create message without population
-//       const newMessage = await Messages.create({
-//         sender: senderId,
-//         recipient: recipientId,
+//       const newMessage = new Messages({
+//         sender_id: senderId,
+//         recipient_id: recipientId,
 //         recipientType,
 //         senderType,
 //         messageType: messageData.messageType,
-//         content: encryptedMessageContent,
-//         timeStamp: Date.now(),
+//         content: encryptedMessageContent.message,
 //       });
 
-//       // Get socket IDs for sender and recipient
-//       const senderSocketId = userSocketMap.get(messageData.sender.toString());
-//       const recipientSocketId = messageData.recipient
-//         ? userSocketMap.get(messageData.recipient.toString())
-//         : null;
+//       await newMessage.save();
 
-//       // Emit message to sender and recipient if they're online
-//       if (senderSocketId) {
-//         io.to(senderSocketId).emit("receiveMessage", newMessage); // Send raw message data
-//       }
+//       const decryptedMessageContent = decryptSection(
+//         encryptedMessageContent,
+//         key
+//       );
 
+//       const messageToEmit = {
+//         sender: messageData.sender,
+//         recipient: messageData.recipient,
+//         content: messageData.content, // Replace with decrypted content
+//       };
+//       console.log("Message EMitted:", messageToEmit);
+
+//       // Emit the message to both sender and recipient
+//       const senderSocketId = userSocketMap.get(messageData.sender);
+//       const recipientSocketId = userSocketMap.get(messageData.recipient);
+
+//       // if (senderSocketId) {
+//       //   io.to(senderSocketId).emit("receiveMessage", messageToEmit);
+//       // }
+//       console.log("Recipient", recipientSocketId);
 //       if (recipientSocketId) {
-//         io.to(recipientSocketId).emit("receiveMessage", newMessage); // Send raw message data
+//         io.to(recipientSocketId).emit("receiveMessage", messageToEmit);
 //       }
 
-//       return newMessage; // Return the message data without population
+//       return messageToEmit;
 //     } catch (error) {
 //       console.error("Error sending message:", error);
 //       throw error;
 //     }
 //   };
 
-//   const handleDisconnect = (socket) => {
-//     console.log(`Client disconnected: ${socket.id}`);
-//     for (const [userId, socketId] of userSocketMap.entries()) {
-//       if (socketId === socket.id) {
-//         userSocketMap.delete(userId);
-//         break;
-//       }
-//     }
-//   };
 //   io.on("connection", (socket) => {
 //     const userId = socket.handshake.query.userId;
 
 //     if (userId) {
+//       console.log("UserMap", userSocketMap);
+//       if (userSocketMap.has(userId)) {
+//         console.log(
+//           `User ${userId} already connected, socket ID: ${socket.id}`
+//         );
+//         // Optionally handle reconnection or disconnection logic here
+//       }
 //       userSocketMap.set(userId, socket.id);
 //       console.log(`User connected: ${userId} with socket ID: ${socket.id}`);
 //     } else {
@@ -126,17 +139,34 @@
 //     socket.on("sendMessage", async (messageData) => {
 //       try {
 //         const message = await sendMessage(messageData);
-//         console.log("Message sent:", message);
+//         // console.log("Message sent:", message);
 //       } catch (error) {
 //         console.error("Error processing sendMessage:", error);
 //         socket.emit("error", "Error sending message");
 //       }
 //     });
 
-//     io.on("disconnect", () => disconnect(socket));
+//     // socket.on("disconnect", () => {
+//     //   console.log(`Client disconnected: ${socket.id}`);
+//     //   for (const [userId, socketId] of userSocketMap.entries()) {
+//     //     if (socketId === socket.id) {
+//     //       userSocketMap.delete(userId);
+//     //       break;
+//     //     }
+//     //   }
+//     // });
+//     socket.on("disconnect", () => {
+//       console.log(`Client disconnected: ${socket.id}`);
+//       for (const [userId, socketIds] of userSocketMap.entries()) {
+//         const updatedSockets = socketIds.filter((id) => id !== socket.id);
+//         if (updatedSockets.length > 0) {
+//           userSocketMap.set(userId, updatedSockets);
+//         } else {
+//           userSocketMap.delete(userId);
+//         }
+//       }
+//     });
 //   });
-
-//   // return io;
 // };
 
 // export default setupSocket;
@@ -164,17 +194,14 @@ const setupSocket = (server) => {
     },
   });
 
-  const userSocketMap = new Map();
+  const userSocketMap = new Map(); // Map to store array of socket IDs for each user
 
   const hashAndFindUser = async (id, type) => {
     const hashedId = generateHashedData(id);
-
     let user = null;
     switch (type) {
       case "SUP":
-        user = await Supervisor.findOne({
-          supervisor_id_hash: hashedId,
-        });
+        user = await Supervisor.findOne({ supervisor_id_hash: hashedId });
         break;
       case "STT":
         user = await StudentTherapist.findOne({
@@ -182,9 +209,7 @@ const setupSocket = (server) => {
         });
         break;
       case "PAT":
-        user = await Patient.findOne({
-          patient_id_hash: hashedId,
-        });
+        user = await Patient.findOne({ patient_id_hash: hashedId });
         break;
       default:
         throw new Error("Invalid user type");
@@ -207,8 +232,6 @@ const setupSocket = (server) => {
       const iv = generateKeyAndIV();
       const messageContent = { message: messageData.content };
       const encryptedMessageContent = encryptSection(messageContent, key, iv);
-      console.log("Message Data Recieved:", messageData);
-      // console.log("Encrypted Content", encryptedMessageContent);
 
       const senderType = messageData.sender.split("-")[0];
       const recipientType = messageData.recipient.split("-")[0];
@@ -230,31 +253,17 @@ const setupSocket = (server) => {
 
       await newMessage.save();
 
-      const decryptedMessageContent = decryptSection(
-        encryptedMessageContent,
-        key
-      );
-
       const messageToEmit = {
         sender: messageData.sender,
         recipient: messageData.recipient,
-        content: messageData.content, // Replace with decrypted content
+        content: messageData.content,
       };
-      console.log("Message EMitted:", messageToEmit);
 
-      // Emit the message to both sender and recipient
-      const senderSocketId = userSocketMap.get(messageData.sender);
-      const recipientSocketId = userSocketMap.get(messageData.recipient);
-
-      // if (senderSocketId) {
-      //   io.to(senderSocketId).emit("receiveMessage", messageToEmit);
-      // }
-      console.log("Recipient", recipientSocketId);
-      if (recipientSocketId) {
-        io.to(recipientSocketId).emit("receiveMessage", messageToEmit);
-      }
-
-      return messageToEmit;
+      // Emit the message to all recipient sockets
+      const recipientSocketIds = userSocketMap.get(messageData.recipient) || [];
+      recipientSocketIds.forEach((socketId) => {
+        io.to(socketId).emit("receiveMessage", messageToEmit);
+      });
     } catch (error) {
       console.error("Error sending message:", error);
       throw error;
@@ -265,16 +274,12 @@ const setupSocket = (server) => {
     const userId = socket.handshake.query.userId;
 
     if (userId) {
-      console.log("UserMao", userSocketMap);
-      if (userSocketMap.has(userId)) {
-        console.log(
-          `User ${userId} already connected, socket ID: ${socket.id}`
-        );
-        // Optionally handle reconnection or disconnection logic here
-      } else {
-        userSocketMap.set(userId, socket.id);
-        console.log(`User connected: ${userId} with socket ID: ${socket.id}`);
+      if (!userSocketMap.has(userId)) {
+        userSocketMap.set(userId, []);
       }
+      userSocketMap.get(userId).push(socket.id);
+      console.log("UserSocketMap: ", userSocketMap); // Add socket ID to user's list
+      console.log(`User connected: ${userId} with socket ID: ${socket.id}`);
     } else {
       socket.emit("error", "User ID is required");
       return;
@@ -282,8 +287,7 @@ const setupSocket = (server) => {
 
     socket.on("sendMessage", async (messageData) => {
       try {
-        const message = await sendMessage(messageData);
-        // console.log("Message sent:", message);
+        await sendMessage(messageData);
       } catch (error) {
         console.error("Error processing sendMessage:", error);
         socket.emit("error", "Error sending message");
@@ -292,10 +296,12 @@ const setupSocket = (server) => {
 
     socket.on("disconnect", () => {
       console.log(`Client disconnected: ${socket.id}`);
-      for (const [userId, socketId] of userSocketMap.entries()) {
-        if (socketId === socket.id) {
+      for (const [userId, socketIds] of userSocketMap.entries()) {
+        const updatedSockets = socketIds.filter((id) => id !== socket.id);
+        if (updatedSockets.length > 0) {
+          userSocketMap.set(userId, updatedSockets);
+        } else {
           userSocketMap.delete(userId);
-          break;
         }
       }
     });

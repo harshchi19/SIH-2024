@@ -164,7 +164,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Send } from "lucide-react";
-import useSocket from "@/context/SocketContext"; // Importing useSocket
+import { useSocket } from "@/context/SocketContext.jsx"; // Importing useSocket
+import { GET_MESSAGES_ROUTE } from "@/utils/constants";
 
 const ChatHeader = ({ selectedContact }) => {
   if (!selectedContact) return null;
@@ -231,7 +232,8 @@ const ChatMessage = ({ message, isOutgoing }) => (
 
 const ChatArea = ({ selectedContact }) => {
   const userId = localStorage.getItem("user");
-  const socket = useSocket(userId); // Use the useSocket hook
+  // const socket = useSocket(userId); // Use the useSocket hook
+  const { socket, connected } = useSocket();
   const [messages, setMessages] = useState([]); // Initialize the messages state
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
@@ -244,7 +246,36 @@ const ChatArea = ({ selectedContact }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+  console.log("SELECTED CONTACT:", selectedContact.id);
+  useEffect(() => {
+    // Fetch the messages when a new contact is selected
+    if (selectedContact) {
+      const fetchMessages = async () => {
+        try {
+          const user2Id = selectedContact.id;
+          const url = `${GET_MESSAGES_ROUTE}/${userId}/${selectedContact.id}`;
+          console.log("Message url:", url);
+          const response = await fetch(
+            `${GET_MESSAGES_ROUTE}/${userId}/${user2Id}`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
 
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const result = await response.json();
+          console.log("Fetched Message Data:", result);
+          // setMessages(result);
+        } catch (error) {
+          console.log("Error Fetching Messages", error);
+        }
+      };
+      fetchMessages();
+    }
+  }, [selectedContact, userId]);
   useEffect(() => {
     // Listen for incoming messages from the socket server
     if (socket) {

@@ -170,7 +170,7 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PlusCircle } from "lucide-react";
-import { GET_CONTACTS } from "@/utils/constants";
+import { GET_CONTACTS_ROUTE } from "@/utils/constants";
 import { Input } from "../ui/input";
 
 const NewMessageDialog = ({ onAddContact }) => {
@@ -191,7 +191,7 @@ const NewMessageDialog = ({ onAddContact }) => {
 
       const userId = localStorage.getItem("user");
       try {
-        const response = await fetch(`${GET_CONTACTS}/${userId}`, {
+        const response = await fetch(`${GET_CONTACTS_ROUTE}/${userId}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
