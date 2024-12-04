@@ -57,7 +57,7 @@ const MonthView = ({
 
       {monthDays.map((day) => {
         const dayEvents = events.filter((event) => {
-          const eventDate = new Date(event.selected_date);
+          const eventDate = new Date(event.date);
           return eventDate.toDateString() === day.toDateString();
         });
 

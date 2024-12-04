@@ -6,14 +6,14 @@ import { Upload, Check, X, Eye, Trash2, FileText } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const UploadDocument = () => {
+const UploadDocument = ({ documentFiles, setDocumentFiles }) => {
   const { dict } = useLanguage();
-  const [documentFiles, setDocumentFiles] = useState([]);
   const [previewUrl, setPreviewUrl] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
+
     const filesWithPreviews = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),

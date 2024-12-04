@@ -1,6 +1,4 @@
 import crypto from "crypto";
-import { type } from "os";
-import { log } from "util";
 
 const ROLE_PREFIXES = {
   pat: "PAT",
