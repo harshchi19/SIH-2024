@@ -14,6 +14,7 @@ import contactRoutes from "./routes/contacts.route.js";
 import setupSocket from "./socket.js";
 import calendarRouter from "./routes/calendar.route.js";
 import visualizationRouter from "./routes/visualizations.route.js";
+import messageRoutes from "./routes/message.route.js";
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use("/auth", userRouter);
 app.use("/student-therapist", studentRouter);
 app.use("/pre_therapy", preTherapyRouter);
 app.use("/supervisor", supervisorRouter);
+app.use("/messages", messageRoutes);
 app.use("/contacts", contactRoutes);
 app.use("/calendar", calendarRouter);
 app.use("/visualization", visualizationRouter);
