@@ -5,14 +5,14 @@ import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
 import { Supervisor } from "../models/mongo/supervisor.model.js";
 
 export const addCalendarEvent = async (req, res, next) => {
-    const { title, supervisor, patient, roomNo, date, startTime, endTime, color, activeTab, userId, userType } = req.body;
+    const { title, supervisor, patient, roomNo, selected_date, startTime, endTime, color, activeTab, userId, userType } = req.body;
 
     try {
-        if (!title || !date || !startTime || !userId || !userType) {
+        if (!title || !selected_date || !startTime || !userId || !userType) {
             return res.status(400).json({ message: "Missing required fields." });
         }
 
-        const selectedDate = new Date(date);
+        const selectedDate = new Date(selected_date);
         if (isNaN(selectedDate.getTime())) {
             return res.status(400).json({ message: "Invalid date format." });
         }
@@ -166,35 +166,19 @@ export const getUserObjId = async (req, res, next) => {
 }
 
 export const updateEventById = async (req, res, next) => {
-    const { _id, title, supervisor, patient, roomNo, date, startTime, endTime, color, description, } = req.body;
-    console.log(req.body)
+    const { _id, title, supervisor, patient, roomNo, selected_date, startTime, endTime, color, description, activeTab } = req.body;
+    console.log(req.body);
 
     try {
         if (!_id) {
             return res.status(400).json({ error: "event-id-reqd" });
         }
 
-        const [startHour, startMinute] = startTime.split(":").map(Number);
-        if (isNaN(startHour) || isNaN(startMinute)) {
-            return res.status(400).json({ message: "Invalid start time format." });
+        if (activeTab === "reminder") {
+
         }
 
-        const startDateTime = new Date(date);
-        startDateTime.setHours(startHour, startMinute);
-
-        let endDateTime;
-        if (endTime) {
-            const [endHour, endMinute] = endTime.split(":").map(Number);
-            if (isNaN(endHour) || isNaN(endMinute)) {
-                return res.status(400).json({ message: "Invalid end time format." });
-            }
-            endDateTime = new Date(date);
-            endDateTime.setHours(endHour, endMinute);
-        } else {
-            endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
-        }
-
-        if (endDateTime <= startDateTime) {
+        if (startTime <= endTime) {
             return res.status(400).json({ message: "End time must be after start time." });
         }
 
@@ -202,12 +186,12 @@ export const updateEventById = async (req, res, next) => {
             _id,
             {
                 title,
-                supervisor_id: supervisor,
-                patient_id: patient,
+                supervisor_id: supervisor || null,
+                patient_id: patient || null,
                 room_no: roomNo,
-                selected_date: date,
-                start_time: startDateTime,
-                end_time: endDateTime,
+                selected_date: selected_date,
+                start_time: startTime,
+                end_time: endTime,
                 description,
                 color,
             },

@@ -260,6 +260,7 @@ export default function AdvancedCalendar() {
         events={events}
         setEvents={setEvents}
         editEvent={editEvent}
+        setEditEvent={setEditEvent}
         handleEditEvent={handleEditEvent}
         data={data}
         setData={setData}

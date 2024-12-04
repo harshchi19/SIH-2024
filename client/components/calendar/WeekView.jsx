@@ -117,7 +117,7 @@ const WeekView = ({
                                 supervisor: event.supervisor_id || "",
                                 patient: event.patient_id || "",
                                 roomNo: event.room_no || "",
-                                date: event.selected_date || "",
+                                selected_date: event.selected_date || "",
                                 startTime: event.start_time || "",
                                 endTime: event.end_time || "",
                                 description: event.description || "",
