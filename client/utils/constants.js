@@ -23,6 +23,7 @@ export const GET_ALL_PAT_ROUTE = `${PATIENT_ROUTE}/all-patients`;
 // Pre Therapy for Patient
 export const PRE_THERAPY_ROUTE = `${HOST}/pre_therapy`;
 export const GET_PATIENT_FROM_ID = `${PRE_THERAPY_ROUTE}/get-pre-therapy-user`;
+export const UPLOAD_PRE_THERAPY_DETAILS = `${PRE_THERAPY_ROUTE}/upload-pre-therapy`;
 
 // Student Therapists
 export const STUDENT_THERAPIST_ROUTE = `${HOST}/student-therapist`;
@@ -39,6 +40,11 @@ export const GET_ALL_SUP_ROUTE = `${SUPERVISOR_ROUTE}/get-all-supervisors`;
 //Contacts
 export const CONTACTS_ROUTE = `${HOST}/contacts`;
 export const GET_CONTACTS = `${CONTACTS_ROUTE}/get-contacts`;
+export const GET_CONTACTS_ROUTE = `${CONTACTS_ROUTE}/get-contacts`;
+
+//Messages
+export const MESSAGES_ROUTE = `${HOST}/messages`;
+export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTE}/get-messages`;
 
 // Calendar
 export const CALENDAR_ROUTE = `${HOST}/calendar`;

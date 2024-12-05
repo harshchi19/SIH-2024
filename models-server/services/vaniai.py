@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import speech_recognition as sr
 import tempfile
 from io import BytesIO
-import azure.cognitiveservices.speech as speechsdk
 import edge_tts
 
 load_dotenv()
@@ -12,34 +11,6 @@ load_dotenv()
 chat_history = [
     {"role": "assistant", "content": "Welcome to Vani.AI. How can I assist you with speech therapy today?"}
 ]
-
-speech_config = speechsdk.SpeechConfig(
-    subscription=os.environ.get('SPEECH_KEY'), 
-    region=os.environ.get('SPEECH_REGION')
-)
-
-speech_config.speech_synthesis_voice_name = 'en-US-GuyNeural'
-
-def text_to_speech_azure(text: str) -> str:
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as temp_audio_file:
-        audio_config = speechsdk.audio.AudioOutputConfig(filename=temp_audio_file.name)
-        
-        speech_synthesizer = speechsdk.SpeechSynthesizer(
-            speech_config=speech_config, 
-            audio_config=audio_config
-        )
-
-        speech_synthesis_result = speech_synthesizer.speak_text_async(text).get()
-
-        if speech_synthesis_result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
-            print(f"Speech synthesized for text: {text}")
-            return temp_audio_file.name
-        else:
-            cancellation_details = speech_synthesis_result.cancellation_details
-            print(f"Speech synthesis canceled: {cancellation_details.reason}")
-            if cancellation_details.reason == speechsdk.CancellationReason.Error:
-                print(f"Error details: {cancellation_details.error_details}")
-            return None
 
 # Function to convert text to speech
 async def text_to_speech(text):

@@ -29,12 +29,14 @@
     "int_ser_err": "Internal Server Error",
     "try_lat_err": "Please try again later",
     "usr-not-fnd": "User not found",
-    "corr-pass": "Please enter correct password"
+    "corr-pass": "Please enter correct password",
+    "doc_req": "Documents required"
   },
   "success": {
-    "login_succ": "Login Successful. Welcome to VaaniVikas!",
+    "login_succ": "Login Successful. Welcome to VaniVikas!",
     "sup_onb_suc": "You have been registered!",
-    "user-alr-ext": "User already exists!"
+    "user-alr-ext": "User already exists!",
+    "doc_uploaded": "Document Uploaded Successfully!"
   },
   "login": {
     "header": "Login to you account",
@@ -268,7 +270,34 @@
     "upload_doc": "Upload Document",
     "drag_n_drop": "Drag & drop or click to upload documents",
     "uploaded_docs": "Uploaded Documents",
-    "files_proc": "file(s) ready to be processed"
+    "files_proc": "file(s) ready to be processed",
+    "case_no": "Case No.",
+    "case_no_plchldr": "0123456",
+    "age_sex": "Age/Sex",
+    "age_plchldr": "20 / Male",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "date_of_assg": "Date of Assignment",
+    "prov_diag": "Provisional Diagnosis for Patient",
+    "prov_diag_plchldr": "Provisional Diagnosis for the Patient from the previous form",
+    "loading": "Loading...",
+    "stt_clic_plchldr": "Student Clinician",
+    "opme": "OPME (Objectives, Process, Method, and Evaluation)",
+    "gen_plchldr": "Please enter appropriate details",
+    "reception": "Reception",
+    "expression": "Expression",
+    "pragmatics": "Pragmatics",
+    "attention": "Details to pay attention",
+    "auditory_skill": "Auditory Skills",
+    "play_behavior": "Play Behavior",
+    "general_behavior": "General Behavior",
+    "formal_testing": "Formal Testing",
+    "clinical_impression": "Clinical Impression",
+    "additional_notes": "Additional Notes",
+    "confidence_score": "Confidence Score",
+    "supervisor": "Supervisor Name",
+    "stt_name": "Student Therapist Name"
   },
   "addStudentTherapist": {
     "personal": "Personal Details",

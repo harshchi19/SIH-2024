@@ -21,7 +21,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useEffect, useState } from "react";
 import { useById } from "@/hooks/useById.js";
 import Image from "next/image";
-import { logo } from "@/assets";
+import { calendar, logo } from "@/assets";
 import { useLogout } from "@/hooks/useLogout";
 import { GET_UPCOMING_EVENT_ROUTE } from "@/utils/constants";
 
@@ -125,11 +125,16 @@ const Sidebar = ({ sidebarData }) => {
 
   function formatTime(timeString) {
     const date = new Date(timeString);
-    return date.toTimeString().slice(0, 5);
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    const formattedMinutes = minutes.toString().padStart(2, "0");
+    return { time: `${hours}:${formattedMinutes}`, ampm: ampm };
   }
 
   return (
-    <aside className="flex h-screen w-64 flex-col justify-between bg-[#5DB075] p-6 px-3">
+    <aside className="flex h-screen w-80 flex-col justify-between bg-[#5DB075] p-6 px-3">
       {/* Header */}
       <div className="flex flex-col gap-y-6">
         <div className="flex items-center gap-x-3">
@@ -187,53 +192,63 @@ const Sidebar = ({ sidebarData }) => {
             className="w-full max-w-md overflow-hidden transition-all duration-300 bg-white/10 border-[1px] border-white/20 backdrop-blur-xl shadow-2xl"
             style={{
               borderRadius: "12px",
-              boxShadow: "0 15px 35px rgba(0,0,0,0.3)",
+              boxShadow: "0 3px 10px rgba(0,0,0,0.3)",
             }}
           >
             <CardContent className="p-4 space-y-3">
-              <div className="flex justify-between items-center">
-                <h1 className="text-xl font-extrabold text-white truncate flex-grow pr-4 drop-shadow-md">
-                  {upcomingEvent?.title}
-                </h1>
+              <div className="flex items-center gap-x-3">
+                <Image src={calendar} alt="Calendar" className="h-10 w-auto" />
+                <div className="max-w-full truncate flex-grow overflow-hidden whitespace-nowrap">
+                  <h1 className="text-xl font-extrabold text-white truncate flex-grow drop-shadow-md">
+                    {upcomingEvent?.title}
+                  </h1>
+                  <h4 className="text-sm font-medium text-gray-200 truncate flex-grow overflow-hidden whitespace-nowrap">
+                    {upcomingEvent?.description}
+                  </h4>
+                </div>
               </div>
 
-              {user?._id !== upcomingEvent?.userId && (
+              <div className="w-full h-[1px] bg-gray-500/30 rounded-full" />
+
+              <div className="flex items-center justify-center space-x-3 p-1">
+                <div className="flex items-center space-x-4">
+                  <div className="flex flex-col justify-center">
+                    <span className="text-3xl font-semibold text-gray-100 tracking-wide">
+                      {formatTime(upcomingEvent?.start_time).time}
+                    </span>
+                    <span className="text-md font-semibold text-gray-100 tracking-wide">
+                      {formatTime(upcomingEvent?.start_time).ampm}
+                    </span>
+                  </div>
+                  <MoveRight className="text-gray-100 mx-2 opacity-80 h-8 w-auto" />
+                  <div className="flex flex-col justify-center">
+                    <span className="text-3xl font-semibold text-gray-100 tracking-wide">
+                      {formatTime(upcomingEvent?.end_time).time}
+                    </span>
+                    <span className="text-md font-semibold text-gray-100 tracking-wide">
+                      {formatTime(upcomingEvent?.end_time).ampm}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {upcomingEvent?.userId && (
                 <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
-                  <User className="h-6 w-6 text-blue-600 animate-pulse" />
-                  <span className="text-md text-gray-100 font-semibold tracking-wide">
-                    {user?.name || ""}
+                  <User className="h-6 w-6 text-blue-600" />
+                  <span className="text-lg text-gray-100 font-semibold tracking-wide">
+                    {user?.name || "Unknown"}
                   </span>
                 </div>
               )}
 
               {upcomingEvent?.room_no && (
                 <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
-                  <Hospital className="h-6 w-6 text-green-600 animate-pulse" />
-                  <span className="text-md text-gray-100 font-semibold tracking-wide">
-                    {upcomingEvent.room_no || "NA"}
+                  <Hospital className="h-6 w-6 text-green-600" />
+                  <span className="text-lg text-gray-100 font-semibold tracking-wide">
+                    {upcomingEvent.room_no || "Not Available"}
                   </span>
                 </div>
               )}
-
-              <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
-                <Clock className="h-6 w-6 text-purple-600 animate-pulse" />
-                <div className="flex items-center space-x-2">
-                  <span className="text-md font-semibold text-gray-100 tracking-wide">
-                    {formatTime(upcomingEvent?.start_time)}
-                  </span>
-                  <MoveRight className="text-gray-100 mx-2 opacity-70" />
-                  <span className="text-md font-semibold text-gray-100 tracking-wide">
-                    {formatTime(upcomingEvent?.end_time)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
-                <NotebookPen className="h-6 w-6 text-red-600 animate-pulse" />
-                <p className="text-md text-gray-100 font-semibold tracking-wide truncate">
-                  {upcomingEvent?.description}
-                </p>
-              </div>
             </CardContent>
           </Card>
         )}

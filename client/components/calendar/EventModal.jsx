@@ -27,6 +27,7 @@ const EventModal = ({
   setEvents,
   editEvent,
   handleEditEvent,
+  setEditEvent,
   data,
   setData,
 }) => {
@@ -70,13 +71,14 @@ const EventModal = ({
       supervisor: "",
       patient: "",
       roomNo: "",
-      date: "",
+      selected_date: "",
       startTime: "",
       endTime: "",
       description: "",
       color: "#0000FF",
       activeTab: "appointments",
     });
+    setEditEvent([]);
   };
 
   const colors = [
@@ -113,7 +115,7 @@ const EventModal = ({
 
     if (response.ok) {
       const data = response.json();
-      setEvents(...events, data.event);
+      setEvents([...events, data.event]);
     }
 
     closeModal();
@@ -130,6 +132,10 @@ const EventModal = ({
   // To display start date and end date in a proper format
   const formatTime = (dateTimeString) => {
     if (!dateTimeString) return "";
+
+    if (/^\d{2}:\d{2}$/.test(dateTimeString)) {
+      return dateTimeString;
+    }
     const date = new Date(dateTimeString);
     if (isNaN(date)) return "";
     return date.toTimeString().slice(0, 5);
@@ -156,7 +162,7 @@ const EventModal = ({
               supervisor: "",
               patient: "",
               roomNo: "",
-              date: "",
+              selected_date: "",
               startTime: "",
               endTime: "",
               description: "",
@@ -249,12 +255,14 @@ const EventModal = ({
               </div>
 
               <div className="grid w-full items-center gap-2">
-                <Label htmlFor="date">{dict?.calendar?.date}</Label>
+                <Label htmlFor="selected_date">{dict?.calendar?.date}</Label>
                 <Input
-                  id="date"
-                  name="date"
+                  id="selected_date"
+                  name="selected_date"
                   type="date"
-                  value={data.date ? formatDate(data.date) : ""}
+                  value={
+                    data.selected_date ? formatDate(data.selected_date) : ""
+                  }
                   onChange={handleInputChange}
                   required
                 />
@@ -351,12 +359,14 @@ const EventModal = ({
                 />
               </div>
               <div className="grid w-full items-center gap-2">
-                <Label htmlFor="date">{dict?.calendar?.date}</Label>
+                <Label htmlFor="selected_date">{dict?.calendar?.date}</Label>
                 <Input
-                  id="date"
-                  name="date"
+                  id="selected_date"
+                  name="selected_date"
                   type="date"
-                  value={formatDate(data.date) || ""}
+                  value={
+                    data.selected_date ? formatDate(data.selected_date) : ""
+                  }
                   onChange={handleInputChange}
                   required
                 />
@@ -403,7 +413,7 @@ const EventModal = ({
           >
             {dict?.calendar?.cancel || "Cancel"}
           </Button>
-          {editEvent ? (
+          {editEvent.length > 0 ? (
             <Button
               form={
                 data.activeTab === "appointments"

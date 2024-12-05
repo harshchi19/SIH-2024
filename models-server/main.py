@@ -2,10 +2,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
+from typing import Optional, List
 from dotenv import load_dotenv
 from services.ocr import generate_pre_therapy
-from services.vaniai import text_to_speech, prepare_system_context, text_to_speech_azure
+from services.vaniai import text_to_speech, prepare_system_context
 import base64
 import os
 from groq import Groq
@@ -31,14 +31,16 @@ app.add_middleware(
 )
 
 @app.post("/pre-therapy-report")
-async def pre_therapy_report(file: UploadFile = File(...)):
+async def pre_therapy_report(files: List[UploadFile] = File(...)):
+    print("Received files:", files)
     try:
-        case_data = generate_pre_therapy(file)
+        case_data_list = await generate_pre_therapy(files)
+        # case_data_list = []
 
-        if isinstance(case_data, dict):
-            return JSONResponse(content=case_data, status_code=200)
+        if case_data_list:
+            return JSONResponse(content={"cases": case_data_list}, status_code=200)
 
-        return StreamingResponse(case_data)
+        return JSONResponse(content={"error": "No data extracted"}, status_code=400)
     except Exception as e:
         print("Error in /pre-therapy-report endpoint:", str(e))
         return JSONResponse(content={"Error": str(e)}, status_code=500)

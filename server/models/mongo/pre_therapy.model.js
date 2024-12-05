@@ -1,7 +1,7 @@
 // Encrypted
 
 import mongoose from "mongoose";
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
 const PreTherapyDetails = new Schema({
     patient_id: {
@@ -20,7 +20,12 @@ const PreTherapyDetails = new Schema({
         of: String,
         required: true,
     },
-    age_sex: {
+    age: {
+        type: Map,
+        of: String,
+        required: true
+    },
+    sex: {
         type: Map,
         of: String,
         required: true
@@ -30,19 +35,23 @@ const PreTherapyDetails = new Schema({
         of: String,
         required: true
     },
-    student_therapist_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "student_therapist"
+    student_therapist: {
+        type: Map,
+        of: String,
+        required: true
     },
-    supervisor_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "supervisor"
+    supervisor: {
+        type: Map,
+        of: String,
+        required: true
     },
     provisional_diagnosis: {
         type: Map,
         of: String,
+        required: true
+    },
+    case_no_hash: {
+        type: String,
         required: true
     },
     findings: {
@@ -101,10 +110,9 @@ const PreTherapyDetails = new Schema({
             of: String
         }
     },
-    confidence_score: {
-        type: Map,
-        of: String,
-        required: true
+    verified: {
+        type: Boolean,
+        default: false
     }
 });
 

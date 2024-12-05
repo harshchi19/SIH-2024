@@ -388,7 +388,7 @@ export const getAllPatients = async (req, res, next) => {
         // preferred_language2: patient.preferred_language2,
         // preferred_language3: patient.preferred_language3,
         // user_image: patient.user_image,
-        // case_no: patient.case_no,
+        case_no: patient.case_no,
         // patient_issue: patient.patient_issue,
       };
 

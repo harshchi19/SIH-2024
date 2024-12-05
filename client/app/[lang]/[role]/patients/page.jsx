@@ -25,11 +25,13 @@ import RightSidebar from "@/components/RightSidebar";
 import allPatients from "@/constants/patients";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { useParams } from "next/navigation";
 
 const StudentPatients = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const { currentLang } = useLanguage();
+  const { role } = useParams();
   const patientsPerPage = 6;
 
   // Pagination calculations
@@ -61,9 +63,7 @@ const StudentPatients = () => {
               Total Patients: {allPatients.length}
             </Badge>
             <Button variant="outline">Filter</Button>
-            <Link
-              href={`/${currentLang}/student-therapist/patients/add-patient`}
-            >
+            <Link href={`/${currentLang}/${role}/patients/add-patient`}>
               <Button className="bg-black">Add Patient</Button>
             </Link>
           </div>
