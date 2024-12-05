@@ -11,12 +11,15 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { StudentTherapistCard } from "@/components/student-therapist/index";
 import { useGetRole } from "@/hooks/useGetRole";
+import { useParams } from "next/navigation";
 
 const StudentTherapistPage = () => {
   const { currentLang } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [students, setStudents] = useState([]);
   const userId = "STT";
+  const { role } = useParams();
+
   const { getAll, isLoading, error } = useGetRole();
   useEffect(() => {
     getAll("STT").then((res) => {
@@ -47,7 +50,7 @@ const StudentTherapistPage = () => {
                 Performance Report
               </Button>
               <Link
-                href={`/${currentLang}/supervisor/student-therapists/add-student-therapist`}
+                href={`/${currentLang}/${role}/student-therapists/add-student-therapist`}
               >
                 <Button className="flex items-center">
                   <User className="h-4 w-4 mr-2" />

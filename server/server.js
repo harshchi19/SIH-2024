@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import cors from "cors";
+
 import sidebarRouter from "./routes/sidebar.route.js";
 import patientRouter from "./routes/patient.route.js";
 import userRouter from "./routes/user.route.js";
@@ -14,6 +15,7 @@ import contactRoutes from "./routes/contacts.route.js";
 import setupSocket from "./socket.js";
 import calendarRouter from "./routes/calendar.route.js";
 import visualizationRouter from "./routes/visualizations.route.js";
+import sessionsRouter from "./routes/sessions.route.js";
 
 dotenv.config();
 
@@ -33,15 +35,19 @@ app.use(cookieParser());
 app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 
-app.use("/sidebar", sidebarRouter);
-app.use("/patient", patientRouter);
 app.use("/auth", userRouter);
-app.use("/student-therapist", studentRouter);
-app.use("/pre_therapy", preTherapyRouter);
+app.use("/sidebar", sidebarRouter);
+
 app.use("/supervisor", supervisorRouter);
+app.use("/student-therapist", studentRouter);
+app.use("/patient", patientRouter);
+
 app.use("/contacts", contactRoutes);
 app.use("/calendar", calendarRouter);
 app.use("/visualization", visualizationRouter);
+
+app.use("/pre_therapy", preTherapyRouter);
+app.use("/sessions", sessionsRouter);
 
 const PORT = process.env.PORT || 4224;
 

@@ -10,14 +10,18 @@ import {
 import { studentTherapistData } from "@/constants/mockData";
 import { usePathname } from "next/navigation";
 import { useById } from "@/hooks/useById";
+import { useGetRole } from "@/hooks/useGetRole";
 
 const ProfilePage = () => {
   const pathname = usePathname();
   const pathWithoutLang = pathname.replace(/^\/[a-z]{2}\//, "");
   const pathParts = pathWithoutLang.split("/").filter((part) => part !== "");
-  const { getById, isLoading, error } = useById();
   const studentId = pathParts[2];
+
+  const { getById, isLoading } = useById();
+  const { getAll, loadingPat, error } = useGetRole();
   const [student, setStudent] = useState(null); // Changed to `null` for cleaner checks
+  const [patients, setPatients] = useState([]); // Changed to `[]` for cleaner checks
   const [loading, setLoading] = useState(true); // Added local loading state
 
   useEffect(() => {
@@ -31,6 +35,16 @@ const ProfilePage = () => {
         })
         .catch((err) => {
           console.error("Error fetching student details:", err);
+        });
+
+      getAll("PAT")
+        .then((res) => {
+          if (res.success) {
+            setPatients(res.users);
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching patients:", err);
         })
         .finally(() => {
           setLoading(false);
@@ -78,7 +92,9 @@ const ProfilePage = () => {
           {/* Right Side - Patients & Feedback */}
           <div className="lg:col-span-7">
             <PatientsSection
-              patients={studentTherapistData.patients}
+              patients={patients}
+              loading={loadingPat}
+              studentTherapistId={studentId}
               feedback={studentTherapistData.feedback}
             />
           </div>

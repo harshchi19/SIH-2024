@@ -349,14 +349,6 @@ export const getPatientById = async (req, res, next) => {
 
     return res.status(200).json(
       decryptedPatient
-      // address_details: decryptedAddressDetails,
-      // medical_details: decryptedMedicalDetails,
-      // speech_development_history: decryptedSpeechDevelopmentHistory,
-      // non_verbal_communication: decryptedNonVerbalCommunication,
-      // articulation_phonetic_level: decryptedArticulationPhoneticLevel,
-      // voice_details: decryptedVoiceDetails,
-      // suprasegmental_aspects: decryptedSuprasegmentalAspects,
-      // reading_writing_skills: decryptedReadingWritingSkills,
     );
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);
@@ -441,9 +433,7 @@ export const getAllPatients = async (req, res, next) => {
       };
     });
 
-    return res.status(200).json({
-      patients: decryptedPatients,
-    });
+    return res.status(200).json(decryptedPatients);
   } catch (error) {
     console.error("Error in getPatients: ", error);
     return res.status(400).json({ message: "int-ser-err" });
