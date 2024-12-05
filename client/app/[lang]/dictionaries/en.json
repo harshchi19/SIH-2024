@@ -13,6 +13,7 @@
   "breadcrumb": {
     "patient": "Patient",
     "student-therapist": "Student Therapist",
+    "student-therapists": "Student Therapists",
     "add-student-therapist": "Add Student Therapist",
     "supervisor": "Supervisor",
     "supervisors": "Supervisors",

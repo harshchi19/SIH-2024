@@ -1,9 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Calendar, User2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import {
+  useSessionByTherapist,
+  useSessionByTherapistByPatient,
+} from "@/hooks/useSessionByTherapistByPatient";
+import { useEffect, useState } from "react";
+import { lastDateOfMonth } from "@syncfusion/ej2-react-schedule";
 
-export function PatientCard({ patient }) {
+export function PatientCard({ patient, studentTherapistId }) {
+  const { currentLang, role } = useParams();
+  const navigate = useRouter();
   const getStatusColor = (status) => {
     switch (status) {
       case "Active":
@@ -13,6 +23,31 @@ export function PatientCard({ patient }) {
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const [sessions, setSessions] = useState([]);
+  const { getSessionByTherapistByPatient, isLoading, error } =
+    useSessionByTherapistByPatient();
+
+  const fetchSessions = async () => {
+    const { success, sessions } = await getSessionByTherapistByPatient(
+      studentTherapistId,
+      patient.patient_id
+    );
+    if (success) {
+      setSessions(sessions);
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions();
+  }, [studentTherapistId]);
+
+  const latestSession = sessions?.[0] || {};
+  console.log("Sessions: ", latestSession);
+
+  const handleClick = (id) => {
+    navigate.push(`/${currentLang}/${role}/pre-therapy/${id}`); //To be changed
   };
 
   return (
@@ -28,8 +63,8 @@ export function PatientCard({ patient }) {
               {patient.age} years old
             </p>
           </div>
-          <Badge className={getStatusColor(patient.status)}>
-            {patient.status}
+          <Badge className={getStatusColor(latestSession.report_status)}>
+            {latestSession.report_status}
           </Badge>
         </div>
       </CardHeader>
@@ -37,27 +72,39 @@ export function PatientCard({ patient }) {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Condition:</span>
-            <span className="font-medium">{patient.condition}</span>
+            <span className="font-medium">{latestSession.report_name}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Started:</span>
-            <span>{new Date(patient.startDate).toLocaleDateString()}</span>
+            <span>
+              {new Date(latestSession.createdAt).toLocaleDateString()}
+            </span>
           </div>
         </div>
 
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Progress</span>
-            <span className="font-medium">{patient.progress}%</span>
+            <span className="font-medium">{latestSession.progress}%</span>
           </div>
-          <Progress value={patient.progress} className="h-2 " />
+          <Progress value={latestSession.progress} className="h-2 " />
         </div>
 
         <div className="flex items-center justify-between pt-2 text-sm">
           <Calendar className="w-4 h-4 text-muted-foreground" />
           <span>
-            Next: {new Date(patient.nextAppointment).toLocaleDateString()}
+            Next: {new Date(latestSession.updatedAt).toLocaleDateString()}
           </span>
+        </div>
+
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleClick(patient.patient_id)}
+          >
+            View Therapy Session
+          </Button>
         </div>
       </CardContent>
     </Card>

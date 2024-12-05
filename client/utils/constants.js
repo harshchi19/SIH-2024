@@ -18,7 +18,7 @@ export const GET_CALENDAR_VISUALS_ROUTE = `${VISUALIZATION_ROUTE}/get-calendar-d
 export const PATIENT_ROUTE = `${HOST}/patient`;
 export const ADD_PATIENT_ROUTE = `${PATIENT_ROUTE}/add-patient`;
 export const GET_PAT_BY_ID_ROUTE = `${PATIENT_ROUTE}/get-patient-by-id`;
-export const GET_ALL_PAT_ROUTE = `${PATIENT_ROUTE}/get-all-patients`;
+export const GET_ALL_PAT_ROUTE = `${PATIENT_ROUTE}/all-patients`;
 
 // Pre Therapy for Patient
 export const PRE_THERAPY_ROUTE = `${HOST}/pre_therapy`;
@@ -52,3 +52,9 @@ export const ADD_CALENDAR_EVENT_ROUTE = `${CALENDAR_ROUTE}/add-calendar-event`;
 export const GET_USER_CALENDAR_EVENTS_ROUTE = `${CALENDAR_ROUTE}/get-calendar-events`;
 export const GET_USER_OBJ_ID = `${CALENDAR_ROUTE}/get-user-obj-id`;
 export const UPDATE_EVENT_BY_ID = `${CALENDAR_ROUTE}/update-event`;
+
+// Sessions
+export const SESSION_ROUTE = `${HOST}/sessions`;
+export const ADD_SESSION_ROUTE = `${SESSION_ROUTE}/add-session`;
+export const GET_ALL_SESSIONS_BY_THERAPIST = `${SESSION_ROUTE}/get-sessions-by-student-therapist-id`;
+export const GET_ALL_SESSIONS_BY_THERAPIST_PATIENT = `${SESSION_ROUTE}/get-sessions-by-therapist-patient-id`;
