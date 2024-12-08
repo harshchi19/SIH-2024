@@ -221,6 +221,7 @@ const setupSocket = (server) => {
 
   const sendMessage = async (messageData) => {
     try {
+      console.log("MessageData: ", messageData);
       const findEncryptionKey = await EncryptionKey.findOne({
         collectionName: "communications",
       });
@@ -232,7 +233,7 @@ const setupSocket = (server) => {
       const iv = generateKeyAndIV();
       const messageContent = { message: messageData.content };
       const encryptedMessageContent = encryptSection(messageContent, key, iv);
-
+      // console.log(messageData.sender, messageData.recipient);
       const senderType = messageData.sender.split("-")[0];
       const recipientType = messageData.recipient.split("-")[0];
 
@@ -252,7 +253,7 @@ const setupSocket = (server) => {
       });
 
       await newMessage.save();
-
+      console.log("Message created", newMessage);
       const messageToEmit = {
         sender: messageData.sender,
         recipient: messageData.recipient,

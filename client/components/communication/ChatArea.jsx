@@ -4,8 +4,9 @@
 // import { Button } from "@/components/ui/button";
 // import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 // import { Send } from "lucide-react";
-// import useSocket from "@/context/SocketContext"; // Importing useSocket
-
+// import { useSocket } from "@/context/SocketContext.jsx"; // Importing useSocket
+// import { GET_MESSAGES_ROUTE } from "@/utils/constants";
+// import moment from "moment";
 // const ChatHeader = ({ selectedContact }) => {
 //   if (!selectedContact) return null;
 
@@ -29,11 +30,11 @@
 //   );
 // };
 
-// const ChatMessage = ({ message, isOutgoing }) => (
+// const ChatMessage = ({ message, selectedContact, isOutgoing }) => (
 //   <div className={`flex ${isOutgoing ? "justify-end" : "justify-start"} mb-4`}>
 //     <div
 //       className={`flex items-end gap-2 max-w-[70%] ${
-//         isOutgoing ? "flex-row-reverse" : ""
+//         isOutgoing ? "" : "flex-row-reverse"
 //       }`}
 //     >
 //       {!isOutgoing && (
@@ -70,11 +71,11 @@
 // );
 
 // const ChatArea = ({ selectedContact }) => {
-//   const userId = localStorage.getItem("user"); // Get the userId from localStorage
-//   const { socket, messages } = useSocket(userId); // Use the useSocket hook
-//   // const [messages, setMessages] = useState([]);
+//   const userId = localStorage.getItem("user");
+//   // const socket = useSocket(userId); // Use the useSocket hook
+//   const { socket, connected } = useSocket();
+//   const [messages, setMessages] = useState([]); // Initialize the messages state
 //   const [newMessage, setNewMessage] = useState("");
-
 //   const messagesEndRef = useRef(null);
 
 //   // Scroll to the bottom when new messages arrive
@@ -85,40 +86,83 @@
 //   useEffect(() => {
 //     scrollToBottom();
 //   }, [messages]);
+//   // console.log("SELECTED CONTACT:", selectedContact);
+//   useEffect(() => {
+//     if (selectedContact) {
+//       const fetchMessages = async () => {
+//         try {
+//           const user2Id =
+//             selectedContact?.supervisor_id ||
+//             selectedContact?.student_therapist_id ||
+//             selectedContact?.patient_id;
+//           const url = `${GET_MESSAGES_ROUTE}/${userId}/${user2Id}`;
+//           console.log("URL:", url);
 
-//   // useEffect(() => {
-//   //   // Listen for incoming messages from the socket server
-//   //   socket.on("receiveMessage", (message) => {
-//   //     setMessages((prevMessages) => [...prevMessages, message]);
-//   //   });
+//           const response = await fetch(
+//             `${GET_MESSAGES_ROUTE}/${userId}/${user2Id}`,
+//             {
+//               method: "GET",
+//               headers: { "Content-Type": "application/json" },
+//             }
+//           );
 
-//   //   return () => {
-//   //     socket.off("receiveMessage"); // Clean up the listener
-//   //   };
-//   // }, [socket]);
+//           if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//           }
+//           const result = await response.json();
+//           // console.log(result.messages);
+//           // Normalize messages to match the existing message structure
+//           const normalizedMessages = result.messages.map((msg) => ({
+//             content: msg.content,
+//             sender: msg.sender_id,
+//             timestamp: msg.timestamp,
+//             isOutgoing: msg.sender_id === userId,
+//           }));
+//           console.log("Normal", normalizedMessages);
+//           setMessages(normalizedMessages);
+//         } catch (error) {
+//           console.error("Error Fetching Messages", error);
+//         }
+//       };
+//       fetchMessages();
+//     }
+//   }, [selectedContact, userId]);
+//   useEffect(() => {
+//     // Listen for incoming messages from the socket server
+//     if (socket) {
+//       socket.on("receiveMessage", (message) => {
+//         console.log(message);
+//         setMessages((prevMessages) => [...prevMessages, message]);
+//       });
+
+//       return () => {
+//         socket.off("receiveMessage"); // Clean up the listener
+//       };
+//     }
+//   }, [socket]);
 
 //   const handleSendMessage = (e) => {
 //     e.preventDefault();
 //     if (!newMessage.trim()) return;
 
-//     const message = {
-//       content: newMessage,
+//     const messageData = {
+//       content: newMessage.trim(),
 //       sender: userId,
-//       recipient: selectedContact.id,
+//       recipient:
+//         selectedContact?.supervisor_id ||
+//         selectedContact?.patientr_id ||
+//         selectedContact?.student_therapist_id,
 //       messageType: "text",
-//       // timestamp: new Date(), // Include the timestamp for display
+//       timestamp: new Date().toISOString(),
 //     };
 
-//     // Emit the message to the backend
-//     socket.emit("sendMessage", message);
-
-//     // Optimistically update the message list in the UI
+//     socket.emit("sendMessage", messageData);
+//     console.log("Message:", messageData);
 //     setMessages((prevMessages) => [
 //       ...prevMessages,
-//       { ...message, isOutgoing: true },
+//       { ...messageData, isOutgoing: true },
 //     ]);
 
-//     // Clear the input field
 //     setNewMessage("");
 //   };
 
@@ -130,11 +174,13 @@
 //           <ChatMessage
 //             key={index}
 //             message={message}
-//             isOutgoing={message.sender === userId}
+//             selectedContact={selectedContact}
+//             isOutgoing={message.isOutgoing}
 //           />
 //         ))}
 //         <div ref={messagesEndRef} />
 //       </ScrollArea>
+
 //       <div className="p-4 border-t">
 //         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
 //           <Input
@@ -164,8 +210,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Send } from "lucide-react";
-import { useSocket } from "@/context/SocketContext.jsx"; // Importing useSocket
+import { useSocket } from "@/context/SocketContext.jsx";
 import { GET_MESSAGES_ROUTE } from "@/utils/constants";
+import moment from "moment";
 
 const ChatHeader = ({ selectedContact }) => {
   if (!selectedContact) return null;
@@ -190,11 +237,26 @@ const ChatHeader = ({ selectedContact }) => {
   );
 };
 
-const ChatMessage = ({ message, isOutgoing }) => (
+const DateSeparator = ({ date }) => (
+  <div className="flex items-center my-4">
+    <div className="flex-grow border-t border-gray-300"></div>
+    <span className="px-3 text-sm text-gray-500">
+      {moment(date).calendar(null, {
+        sameDay: "[Today]",
+        lastDay: "[Yesterday]",
+        lastWeek: "MMMM D, YYYY",
+        sameElse: "MMMM D, YYYY",
+      })}
+    </span>
+    <div className="flex-grow border-t border-gray-300"></div>
+  </div>
+);
+
+const ChatMessage = ({ message, selectedContact, isOutgoing }) => (
   <div className={`flex ${isOutgoing ? "justify-end" : "justify-start"} mb-4`}>
     <div
       className={`flex items-end gap-2 max-w-[70%] ${
-        isOutgoing ? "flex-row-reverse" : ""
+        isOutgoing ? "" : "flex-row-reverse"
       }`}
     >
       {!isOutgoing && (
@@ -220,10 +282,7 @@ const ChatMessage = ({ message, isOutgoing }) => (
             isOutgoing ? "text-white/70" : "text-gray-500"
           }`}
         >
-          {new Date(message.timestamp).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {moment(message.timestamp).format("h:mm A")}
         </span>
       </div>
     </div>
@@ -232,9 +291,8 @@ const ChatMessage = ({ message, isOutgoing }) => (
 
 const ChatArea = ({ selectedContact }) => {
   const userId = localStorage.getItem("user");
-  // const socket = useSocket(userId); // Use the useSocket hook
-  const { socket, connected } = useSocket();
-  const [messages, setMessages] = useState([]); // Initialize the messages state
+  const { socket } = useSocket();
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
 
@@ -246,46 +304,78 @@ const ChatArea = ({ selectedContact }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  console.log("SELECTED CONTACT:", selectedContact.id);
+
+  // Group messages by date
+  const groupedMessages = messages.reduce((acc, message) => {
+    const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
+    if (!acc[messageDate]) {
+      acc[messageDate] = [];
+    }
+    acc[messageDate].push(message);
+    return acc;
+  }, {});
+
   useEffect(() => {
-    // Fetch the messages when a new contact is selected
     if (selectedContact) {
       const fetchMessages = async () => {
         try {
-          const user2Id = selectedContact.id;
-          const url = `${GET_MESSAGES_ROUTE}/${userId}/${selectedContact.id}`;
-          console.log("Message url:", url);
-          const response = await fetch(
-            `${GET_MESSAGES_ROUTE}/${userId}/${user2Id}`,
-            {
-              method: "GET",
-              headers: { "Content-Type": "application/json" },
-            }
-          );
+          const user2Id =
+            selectedContact?.supervisor_id ||
+            selectedContact?.student_therapist_id ||
+            selectedContact?.patient_id;
+          const url = `${GET_MESSAGES_ROUTE}/${userId}/${user2Id}`;
+
+          const response = await fetch(url, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const result = await response.json();
-          console.log("Fetched Message Data:", result);
-          // setMessages(result);
+
+          // Normalize messages to match the existing message structure
+          const normalizedMessages = result.messages
+            .map((msg) => ({
+              content: msg.content,
+              sender: msg.sender_id,
+              timestamp: msg.timestamp,
+              isOutgoing: msg.sender_id === userId,
+            }))
+            .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+          setMessages(normalizedMessages);
         } catch (error) {
-          console.log("Error Fetching Messages", error);
+          console.error("Error Fetching Messages", error);
         }
       };
       fetchMessages();
     }
   }, [selectedContact, userId]);
+
   useEffect(() => {
     // Listen for incoming messages from the socket server
     if (socket) {
       socket.on("receiveMessage", (message) => {
-        console.log(message);
-        setMessages((prevMessages) => [...prevMessages, message]);
+        setMessages((prevMessages) => {
+          // Check if the message is already in the list to prevent duplicates
+          const isDuplicate = prevMessages.some(
+            (msg) =>
+              msg.content === message.content &&
+              msg.timestamp === message.timestamp
+          );
+
+          return isDuplicate
+            ? prevMessages
+            : [...prevMessages, message].sort(
+                (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+              );
+        });
       });
 
       return () => {
-        socket.off("receiveMessage"); // Clean up the listener
+        socket.off("receiveMessage");
       };
     }
   }, [socket]);
@@ -294,24 +384,27 @@ const ChatArea = ({ selectedContact }) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    const message = {
-      content: newMessage,
+    const messageData = {
+      content: newMessage.trim(),
       sender: userId,
-      recipient: selectedContact.id,
+      recipient:
+        selectedContact?.supervisor_id ||
+        selectedContact?.patientr_id ||
+        selectedContact?.student_therapist_id,
       messageType: "text",
-      timestamp: new Date(), // Add timestamp for message display
+      timestamp: new Date().toISOString(),
+      isOutgoing: true,
     };
 
-    // Emit the message to the backend
-    socket.emit("sendMessage", message);
+    socket.emit("sendMessage", messageData);
 
-    // Optimistically update the message list in the UI
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { ...message, isOutgoing: true },
-    ]);
+    setMessages((prevMessages) => {
+      const updatedMessages = [...prevMessages, messageData].sort(
+        (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+      );
+      return updatedMessages;
+    });
 
-    // Clear the input field
     setNewMessage("");
   };
 
@@ -319,15 +412,22 @@ const ChatArea = ({ selectedContact }) => {
     <div className="flex-1 flex flex-col">
       <ChatHeader selectedContact={selectedContact} />
       <ScrollArea className="flex-1 p-4">
-        {messages.map((message, index) => (
-          <ChatMessage
-            key={index}
-            message={message}
-            isOutgoing={message.sender === userId}
-          />
+        {Object.entries(groupedMessages).map(([date, dateMessages]) => (
+          <div key={date}>
+            <DateSeparator date={date} />
+            {dateMessages.map((message, index) => (
+              <ChatMessage
+                key={`${date}-${index}`}
+                message={message}
+                selectedContact={selectedContact}
+                isOutgoing={message.isOutgoing}
+              />
+            ))}
+          </div>
         ))}
         <div ref={messagesEndRef} />
       </ScrollArea>
+
       <div className="p-4 border-t">
         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
           <Input
