@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserCircle, Stethoscope, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import Loader from "@/components/Loader";
@@ -44,7 +44,7 @@ const SignInPage = () => {
       formData["userType"] = selectedRole;
 
       const res = await login(formData);
-      console.log(res);
+
       if (res.success) {
         toast({ title: dict?.success?.login_succ });
 
@@ -56,6 +56,22 @@ const SignInPage = () => {
       toast({ variant: "destructive", title: dict?.errors?.try_lat_err });
     }
   };
+
+  useEffect(() => {
+    const userId = localStorage.getItem("user");
+    const userType = localStorage.getItem("userType");
+    const userIdType = userId?.split("-")[0];
+
+    if(userId && userType && userIdType === userType) {
+      const userTypes = {
+        "PAT": "patient",
+        "STT": "student-therapist",
+        "SUP": "supervisor"
+      }
+
+      router.push(`/${currentLang}/${userTypes[userType]}/dashboard`)
+    }
+  }, [currentLang]);
 
   if (!dict) {
     return <Loader />;
