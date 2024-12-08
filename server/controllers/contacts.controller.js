@@ -7,6 +7,7 @@ import {
   decryptSection,
   generateHashedData,
 } from "../helper/security.helper.js";
+import { Messages } from "../models/mongo/message.model.js";
 
 export const getContacts = async (req, res) => {
   let { userId } = req.params;
