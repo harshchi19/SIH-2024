@@ -1,11 +1,12 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, File, UploadFile, Form
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, List
 from dotenv import load_dotenv
 from services.ocr import generate_pre_therapy
 from services.vaniai import text_to_speech, prepare_system_context
+from services.matchmaking import extract_text_from_folder, extract_text_from_pdf, compute_cosine_similarity
 import base64
 import os
 from groq import Groq
@@ -91,3 +92,37 @@ async def chat_with_bot(
     except Exception as e:
         print("Error in /chat-with-bot endpoint:", str(e))
         return JSONResponse(content={"Error": str(e)}, status_code=500)
+    
+# For matching student therapists to patients
+@app.post("/match-therapists")
+async def match_therapists(pdf_file: UploadFile = File(...)) -> JSONResponse:
+    """
+    Match patient details (uploaded PDF) with therapist data based on cosine similarity.
+    """
+    try:
+        # Extract text from uploaded PDF file
+        extracted_text = extract_text_from_pdf(pdf_file.file)
+
+        # Define the folder path where therapist PDFs are stored
+        folder_path = "therapist_data"
+        if not os.path.exists(folder_path):
+            raise HTTPException(status_code=404, detail=f"The folder '{folder_path}' does not exist.")
+
+        # Extract texts from all therapist PDFs
+        extracted_therapist_data = extract_text_from_folder(folder_path)
+
+        # Calculate cosine similarity
+        similarities = []
+        for filename, text in extracted_therapist_data.items():
+            similarity_score = compute_cosine_similarity(extracted_text, text)
+            similarities.append({"filename": filename, "similarity": similarity_score})
+
+        # Sort the similarities in descending order
+        similarities.sort(key=lambda x: x["similarity"], reverse=True)
+
+        # Return top 3 matches
+        top_matches = similarities[:3]
+        return JSONResponse(content={"matches": top_matches}, status_code=200)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
@@ -17,19 +17,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
 import { ADD_SUPERVISOR_ROUTE } from "@/utils/constants";
+import {
+  qualificationsOptions,
+  hospitalDepartments,
+} from "@/constants/hospitalDetails";
 
 const RegisterPage = () => {
-  const [selectedRole, setSelectedRole] = useState("");
   const { dict, currentLang } = useLanguage();
+  const [selectedQualifications, setSelectedQualifications] = useState([]);
+  const [selectedDepartments, setSelectedDepartments] = useState([]);
   const [data, setData] = useState({
     name: "",
     password: "",
@@ -40,6 +37,8 @@ const RegisterPage = () => {
     preferred_language1: "",
     preferred_language2: "",
     preferred_language3: "",
+    department: "",
+    qualifications: "",
   });
   const router = useRouter();
   const params = useParams();
@@ -52,19 +51,60 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleDateChange = (date) => {
-    setData((prevData) => ({
-      ...prevData,
-      date_of_birth: date,
-    }));
-  };
-
   const handleSexChange = (sexId, sexValue) => {
     setData((prevData) => ({
       ...prevData,
       [sexId]: sexValue,
     }));
   };
+
+  const handleQualificationChange = (qualification) => {
+    setSelectedQualifications((prev) => {
+      const isSelected = prev.includes(qualification);
+      if (isSelected) {
+        return prev.filter((item) => item !== qualification);
+      } else {
+        return [...prev, qualification];
+      }
+    });
+  };
+
+  const handleDepartmentChange = (dept) => {
+    setSelectedDepartments((prev) => {
+      const isSelected = prev.includes(dept);
+      if (isSelected) {
+        return prev.filter((item) => item !== dept);
+      } else {
+        return [...prev, dept];
+      }
+    });
+  };
+
+  const updateQualificationsField = () => {
+    handleInputChange({
+      target: {
+        id: "qualifications",
+        value: selectedQualifications.join(", "),
+      },
+    });
+  };
+
+  const updateDepartmentsField = () => {
+    handleInputChange({
+      target: {
+        id: "department",
+        value: selectedDepartments.join(", "),
+      },
+    });
+  };
+
+  useEffect(() => {
+    updateDepartmentsField();
+  }, [selectedDepartments]);
+
+  useEffect(() => {
+    updateQualificationsField();
+  }, [selectedQualifications]);
 
   const handleSubmit = async () => {
     try {
@@ -95,7 +135,7 @@ const RegisterPage = () => {
 
   return (
     <div className="h-screen w-screen flex-row-center bg-gray-100">
-      <div className="h-[80%] w-2/3 rounded-xl overflow-hidden py-5 shadow-2xl border bg-white max-md:w-11/12">
+      <div className="h-[90%] w-2/3 rounded-xl overflow-hidden py-5 shadow-2xl border bg-white max-md:w-11/12">
         <div className="h-full flex flex-col justify-between">
           <div>
             <div className="flex flex-col justify-start mt-6 px-14 max-sm:px-8">
@@ -183,42 +223,22 @@ const RegisterPage = () => {
                 </div>
 
                 <div className="w-full flex-row-center gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-5">
-                  <div className="space-y-1 w-full">
+                  <div className="grid w-full items-center gap-2">
                     <Label
                       htmlFor="date_of_birth"
                       className="text-gray-700 text-md"
                     >
                       {dict?.addPatient?.date_of_birth}
                     </Label>
-                    <Popover>
-                      <PopoverTrigger
-                        className="w-full h-12 bg-transparent"
-                        asChild
-                      >
-                        <Button
-                          variant={"outline"}
-                          className={`
-                  "w-[280px] justify-start text-left font-normal",
-                  ${!data.date_of_birth && "text-muted-foreground"}
-                `}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {data.date_of_birth ? (
-                            format(data.date_of_birth, "PPP")
-                          ) : (
-                            <span>{dict?.addPatient?.dob_plchldr}</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={data.date_of_birth}
-                          onSelect={(date) => handleDateChange(date)}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <Input
+                      id="date_of_birth"
+                      name="date_of_birth"
+                      type="date"
+                      value={data.date_of_birth}
+                      onChange={handleInputChange}
+                      className="h-12 -mt-1"
+                      required
+                    />
                   </div>
 
                   <div className="space-y-1 w-full">
@@ -231,7 +251,7 @@ const RegisterPage = () => {
                           !data.sex ? "text-gray-500" : ""
                         } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                       >
-                        {data.sex || dict?.addPatient?.sex_plchldr}
+                        {data.sex || dict?.login?.sup_sex_plchldr}
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         {sexData.map((sex) => (
@@ -297,6 +317,108 @@ const RegisterPage = () => {
                       onChange={handleInputChange}
                       className="border-gray-200 w-full h-12 text-md"
                     />
+                  </div>
+                </div>
+
+                <div className="w-full flex gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-5">
+                  <div className="space-y-1 w-full">
+                    <Label
+                      htmlFor="department"
+                      className="text-gray-700 text-md"
+                    >
+                      {dict?.login?.department}
+                    </Label>
+                    <DropdownMenu className="flex justify-start">
+                      <DropdownMenuTrigger
+                        className={`w-full flex items-center justify-start h-12 rounded-md border ${
+                          selectedDepartments.length === 0
+                            ? "text-gray-500"
+                            : ""
+                        } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
+                      >
+                        {hospitalDepartments.length > 0
+                          ? selectedDepartments.join(", ")
+                          : dict?.login?.dept_plchldr}
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        {hospitalDepartments.map((dept, index) => (
+                          <DropdownMenuItem
+                            key={index}
+                            onClick={() => {
+                              handleDepartmentChange(dept);
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span>{dept}</span>
+                              {selectedDepartments.includes(dept) && (
+                                <span className="text-green-500 ml-2">✔</span>
+                              )}
+                            </div>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <div className="mt-2 flex flex-wrap gap-2 gap-y-1">
+                      {selectedDepartments.map((dept) => (
+                        <span
+                          key={dept}
+                          className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm"
+                        >
+                          {dept}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 w-full">
+                    <Label
+                      htmlFor="qualifications"
+                      className="text-gray-700 text-md"
+                    >
+                      {dict?.login?.qualifications}
+                    </Label>
+                    <DropdownMenu className="flex justify-start">
+                      <DropdownMenuTrigger
+                        className={`w-full flex items-center justify-start h-12 rounded-md border ${
+                          selectedQualifications.length === 0
+                            ? "text-gray-500"
+                            : ""
+                        } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
+                      >
+                        {selectedQualifications.length > 0
+                          ? selectedQualifications.join(", ")
+                          : dict?.login?.qual_plchldr}
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        {qualificationsOptions.map((qualification, index) => (
+                          <DropdownMenuItem
+                            key={index}
+                            onClick={() => {
+                              handleQualificationChange(qualification);
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span>{qualification}</span>
+                              {selectedQualifications.includes(
+                                qualification
+                              ) && (
+                                <span className="text-green-500 ml-2">✔</span>
+                              )}
+                            </div>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <div className="mt-2 flex flex-wrap gap-2 gap-y-1">
+                      {selectedQualifications.map((qualification) => (
+                        <span
+                          key={qualification}
+                          className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm"
+                        >
+                          {qualification}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

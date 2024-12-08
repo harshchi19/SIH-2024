@@ -25,8 +25,10 @@ export const onboardPatient = async (req, res, next) => {
   } = req.body;
 
   try {
+    const { password, ...basicDetailsWithoutPassword } = basicDetails;
+
     const dataForPdf = {
-      basic_details: basicDetails,
+      basic_details: basicDetailsWithoutPassword,
       address_details: addressDetails,
       medical_details: medicalDetails,
       speech_development_history: speechDevelopmentHistory,
@@ -347,9 +349,7 @@ export const getPatientById = async (req, res, next) => {
     decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
     decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
 
-    return res.status(200).json(
-      decryptedPatient
-    );
+    return res.status(200).json(decryptedPatient);
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);
     return res.status(400).json({ message: "int-ser-err" });
