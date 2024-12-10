@@ -8,6 +8,6 @@ router.post("/login-user", loginUser);
 router.post("/logout-user", logoutUser);
 // router.post("/register-user", registerUser);
 // router.get("/get-user-by-id/:userId/:userType", getUserDetailsById);
-// router.get("/generate", generateMasterKey);
+router.get("/generate", generateMasterKey);
 
 export default router;
