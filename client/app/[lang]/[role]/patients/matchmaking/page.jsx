@@ -15,7 +15,7 @@ export default function MatchmakingPage() {
           setSelectedPatient={setSelectedPatient}
         />
       </div>
-      <RightSidebar />
+      {/* <RightSidebar /> */}
     </div>
   );
 }

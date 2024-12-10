@@ -400,10 +400,10 @@ const StudentReportsPage = () => {
       </div> */}
 
       {/* Right Sidebar */}
-      <RightSidebar
+      {/* <RightSidebar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
-      />
+      /> */}
     </div>
   );
 };

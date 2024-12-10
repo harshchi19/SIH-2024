@@ -69,10 +69,10 @@ const StudentTherapistPage = () => {
       </div>
 
       {/* Rigth Sidebar */}
-      <RightSidebar
+      {/* <RightSidebar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
-      />
+      /> */}
     </>
   );
 };
