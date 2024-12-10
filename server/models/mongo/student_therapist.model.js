@@ -75,6 +75,9 @@ const studentTherapistSchema = new Schema({
     type: Map,
     of: String,
   },
+  rating: {
+    type: String,
+  },
   location: {
     city: {
       type: Map,
