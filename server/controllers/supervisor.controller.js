@@ -244,3 +244,48 @@ export const getAllSupervisors = async (req, res, next) => {
     return res.status(400).json({ message: "int-ser-err" });
   }
 };
+
+export const getSupervisorByObjectId = async(req, res, next) => {
+  const { supervisor_id } = req.params;
+
+  try {
+    const supervisor = await Supervisor.findById(supervisor_id);
+
+    if (!supervisor) {
+      return res.status(400).json({ message: "usr-not-fnd" });
+    }
+
+    const findEncryptionKey = await EncryptionKey.findOne({
+      collectionName: "supervisors",
+    });
+
+    const key = unwrapKey(
+      findEncryptionKey.encryptedKey,
+      findEncryptionKey.encryptedIV,
+      findEncryptionKey.encryptedAuthTag
+    );
+
+    const decryptData = {
+      _id: supervisor._id,
+      supervisor_id: Object.fromEntries(supervisor.supervisor_id),
+      name: Object.fromEntries(supervisor.name),
+      email: Object.fromEntries(supervisor.email),
+      phone_no: Object.fromEntries(supervisor.phone_no),
+      age: Object.fromEntries(supervisor.age),
+      date_of_birth: Object.fromEntries(supervisor.date_of_birth),
+      sex: Object.fromEntries(supervisor.sex),
+      department: Object.fromEntries(supervisor.department),
+      preferred_language1: Object.fromEntries(supervisor.preferred_language1),
+      preferred_language2: Object.fromEntries(supervisor.preferred_language2),
+      preferred_language3: Object.fromEntries(supervisor.preferred_language3),
+    };
+
+    const decryptedData = decryptSection(decryptData, key);
+    decryptedData.authenticated = supervisor.authenticated;
+
+    return res.status(200).json(decryptedData);
+  } catch (error) {
+    console.error("Error in getSupervisorById: ", error);
+    return res.status(400).json({ message: "int-ser-err" });
+  }
+};

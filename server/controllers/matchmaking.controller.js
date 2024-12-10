@@ -8,7 +8,7 @@ export const getUnallocatedPatients = async (req, res, next) => {
     const patients = await Patient.find({
       "medical_details.student_therapist_id": { $size: 0 },
     }).select(
-      "_id name email phone_no sex user_image case_no date_of_assignment date_of_birth patient_issue"
+      "_id name email phone_no sex user_image case_no date_of_assignment date_of_birth patient_issue preferred_language1"
     );
 
     if (!patients) return res.status(400).json({ message: "no-pat-fnd" });
@@ -33,6 +33,7 @@ export const getUnallocatedPatients = async (req, res, next) => {
         sex: Object.fromEntries(patient.sex),
         case_no: Object.fromEntries(patient.case_no),
         patient_issue: Object.fromEntries(patient.patient_issue),
+        language: Object.fromEntries(patient.preferred_language1),
       };
 
       const patientData = decryptSection(decryptedPatient, key);
@@ -42,11 +43,9 @@ export const getUnallocatedPatients = async (req, res, next) => {
       };
     });
 
-    console.log(decryptedPatients);
-
     return res
       .status(200)
-      .json({ message: "success", patients: decryptedPatients });
+      .json({ message: "success", patients: decryptedPatients[0] });
   } catch (error) {
     console.error(`Error in getUnallocatedPatients: ${error}`);
     return res.status(500).json({ message: "int-ser-err" });

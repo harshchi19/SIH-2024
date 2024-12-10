@@ -341,6 +341,11 @@
   },
   "matchmaking": {
     "patients": "Unallocated Patients",
-    "search_plchldr": "Patient Name"
+    "search_plchldr": "Patient Name",
+    "no_pat_found": "No Patients Found",
+    "phone": "Phone No.",
+    "email": "Email",
+    "language": "Spoken Language",
+    "issue": "Issue"
   }
 }
