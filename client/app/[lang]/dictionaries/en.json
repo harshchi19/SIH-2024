@@ -23,7 +23,8 @@
     "communication": "Communication",
     "patients": "All Patients",
     "add-patient": "Add Patient",
-    "pre-therapy": "Pre-Therapy"
+    "pre-therapy": "Pre-Therapy",
+    "matchmaking": "Patient Alloment"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",
@@ -69,7 +70,12 @@
     "forgot_pass": "Forgot Password?",
     "reg_sup_head": "Register yourself as a Supervisor",
     "reg_sup_desc": "Please fill in the details and wait for the approval of the Admin",
-    "sup_name": "Supervisor Name"
+    "sup_name": "Supervisor Name",
+    "sup_sex_plchldr": "Please select the sex of supervisor",
+    "department": "Supervisor's Department",
+    "dept_plchldr": "Ear, Nose, Throat (ENT) Department",
+    "qualifications": "Qualifications",
+    "qual_plchldr": "Add your qualifications"
   },
   "addPatient": {
     "basic": "Basic Details",
@@ -332,5 +338,14 @@
     "loading": "Loading...",
     "empty": "Empty message",
     "empty_desc": "Please enter a question to ask vani.ai"
+  },
+  "matchmaking": {
+    "patients": "Unallocated Patients",
+    "search_plchldr": "Patient Name",
+    "no_pat_found": "No Patients Found",
+    "phone": "Phone No.",
+    "email": "Email",
+    "language": "Spoken Language",
+    "issue": "Issue"
   }
 }

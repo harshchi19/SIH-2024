@@ -17,6 +17,7 @@ import calendarRouter from "./routes/calendar.route.js";
 import visualizationRouter from "./routes/visualizations.route.js";
 import sessionsRouter from "./routes/sessions.route.js";
 import messageRoutes from "./routes/message.route.js";
+import matchmakingRouter from "./routes/matchmaking.route.js";
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use("/visualization", visualizationRouter);
 
 app.use("/pre_therapy", preTherapyRouter);
 app.use("/sessions", sessionsRouter);
+app.use("/matchmaking", matchmakingRouter);
 
 const PORT = process.env.PORT || 4224;
 

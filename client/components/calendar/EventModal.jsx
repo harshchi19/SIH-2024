@@ -206,7 +206,7 @@ const EventModal = ({
                   >
                     {supervisorName || dict?.calendar?.sel_sup_plchldr}
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
+                  <DropdownMenuContent className="max-h-80 overflow-y-scroll">
                     {supervisorData.length > 0 ? (
                       supervisorData.map((supervisor) => (
                         <DropdownMenuItem

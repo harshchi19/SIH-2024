@@ -12,9 +12,10 @@ import {
   LogOut,
   MoveRight,
   Hospital,
-  Clock,
-  NotebookPen,
+  ChevronRight,
   User,
+  UserPlus,
+  CirclePlus,
 } from "lucide-react";
 import HoverSpecializationPopup from "./HoverSpecializationPopup";
 import { useLanguage } from "@/context/LanguageContext";
@@ -32,6 +33,71 @@ const iconMap = {
   Inbox,
   FileText,
   MessageSquare,
+  UserPlus,
+  CirclePlus,
+};
+
+const SidebarItem = ({ item, activeRoute, handleNavigation, depth = 0 }) => {
+  const IconComponent = iconMap[item.icon];
+  const isActive = activeRoute(item.route);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen((prev) => !prev);
+  };
+
+  return (
+    <div className="w-full relative">
+      <div>
+        <Button
+          variant="ghost"
+          className={`w-full justify-between items-center text-base transition-all duration-200
+          ${depth > 0 ? "pl-6" : ""}
+          ${
+            isActive
+              ? "bg-[#54C174] text-white hover:bg-[#54C174] hover:text-white"
+              : "text-white hover:bg-white/90 hover:text-[#5DB075]"
+          }`}
+          onClick={() => handleNavigation(item.route)}
+        >
+          <div className="flex items-center">
+            {IconComponent && (
+              <IconComponent
+                className={`mr-2 h-4 w-4 ${
+                  isActive ? "text-white" : "group-hover:text-[#5DB075]"
+                }`}
+              />
+            )}
+            <span className="capitalize">{item.name}</span>
+          </div>
+        </Button>
+        {item?.children?.length > 0 && (
+          <ChevronRight
+            className={`ml-2 h-4 w-4 absolute right-3 top-[11px] transform transition-transform text-gray-300 ${
+              isOpen ? "rotate-90" : ""
+            }`}
+            onClick={toggleDropdown}
+          />
+        )}
+      </div>
+      {item.children && isOpen && (
+        <div className="pl-6 mt-2 space-y-2 relative">
+          {item.children.map((child, index) => (
+            <SidebarItem
+              key={child.name}
+              item={child}
+              activeRoute={activeRoute}
+              handleNavigation={handleNavigation}
+              depth={depth + 1}
+              isLast={index === item.children.length - 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const Sidebar = ({ sidebarData }) => {
@@ -82,7 +148,7 @@ const Sidebar = ({ sidebarData }) => {
 
   // useEffect(() => {
   //   const getUserById = async () => {
-  //     if (upcomingEvent.userId && upcomingEvent.userType) {
+  //     if (upcomingEvent?.userId && upcomingEvent?.userType) {
   //       const response = await fetch(
   //         `${GET_USER_DETAILS_BY_ID_ROUTE}/${upcomingEvent.userId}/${upcomingEvent.userType}`,
   //         {
@@ -155,34 +221,14 @@ const Sidebar = ({ sidebarData }) => {
 
         {/* Navigation */}
         <nav className="space-y-2">
-          {sidebarData.map((item) => {
-            const IconComponent = iconMap[item.icon];
-            const active = isActiveRoute(item.route);
-
-            return (
-              <Button
-                key={item._id}
-                variant="ghost"
-                className={`w-full justify-start text-base transition-all duration-200 ${
-                  active
-                    ? "bg-[#54C174] text-white hover:bg-[#54C174]"
-                    : "text-white hover:bg-white/90 hover:text-[#5DB075]"
-                }`}
-                onClick={() => handleNavigation(item.route)}
-              >
-                {IconComponent && (
-                  <IconComponent
-                    className={`mr-2 h-4 w-4 ${
-                      active
-                        ? "text-white"
-                        : "text-white group-hover:text-[#5DB075]"
-                    }`}
-                  />
-                )}
-                <span className="capitalize">{item.name}</span>
-              </Button>
-            );
-          })}
+          {sidebarData.map((item) => (
+            <SidebarItem
+              key={item.name}
+              item={item}
+              activeRoute={isActiveRoute}
+              handleNavigation={handleNavigation}
+            />
+          ))}
         </nav>
       </div>
 
@@ -199,10 +245,10 @@ const Sidebar = ({ sidebarData }) => {
               <div className="flex items-center gap-x-3">
                 <Image src={calendar} alt="Calendar" className="h-10 w-auto" />
                 <div className="max-w-full truncate flex-grow overflow-hidden whitespace-nowrap">
-                  <h1 className="text-xl font-extrabold text-white truncate flex-grow drop-shadow-md">
+                  <h1 className="text-xl font-extrabold text-white truncate flex-grow drop-shadow-md tracking-tight">
                     {upcomingEvent?.title}
                   </h1>
-                  <h4 className="text-sm font-medium text-gray-200 truncate flex-grow overflow-hidden whitespace-nowrap">
+                  <h4 className="text-sm font-semibold text-gray-200 truncate flex-grow overflow-hidden whitespace-nowrap tracking-tight">
                     {upcomingEvent?.description}
                   </h4>
                 </div>
