@@ -1,7 +1,7 @@
 const RightSidebar = () => {
   return (
-    <div className="h-full w-1/4 rounded-lg bg-blue-200 p-3 px-4">
-      <div>Hello</div>
+    <div className="h-full w-1/4 rounded-md px-4 py-3 bg-blue-500">
+      <h1>Hello</h1>
     </div>
   );
 };
