@@ -205,10 +205,10 @@ const StudentPatients = () => {
       </div>
 
       {/* Right Sidebar */}
-      <RightSidebar
+      {/* <RightSidebar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
-      />
+      /> */}
     </>
   );
 };
