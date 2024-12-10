@@ -58,3 +58,7 @@ export const SESSION_ROUTE = `${HOST}/sessions`;
 export const ADD_SESSION_ROUTE = `${SESSION_ROUTE}/add-session`;
 export const GET_ALL_SESSIONS_BY_THERAPIST = `${SESSION_ROUTE}/get-sessions-by-student-therapist-id`;
 export const GET_ALL_SESSIONS_BY_THERAPIST_PATIENT = `${SESSION_ROUTE}/get-sessions-by-therapist-patient-id`;
+
+// Reports
+export const REPORT_ROUTE = `${HOST}/report`;
+export const GET_ALL_REPORTS = `${REPORT_ROUTE}/get-all-reports`;
