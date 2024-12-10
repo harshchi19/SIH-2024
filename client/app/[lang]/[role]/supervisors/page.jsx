@@ -11,6 +11,7 @@ import SupervisorCard from "@/components/supervisor/SupervisorCard";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { useGetRole } from "@/hooks/useGetRole";
+import { hospitalDepartments } from "@/constants/hospitalDetails";
 
 // Supervisors Dashboard Component
 export default function SupervisorsDashboard() {
@@ -41,29 +42,33 @@ export default function SupervisorsDashboard() {
   }, []); // No dependencies other than initial load
 
   // Get unique departments for filter
-  const departments = [
-    "All Departments",
-    ...new Set(supervisors.map((sup) => sup.department)),
-  ];
+  const departments = ["All Departments", ...hospitalDepartments];
 
   // Filtered Supervisors
   const filteredSupervisors = useMemo(() => {
     return supervisors.filter((supervisor) => {
+      // Split and normalize the department values into an array
+      const supervisorDepartments = supervisor.department
+        .split(",")
+        .map((dept) => dept.trim().toLowerCase()); // Split by comma and trim spaces
+
       const matchesSearchTerm =
         searchTerm === "" ||
         supervisor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        supervisor.department.toLowerCase().includes(searchTerm.toLowerCase());
+        supervisorDepartments.some((dept) =>
+          dept.includes(searchTerm.toLowerCase())
+        ); // Check if any department matches the search term
 
       const matchesDepartment =
         filterDepartment === "All Departments" ||
-        supervisor.department === filterDepartment;
+        supervisorDepartments.includes(filterDepartment.toLowerCase()); // Match the department filter
 
       return matchesSearchTerm && matchesDepartment;
     });
   }, [searchTerm, filterDepartment, supervisors]);
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
+    <div className="container mx-auto px-4 py-8 space-y-6 overflow-y-scroll">
       {/* Loading State */}
       {isLoading ? (
         <div className="text-center py-10">Loading supervisors...</div>

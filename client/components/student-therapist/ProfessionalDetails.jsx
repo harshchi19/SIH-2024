@@ -6,16 +6,28 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@radix-ui/react-dropdown-menu";
+import {
+  qualificationsOptions,
+  hospitalDepartments,
+} from "@/constants/hospitalDetails";
 
 const ProfessionalDetails = ({ data, updateData }) => {
   const { dict } = useLanguage();
   const [newItem, setNewItem] = useState({
     language: "",
     specialization: "",
-    qualification: "",
+    qualifications: "",
     training: "",
   });
   const [selectedSlots, setSelectedSlots] = useState(data.availability || []);
+  const [selectedQualifications, setSelectedQualifications] = useState([]);
+  const [selectedSpecializations, setSelectedSpecializations] = useState([]);
 
   // Initialize location state
   const [location, setLocation] = useState({
@@ -64,6 +76,33 @@ const ProfessionalDetails = ({ data, updateData }) => {
     updateData(e.target.id, e.target.value);
   };
 
+  const handleQualificationChange = (qualification) => {
+    setSelectedQualifications((prev) => {
+      const isSelected = prev.includes(qualification);
+      if (isSelected) {
+        return prev.filter((item) => item !== qualification);
+      } else {
+        return [...prev, qualification];
+      }
+    });
+  };
+
+  const handleSpecializationChange = (dept) => {
+    setSelectedSpecializations((prev) => {
+      const isSelected = prev.includes(dept);
+      if (isSelected) {
+        return prev.filter((item) => item !== dept);
+      } else {
+        return [...prev, dept];
+      }
+    });
+  };
+
+  useEffect(() => {
+    data.qualifications = selectedQualifications.toString(", ");
+    data.specialization = selectedSpecializations.toString(", ");
+  }, [selectedQualifications, selectedSpecializations]);
+
   const handleNumberChange = (e) => {
     updateData(
       e.target.id,
@@ -75,7 +114,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
     const fieldMap = {
       language: "spoken_languages",
       specialization: "specialization",
-      qualification: "qualifications",
+      qualifications: "qualifications",
       training: "training_and_education",
     };
 
@@ -93,7 +132,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
       preferred_language2: "preferred_language2",
       preferred_language3: "preferred_language3",
       specialization: "specialization",
-      qualification: "qualifications",
+      qualifications: "qualifications",
       training: "training_and_education",
     };
 
@@ -205,90 +244,92 @@ const ProfessionalDetails = ({ data, updateData }) => {
           </div>
         </div>
 
-        {/* Rest of the component remains the same ... */}
         {/* Specialization */}
         <div className="space-y-2">
-          <Label>Specialization</Label>
-          <div className="flex gap-2">
-            <Input
-              value={newItem.specialization}
-              onChange={(e) =>
-                setNewItem((prev) => ({
-                  ...prev,
-                  specialization: e.target.value,
-                }))
-              }
-              placeholder="Enter specialization"
-              className="flex-grow"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addToList("specialization")}
-              className="whitespace-nowrap"
+          <Label htmlFor="Specialization" className="text-gray-700 text-md">
+            {dict?.addStudentTherapist?.department}
+          </Label>
+          <DropdownMenu className="flex justify-start">
+            <DropdownMenuTrigger
+              className={`w-full flex items-center justify-start h-12 rounded-md border ${
+                selectedSpecializations.length === 0 ? "text-gray-500" : ""
+              } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
             >
-              Add
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {(data.specialization || []).map((spec, index) => (
-              <div
-                key={index}
-                className="flex items-center bg-gray-100 px-2 py-1 rounded-md"
-              >
-                {spec}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-2 p-0 hover:bg-red-100"
-                  onClick={() => removeFromList("qualification", index)}
+              {selectedSpecializations.length > 0
+                ? selectedSpecializations.join(", ")
+                : dict?.login?.dept_plchldr}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="max-h-80 overflow-y-auto bg-slate-50 p-1 rounded">
+              {hospitalDepartments.map((dept, index) => (
+                <DropdownMenuItem
+                  key={index}
+                  onClick={() => {
+                    handleSpecializationChange(dept);
+                  }}
                 >
-                  <X size={16} className="text-red-500" />
-                </Button>
-              </div>
+                  <div className="flex items-center justify-between">
+                    <span>{dept}</span>
+                    {selectedSpecializations.includes(dept) && (
+                      <span className="text-green-500 ml-2">✔</span>
+                    )}
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div className="mt-2 flex flex-wrap gap-2 gap-y-1">
+            {selectedSpecializations.map((dept) => (
+              <span
+                key={dept}
+                className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm"
+              >
+                {dept}
+              </span>
             ))}
           </div>
         </div>
 
         {/* Qualifications */}
         <div className="space-y-2">
-          <Label>Qualifications</Label>
-          <div className="flex gap-2">
-            <Input
-              value={newItem.qualification}
-              onChange={(e) =>
-                setNewItem((prev) => ({
-                  ...prev,
-                  qualification: e.target.value,
-                }))
-              }
-              placeholder="Enter qualification"
-              className="flex-grow"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addToList("qualification")}
+          <Label htmlFor="qualifications" className="text-gray-700 text-md">
+            {dict?.addStudentTherapist?.qualifications}
+          </Label>
+          <DropdownMenu className="flex justify-start">
+            <DropdownMenuTrigger
+              className={`w-full flex items-center justify-start h-12 rounded-md border ${
+                selectedQualifications.length === 0 ? "text-gray-500" : ""
+              } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
             >
-              Add
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {data.qualifications.map((qual, index) => (
-              <div
-                key={index}
-                className="flex items-center bg-gray-100 px-2 py-1 rounded-md"
-              >
-                {qual}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-2 p-0 hover:bg-red-100"
-                  onClick={() => removeFromList("qualification", index)}
+              {selectedQualifications.length > 0
+                ? selectedQualifications.join(", ")
+                : dict?.addStudentTherapist?.qual_plchldr}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="max-h-80 overflow-y-scroll bg-slate-50 p-1 rounded">
+              {qualificationsOptions.map((qualification, index) => (
+                <DropdownMenuItem
+                  key={index}
+                  onClick={() => {
+                    handleQualificationChange(qualification);
+                  }}
                 >
-                  <X size={16} className="text-red-500" />
-                </Button>
-              </div>
+                  <div className="flex items-center justify-between">
+                    <span>{qualification}</span>
+                    {selectedQualifications.includes(qualification) && (
+                      <span className="text-green-500 ml-2">✔</span>
+                    )}
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div className="mt-2 flex flex-wrap gap-2 gap-y-1">
+            {selectedQualifications.map((qualification) => (
+              <span
+                key={qualification}
+                className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm"
+              >
+                {qualification}
+              </span>
             ))}
           </div>
         </div>

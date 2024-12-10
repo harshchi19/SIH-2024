@@ -14,18 +14,10 @@ const StudentTherapistCard = (student) => {
   const pathname = usePathname();
 
   const extractTextFromString = (inputString) => {
-    try {
-      const parsedArray = JSON.parse(inputString);
-
-      if (Array.isArray(parsedArray)) {
-        return parsedArray.map((item) => item.toString());
-      } else {
-        throw new Error("Parsed data is not an array");
-      }
-    } catch (error) {
-      console.error("Invalid input string:", error.message);
-      return [];
+    if (inputString) {
+      return inputString.split(",").map((text) => text.trim());
     }
+    return [];
   };
   const specialization = extractTextFromString(student?.specialization);
 

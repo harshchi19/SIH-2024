@@ -8,9 +8,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
 import { toast } from "@/hooks/use-toast";
+import { useById } from "@/hooks/useById";
+import { useUpdateById } from "@/hooks/useUpdateById";
 import { ADD_STUDENT_THERAPIST_ROUTE } from "@/utils/constants";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const TimelineComponent = ({ currentTimeline, setCurrentTimeline }) => {
   const { dict } = useLanguage();
@@ -69,6 +71,7 @@ export default function AddPatientPage() {
       email: "",
       age: null,
       sex: "",
+      student_image: "",
     },
     professionalDetails: {
       preferred_language1: "",
@@ -87,6 +90,9 @@ export default function AddPatientPage() {
   if (!dict) {
     return <Loader />;
   }
+  const [supervisor, setSuperVisor] = useState(null);
+  const { updateById } = useUpdateById();
+  const user = localStorage.getItem("user");
 
   const updateFormData = (section, field, value) => {
     setFormData((prev) => ({
@@ -107,11 +113,12 @@ export default function AddPatientPage() {
       body: JSON.stringify(formData),
     });
 
+    console.log("response", response);
+
     if (response.ok) {
       toast({ title: dict?.success?.sup_onb_suc });
-      router.push(
-        `/${currentLang}/${role}/student-therapists/add-student-therapist`
-      );
+      
+      router.push(`/${currentLang}/${role}/student-therapists/`);
     } else {
       console.error("Error adding student therapist:", response);
     }

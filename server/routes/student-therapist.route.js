@@ -5,6 +5,7 @@ import {
   getStudentsById,
   getAllStudents,
   getStudentsByObjectId,
+  updateStudent,
 } from "../controllers/student-therapist.controller.js";
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get(
   getStudentsByObjectId
 );
 router.get("/get-all-students", getAllStudents);
+router.put("/update-student", updateStudent);
 
 export default router;

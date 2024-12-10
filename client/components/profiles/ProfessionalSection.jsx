@@ -13,15 +13,10 @@ export function ProfessionalSection({
   department = "",
 }) {
   const extractTextFromString = (inputString) => {
-    try {
-      const parsedArray = JSON.parse(inputString);
-      return Array.isArray(parsedArray)
-        ? parsedArray.map((item) => item.toString())
-        : [];
-    } catch (error) {
-      console.error("Invalid input string:", error);
-      return [];
+    if (inputString) {
+      return inputString.split(",").map((text) => text.trim());
     }
+    return [];
   };
 
   const specializationList = specialization

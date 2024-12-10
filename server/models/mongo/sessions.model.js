@@ -96,7 +96,7 @@ const SessionsSchema = new Schema(
     next_session_therapist: {
       // All
       type: mongoose.Schema.Types.ObjectId,
-      ref: "student_therapist",
+      ref: "StudentTherapist",
     },
     to_do_before_next_session: [
       // All
