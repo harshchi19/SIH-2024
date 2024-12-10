@@ -3,14 +3,13 @@ import {
   generateEncryptedUniqueId,
   generateKeyAndIV,
   encryptSection,
-  generateUniqueCaseNo,
   generateHashedData,
   decryptSection,
 } from "../helper/security.helper.js";
 import { EncryptionKey } from "../models/mongo/keys.model.js";
 import { unwrapKey } from "./keys.controller.js";
 import { generatePdf } from "../helper/pdf.helper.js";
-import { de } from "date-fns/locale";
+import { AzurePDFUploader } from "../helper/azure.helper.js";
 
 export const onboardSupervisor = async (req, res, next) => {
   const {
@@ -20,28 +19,14 @@ export const onboardSupervisor = async (req, res, next) => {
     email,
     date_of_birth,
     sex,
-    department,
     preferred_language1,
     preferred_language2,
     preferred_language3,
+    department,
+    qualifications,
   } = req.body;
 
   try {
-    const dataForPdf = {
-      basicDetails: {
-        name,
-        password,
-        phone_no,
-        email,
-        date_of_birth,
-        sex,
-        department,
-        preferred_language1,
-        preferred_language2,
-        preferred_language3,
-      },
-    };
-
     const hashedEmail = generateHashedData(email);
     const hashedPhone = generateHashedData(phone_no);
 
@@ -69,9 +54,6 @@ export const onboardSupervisor = async (req, res, next) => {
     const newSupervisorId = generateEncryptedUniqueId("sup");
     const hashedSupervisorId = generateHashedData(newSupervisorId);
 
-    // const pdfFileName = `${newSupervisorId}_supervisor_details.pdf`;
-    // await generatePdf(dataForPdf, pdfFileName);
-
     const dob = new Date(date_of_birth);
 
     let age;
@@ -92,6 +74,32 @@ export const onboardSupervisor = async (req, res, next) => {
       return res.status(400).json({ message: "inv-date" });
     }
 
+    const dataForPdf = {
+      basicDetails: {
+        name,
+        password,
+        phone_no,
+        email,
+        date_of_birth,
+        sex,
+        department,
+        age,
+        qualifications,
+        preferred_language1,
+        preferred_language2,
+        preferred_language3,
+      },
+    };
+
+    const pdfFileName = `${newSupervisorId}_supervisor_details.pdf`;
+    await generatePdf(dataForPdf, pdfFileName);
+
+    // Azure Storage
+    const containerName = process.env.AZURE_SUPERVISOR_CONTAINER;
+    const response = await AzurePDFUploader(containerName, pdfFileName);
+
+    if (!response) return res.status(401).json({ message: "pdf-upl-err" });
+
     const basicDetails = {
       supervisor_id: newSupervisorId,
       name: name,
@@ -102,6 +110,7 @@ export const onboardSupervisor = async (req, res, next) => {
       age: age,
       sex: sex,
       department: department,
+      qualifications: qualifications,
       preferred_language1: preferred_language1,
       preferred_language2: preferred_language2,
       preferred_language3: preferred_language3,
@@ -119,12 +128,14 @@ export const onboardSupervisor = async (req, res, next) => {
       age: encryptedBasicDetails.age,
       sex: encryptedBasicDetails.sex,
       department: encryptedBasicDetails.department,
+      qualifications: encryptedBasicDetails.qualifications,
       preferred_language1: encryptedBasicDetails.preferred_language1,
       preferred_language2: encryptedBasicDetails.preferred_language2,
       preferred_language3: encryptedBasicDetails.preferred_language3,
       email_hash: hashedEmail,
       phone_hash: hashedPhone,
       supervisor_id_hash: hashedSupervisorId,
+      blob_storage_path: pdfFileName,
       authenticated: false,
     });
 

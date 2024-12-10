@@ -21,6 +21,21 @@ const sidebarSchema = new Schema({
                 type: String,
                 required: true,
             },
+            children: [
+                {
+                    icon: {
+                        type: String,
+                    },
+                    name: {
+                        type: String,
+                        required: true,
+                    },
+                    route: {
+                        type: String,
+                        required: true,
+                    },
+                },
+            ],
         },
     ],
 });
