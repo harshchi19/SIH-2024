@@ -74,7 +74,7 @@ export default function MatchmakingPage() {
       <div className="w-4/5 h-full">
         <SelectPatientModal />
       </div>
-      <RightSidebar />
+      {/* <RightSidebar /> */}
     </div>
   );
 }
