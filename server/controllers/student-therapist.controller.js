@@ -211,7 +211,7 @@ export const getAllStudents = async (req, res) => {
           country: Object.fromEntries(studentTherapist.location.country),
         };
 
-        const decryptedLocation = decryptSection(decryptLocation, key);
+        const decryptedLocation = decryptSection(decryptData, key);
 
         decryptedData["location"] = decryptedLocation;
         return decryptedData;
@@ -219,6 +219,71 @@ export const getAllStudents = async (req, res) => {
     );
 
     res.status(200).json(decryptedStudentTherapists);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getStudentsByObjectId = async (req, res) => {
+  const { student_therapist_id } = req.params;
+
+  try {
+    const studentTherapist = await StudentTherapist.findById(
+      student_therapist_id
+    );
+
+    if (!studentTherapist) {
+      return res.status(400).json({ message: "usr-not-fnd" });
+    }
+
+    const findEncryptionKey = await EncryptionKey.findOne({
+      collectionName: "student-therapists",
+    });
+
+    const key = unwrapKey(
+      findEncryptionKey.encryptedKey,
+      findEncryptionKey.encryptedIV,
+      findEncryptionKey.encryptedAuthTag
+    );
+
+    const decryptData = {
+      _id: studentTherapist._id,
+      student_therapist_id: Object.fromEntries(
+        studentTherapist.student_therapist_id
+      ),
+      name: Object.fromEntries(studentTherapist.name),
+      email: Object.fromEntries(studentTherapist.email),
+      phone_no: Object.fromEntries(studentTherapist.phone_no),
+      age: Object.fromEntries(studentTherapist.age),
+      sex: Object.fromEntries(studentTherapist.sex),
+      preferred_language1: Object.fromEntries(
+        studentTherapist.preferred_language1
+      ),
+      preferred_language2: Object.fromEntries(
+        studentTherapist.preferred_language2
+      ),
+      preferred_language3: Object.fromEntries(
+        studentTherapist.preferred_language3
+      ),
+      specialization: Object.fromEntries(studentTherapist.specialization),
+      qualifications: Object.fromEntries(studentTherapist.qualifications),
+      experience_years: Object.fromEntries(studentTherapist.experience_years),
+      availability: Object.fromEntries(studentTherapist.availability),
+      client_coursework: Object.fromEntries(studentTherapist.client_coursework),
+    };
+
+    const decryptLocation = {
+      city: Object.fromEntries(studentTherapist.location.city),
+      state: Object.fromEntries(studentTherapist.location.state),
+      country: Object.fromEntries(studentTherapist.location.country),
+    };
+
+    const decryptedLocation = decryptSection(decryptLocation, key);
+
+    const decryptedStudentTherapist = decryptSection(decryptData, key);
+    decryptedStudentTherapist["location"] = decryptedLocation;
+
+    res.status(200).json(decryptedStudentTherapist);
   } catch (error) {
     console.log(error);
   }

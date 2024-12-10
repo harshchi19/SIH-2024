@@ -17,6 +17,7 @@ import calendarRouter from "./routes/calendar.route.js";
 import visualizationRouter from "./routes/visualizations.route.js";
 import sessionsRouter from "./routes/sessions.route.js";
 import messageRoutes from "./routes/message.route.js";
+import reportRouter from "./routes/report.route.js";
 import matchmakingRouter from "./routes/matchmaking.route.js";
 
 dotenv.config();
@@ -47,6 +48,7 @@ app.use("/patient", patientRouter);
 app.use("/messages", messageRoutes);
 app.use("/contacts", contactRoutes);
 app.use("/calendar", calendarRouter);
+app.use("/report", reportRouter);
 app.use("/visualization", visualizationRouter);
 
 app.use("/pre_therapy", preTherapyRouter);
