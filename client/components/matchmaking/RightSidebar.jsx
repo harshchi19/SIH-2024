@@ -23,6 +23,7 @@ import { Sparkles } from "lucide-react";
 import { MATHCMAKING_ROUTE } from "@/utils/ai.constants";
 import { toast } from "@/hooks/use-toast";
 import { ALLOCATING_PATIENTS_ROUTE } from "@/utils/constants";
+import { useParams, useRouter } from "next/navigation";
 
 const RightSidebar = ({
   selectedPatientId,
@@ -43,6 +44,9 @@ const RightSidebar = ({
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [selectedSex, setSelectedSex] = useState([]);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { role } = useParams();
 
   const handleFilterChange = () => {
     let filteredTherapists = studentTherapists;
@@ -204,6 +208,7 @@ const RightSidebar = ({
   };
 
   const handleAIMatchmaking = async () => {
+    setLoading(true);
     if (selectedPatientId === "")
       toast({ variant: "destructive", title: "Please select a patient" });
 
@@ -235,18 +240,26 @@ const RightSidebar = ({
           therapistIds.includes(therapist.student_therapist_id)
         )
       );
+
+      setLoading(false);
     }
   };
 
   const handleSubmit = async () => {
     const data = { selectedPatient, selectedTherapist, selectedSupervisor };
+
     const response = await fetch(ALLOCATING_PATIENTS_ROUTE, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     });
 
     if (response.ok) {
       const result = await response.json();
+      toast({ title: result?.message });
+      router.push(`/en/${role}/patients/matchmaking`);
     }
   };
 
@@ -476,8 +489,14 @@ const RightSidebar = ({
             onClick={handleAIMatchmaking}
             className="h-10 mt-4 w-full py-2 text-md px-4 bg-green-600 text-white hover:bg-green-700 rounded font-semibold"
           >
-            <Sparkles />
-            AI Matchmaking
+            {!loading ? (
+              <>
+                <Sparkles />
+                AI Matchmaking
+              </>
+            ) : (
+              <>Loading...</>
+            )}
           </Button>
         </div>
 
