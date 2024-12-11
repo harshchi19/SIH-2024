@@ -13,22 +13,24 @@ load_dotenv(env_file)
 connection_string=os.getenv("CONNECTION_STRING")
 container_name=os.getenv("AZURE_THERAPIST_CONTAINER")
 
-def extract_text_from_pdf(pdf_file) -> str:
+def extract_text_from_pdf(pdf_bytes: bytes) -> str:
     """
     Extract text from a PDF file using PyMuPDF (fitz).
+    Accepts the PDF as bytes.
     """
-    doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
-    text = ""
-    for page_num in range(doc.page_count):
-        page = doc.load_page(page_num)  # Get a page
-        text += page.get_text()  # Extract text from the page
-    return text
+    try:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        text = ""
+        for page in doc:
+            text += page.get_text()  # Extract text from each page
+        return text.strip()
+    except Exception as e:
+        raise ValueError(f"Failed to extract text from PDF: {e}")
 
-def extract_text_from_folder(folder_path: str) -> dict:
+def extract_text_from_folder(container_name: str) -> dict:
     """
-    Extract text from all PDFs in a specified folder and return a dictionary
+    Extract text from all PDFs in the specified Azure container and return a dictionary
     with file names as keys and extracted text as values.
-    
     """
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
     container_client = blob_service_client.get_container_client(container_name)

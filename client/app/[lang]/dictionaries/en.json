@@ -30,7 +30,8 @@
     "Final-report": "Final Report",
     "Pre-Therapy-report": "Pre-Therapy Report",
     "Summary-report": "Summary Report",
-    "navigation": "Guide"
+    "navigation": "Guide",
+    "admin": "Admin"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",

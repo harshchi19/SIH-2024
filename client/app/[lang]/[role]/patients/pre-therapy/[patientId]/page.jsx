@@ -225,10 +225,10 @@ export default function PreTherapyPage() {
     if (response.ok) {
       const result = await response.json();
       toast({
-        title: dict?.pre_therapy[result.message],
+        title: "Pre Therapy Details have been uploaded",
       });
       if (result.success)
-        router.push(`/${params.lang}/${params.role}/patients`);
+        router.push(`/${params.lang}/${params.role}/patients/matchmaking`);
     }
   };
 
