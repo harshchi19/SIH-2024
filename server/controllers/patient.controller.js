@@ -439,3 +439,190 @@ export const getAllPatients = async (req, res, next) => {
     return res.status(400).json({ message: "int-ser-err" });
   }
 };
+
+export const getPatientByObjectId = async (req, res, next) => {
+  const { patient_id } = req.params;
+
+  console.log(patient_id);
+  try {
+    const findEncryptionKey = await EncryptionKey.findOne({
+      collectionName: "patients",
+    });
+    const key = unwrapKey(
+      findEncryptionKey.encryptedKey,
+      findEncryptionKey.encryptedIV,
+      findEncryptionKey.encryptedAuthTag
+    );
+
+    const patient = await Patient.findById(patient_id);
+
+    if (!patient) {
+      return res.status(404).json({ message: "pat-not-fnd" });
+    }
+
+    const decryptPatient = {
+      _id: patient._id,
+      patient_id: Object.fromEntries(patient.patient_id),
+      name: Object.fromEntries(patient.name),
+      phone_no: Object.fromEntries(patient.phone_no),
+      email: Object.fromEntries(patient.email),
+      date_of_birth: Object.fromEntries(patient.date_of_birth),
+      // date_of_assignment: Object.fromEntries(patient.date_of_assignment),
+      age: Object.fromEntries(patient.age),
+      sex: Object.fromEntries(patient.sex),
+      // preferred_language1: Object.fromEntries(patient.preferred_language1),
+      // preferred_language2: Object.fromEntries(patient.preferred_language2),
+      // preferred_language3: Object.fromEntries(patient.preferred_language3),
+      // user_image: Object.fromEntries(patient.user_image),
+      // case_no: Object.fromEntries(patient.case_no),
+      // patient_issue: Object.fromEntries(patient.patient_issue),
+    };
+    const decryptedPatient = decryptSection(decryptPatient, key);
+
+    const decryptAddress = {
+      address_line1: Object.fromEntries(patient.address.address_line1),
+      address_line2: Object.fromEntries(patient.address.address_line2),
+      city: Object.fromEntries(patient.address.city),
+      state: Object.fromEntries(patient.address.state),
+      country: Object.fromEntries(patient.address.country),
+      postal_code: Object.fromEntries(patient.address.postal_code),
+    };
+    const decryptedAddressDetails = decryptSection(decryptAddress, key);
+
+    const decrpytMedicalDetails = {
+      multilingual_factors: Object.fromEntries(
+        patient.medical_details.multilingual_factors
+      ),
+      details_to_pay_attention: Object.fromEntries(
+        patient.medical_details.details_to_pay_attention
+      ),
+      language_evaluation: Object.fromEntries(
+        patient.medical_details.language_evaluation
+      ),
+      auditory_skills: Object.fromEntries(
+        patient.medical_details.auditory_skills
+      ),
+      formal_testing: Object.fromEntries(
+        patient.medical_details.formal_testing
+      ),
+      diagnostic_formulation: Object.fromEntries(
+        patient.medical_details.diagnostic_formulation
+      ),
+      clinical_impression: Object.fromEntries(
+        patient.medical_details.clinical_impression
+      ),
+      recommendations: Object.fromEntries(
+        patient.medical_details.recommendations
+      ),
+    };
+    const decryptedMedicalDetails = decryptSection(decrpytMedicalDetails, key);
+
+    const decryptSpeechDevelopmentHistory = {
+      vocalization: Object.fromEntries(
+        patient.speech_development_history.vocalization
+      ),
+      babbling: Object.fromEntries(patient.speech_development_history.babbling),
+      first_word: Object.fromEntries(
+        patient.speech_development_history.first_word
+      ),
+      first_sentence: Object.fromEntries(
+        patient.speech_development_history.first_sentence
+      ),
+    };
+    const decryptedSpeechDevelopmentHistory = decryptSection(
+      decryptSpeechDevelopmentHistory,
+      key
+    );
+
+    const decryptNonVerbalCommunication = {
+      expression_level: Object.fromEntries(
+        patient.non_verbal_communication.expression_level
+      ),
+      comprehension_level: Object.fromEntries(
+        patient.non_verbal_communication.comprehension_level
+      ),
+    };
+    const decryptedNonVerbalCommunication = decryptSection(
+      decryptNonVerbalCommunication,
+      key
+    );
+
+    const decryptArticulationPhoneticLevel = {
+      vowels_stage: Object.fromEntries(
+        patient.articulation_at_phonetic_level.vowels_stage
+      ),
+      consonants_stage: Object.fromEntries(
+        patient.articulation_at_phonetic_level.consonants_stage
+      ),
+      blends_stage: Object.fromEntries(
+        patient.articulation_at_phonetic_level.blends_stage
+      ),
+    };
+    const decryptedArticulationPhoneticLevel = decryptSection(
+      decryptArticulationPhoneticLevel,
+      key
+    );
+
+    const decryptVoiceDetails = {
+      pitch_quality: Object.fromEntries(patient.voice_details.pitch_quality),
+      loudness: Object.fromEntries(patient.voice_details.loudness),
+      voice_quality: Object.fromEntries(patient.voice_details.voice_quality),
+      breath_control: Object.fromEntries(patient.voice_details.breath_control),
+    };
+    const decryptedVoiceDetails = decryptSection(decryptVoiceDetails, key);
+
+    const decryptSuprasegmentalAspects = {
+      emphasis_level: Object.fromEntries(
+        patient.suprasegmental_aspects.emphasis_level
+      ),
+      intonation: Object.fromEntries(patient.suprasegmental_aspects.intonation),
+      phrasing: Object.fromEntries(patient.suprasegmental_aspects.phrasing),
+      speech_rate: Object.fromEntries(
+        patient.suprasegmental_aspects.speech_rate
+      ),
+    };
+    const decryptedSuprasegmentalAspects = decryptSection(
+      decryptSuprasegmentalAspects,
+      key
+    );
+
+    const decryptReadingWritingSkills = {
+      letter_recognition: Object.fromEntries(
+        patient.reading_writing_skills.letter_recognition
+      ),
+      word_recognition: Object.fromEntries(
+        patient.reading_writing_skills.word_recognition
+      ),
+      reading_comprehension: Object.fromEntries(
+        patient.reading_writing_skills.reading_comprehension
+      ),
+      copying: Object.fromEntries(patient.reading_writing_skills.copying),
+      writing_to_dictation: Object.fromEntries(
+        patient.reading_writing_skills.writing_to_dictation
+      ),
+      spontaneous_writing: Object.fromEntries(
+        patient.reading_writing_skills.spontaneous_writing
+      ),
+    };
+    const decryptedReadingWritingSkills = decryptSection(
+      decryptReadingWritingSkills,
+      key
+    );
+
+    decryptedPatient.address_details = decryptedAddressDetails;
+    decryptedPatient.medical_details = decryptedMedicalDetails;
+    decryptedPatient.speech_development_history =
+      decryptedSpeechDevelopmentHistory;
+    decryptedPatient.non_verbal_communication = decryptedNonVerbalCommunication;
+    decryptedPatient.articulation_phonetic_level =
+      decryptedArticulationPhoneticLevel;
+    decryptedPatient.voice_details = decryptedVoiceDetails;
+    decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
+    decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
+
+    return res.status(200).json(decryptedPatient);
+  } catch (error) {
+    console.error("Error in getPatientDetails: ", error);
+    return res.status(400).json({ message: "int-ser-err" });
+  }
+};

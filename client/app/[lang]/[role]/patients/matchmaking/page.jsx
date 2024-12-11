@@ -36,7 +36,7 @@ export default function MatchmakingPage() {
         />
         <SelectedStudentTherapist filteredTherapists={filteredTherapists} />
       </div>
-      <RightSidebar />
+      {/* <RightSidebar /> */}
     </div>
   );
 }

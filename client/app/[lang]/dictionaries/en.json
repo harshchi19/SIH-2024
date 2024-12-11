@@ -335,7 +335,10 @@
     "postal_code": "Postal Code",
     "postal_code_plchldr": "400004",
     "country": "Country",
-    "country_plchldr": "India"
+    "country_plchldr": "India",
+    "qualifications": "Qualifications",
+    "qual_plchldr": "Add your qualifications",
+    "department": "Student Therapist's Department"
   },
   "chatbot": {
     "title": "Ask your doubts to vani.ai",

@@ -23,9 +23,8 @@ export const addSession = async (req, res) => {
     const studentTherapistId = req.body.student_therapist_id;
     const patientId = req.body.patient_id;
 
-    const hashedStudentTherapistId = generateHashedData(studentTherapistId);
     const studentTherapist = await StudentTherapist.findOne({
-      student_therapist_id_hash: hashedStudentTherapistId,
+      _id: studentTherapistId,
     })
       .select("_id")
       .lean();
@@ -34,9 +33,8 @@ export const addSession = async (req, res) => {
       return res.status(400).json({ message: "student-therapist-not-found" });
     }
 
-    const hashedPatientId = generateHashedData(patientId);
     const patient = await Patient.findOne({
-      patient_id_hash: hashedPatientId,
+      _d: patientId,
     })
       .select("_id")
       .lean();
@@ -62,7 +60,6 @@ export const addSession = async (req, res) => {
     });
 
     if (!findEncryptionKey) {
-      console.log("Encryption key not found for 'sessions'");
       return res.status(500).json({ message: "encryption-key-not-found" });
     }
 
@@ -173,7 +170,6 @@ export const updateExistingSession = async (req, res) => {
     });
 
     if (!findEncryptionKey) {
-      console.log("Encryption key not found for 'sessions'");
       return res.status(500).json({ message: "encryption-key-not-found" });
     }
 
@@ -187,13 +183,9 @@ export const updateExistingSession = async (req, res) => {
     const iv = generateKeyAndIV(); // Generate a new IV for the updated data
     const end_time = new Date().toLocaleTimeString();
 
-    console.log("next_session_therapist:", next_session_therapist);
-
     const nextSessionTherapist = await StudentTherapist.findOne({
       _id: next_session_therapist,
     });
-
-    console.log("nextSessionTherapist:", nextSessionTherapist);
 
     if (!nextSessionTherapist) {
       return res
@@ -235,7 +227,6 @@ export const updateExistingSession = async (req, res) => {
 
     await existingSession.save();
 
-    console.log("Session updated successfully");
     res
       .status(200)
       .json({ message: "session-updated", session: existingSession });
@@ -270,7 +261,6 @@ export const getSessionsByPatientId = async (req, res) => {
     });
 
     if (!findEncryptionKey) {
-      console.log("Encryption key not found for 'sessions'");
       return res.status(500).json({ message: "encryption-key-not-found" });
     }
 
@@ -353,7 +343,6 @@ export const getSessionsByStudentTherapistId = async (req, res) => {
     });
 
     if (!findEncryptionKey) {
-      console.log("Encryption key not found for 'sessions'");
       return res.status(500).json({ message: "encryption-key-not-found" });
     }
 
@@ -450,7 +439,6 @@ export const getSessionsByTherapistIdPatientId = async (req, res) => {
     });
 
     if (!findEncryptionKey) {
-      console.log("Encryption key not found for 'sessions'");
       return res.status(500).json({ message: "encryption-key-not-found" });
     }
 

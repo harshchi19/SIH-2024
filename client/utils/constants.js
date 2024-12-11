@@ -20,6 +20,7 @@ export const ADD_PATIENT_ROUTE = `${PATIENT_ROUTE}/add-patient`;
 export const GET_PAT_BY_ID_ROUTE = `${PATIENT_ROUTE}/get-patient-by-id`;
 export const GET_PAT_BY_OBJECT_ID_ROUTE = `${PATIENT_ROUTE}/get-patient-by-object-id`;
 export const GET_ALL_PAT_ROUTE = `${PATIENT_ROUTE}/all-patients`;
+export const UPDATE_PAT_BY_ID_ROUTE = `${PATIENT_ROUTE}/update-patient`;
 
 // Pre Therapy for Patient
 export const PRE_THERAPY_ROUTE = `${HOST}/pre_therapy`;
@@ -32,6 +33,7 @@ export const ADD_STUDENT_THERAPIST_ROUTE = `${STUDENT_THERAPIST_ROUTE}/add-stude
 export const GET_STT_BY_ID_ROUTE = `${STUDENT_THERAPIST_ROUTE}/get-student-by-id`;
 export const GET_STT_BY_OBJECT_ID_ROUTE = `${STUDENT_THERAPIST_ROUTE}/get-student-by-object-id`;
 export const GET_ALL_STT_ROUTE = `${STUDENT_THERAPIST_ROUTE}/get-all-students`;
+export const UPDATE_STT_BY_ID_ROUTE = `${STUDENT_THERAPIST_ROUTE}/update-student`;
 
 // Supervisors
 export const SUPERVISOR_ROUTE = `${HOST}/supervisor`;
@@ -39,6 +41,7 @@ export const ADD_SUPERVISOR_ROUTE = `${SUPERVISOR_ROUTE}/add-supervisor`;
 export const GET_SUP_BY_ID_ROUTE = `${SUPERVISOR_ROUTE}/get-supervisor-by-id`;
 export const GET_SUP_BY_OBJECT_ID_ROUTE = `${SUPERVISOR_ROUTE}/get-supervisor-by-object-id`;
 export const GET_ALL_SUP_ROUTE = `${SUPERVISOR_ROUTE}/get-all-supervisors`;
+export const UPDATE_SUP_BY_ID_ROUTE = `${SUPERVISOR_ROUTE}/update-supervisor`;
 
 //Contacts
 export const CONTACTS_ROUTE = `${HOST}/contacts`;

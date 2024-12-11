@@ -217,11 +217,11 @@ const DashboardPage = () => {
           </div>
         </div>
       )}
-
-      <RightSidebar
+      
+      {/* <RightSidebar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
-      />
+      /> */}
     </>
   );
 };
