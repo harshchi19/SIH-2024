@@ -118,7 +118,6 @@ const studentTherapistSchema = new Schema({
   student_image: {
     type: Map,
     of: String,
-    required: false,
   },
 
   // Timestamps

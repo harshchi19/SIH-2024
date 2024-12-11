@@ -11,7 +11,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { UserRound } from "lucide-react";
+import { UserRound, Check } from "lucide-react";
 
 const SelectPatientModal = ({ selectedPatient, setSelectedPatient }) => {
   const { dict } = useLanguage();
@@ -45,7 +45,7 @@ const SelectPatientModal = ({ selectedPatient, setSelectedPatient }) => {
   };
 
   return (
-    <div className="h-full w-80 bg-white rounded-lg border border-gray-300 px-4 py-3 overflow-hidden">
+    <div className="h-full w-1/3 bg-white rounded-lg border border-gray-300 px-4 py-3 overflow-hidden">
       <h1 className="text-xl font-semibold">{dict?.matchmaking?.patients}</h1>
       <div className="relative">
         <Input
@@ -71,8 +71,17 @@ const SelectPatientModal = ({ selectedPatient, setSelectedPatient }) => {
             >
               <Card
                 onClick={() => onSelectPatient(patient)}
-                className={`cursor-pointer transition-shadow transform rounded-lg border border-gray-200 shadow-sm`}
+                className={`cursor-pointer relative transition-shadow transform rounded-lg border border-gray-200 shadow-sm select-none`}
               >
+                <div
+                  className={`h-5 w-5 rounded-full absolute right-3 top-3 ${
+                    selectedPatient === patient._id ? "border-none" : "border-2"
+                  }`}
+                >
+                  {selectedPatient === patient._id && (
+                    <Check className="h-5 w-5 rounded-full p-px bg-green-500 text-white" />
+                  )}
+                </div>
                 <CardHeader className="flex items-center space-x-2 py-4 justify-start">
                   <div className="h-12 w-12 rounded-full bg-gray-200 flex justify-center items-center overflow-hidden shadow-md">
                     {patient.user_image ? (

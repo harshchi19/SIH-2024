@@ -3,7 +3,6 @@ import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthContextProvider } from "@/context/AuthContext";
-import { registerLicense } from "@syncfusion/ej2-base";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
