@@ -62,14 +62,14 @@ const SignInPage = () => {
     const userType = localStorage.getItem("userType");
     const userIdType = userId?.split("-")[0];
 
-    if(userId && userType && userIdType === userType) {
+    if (userId && userType && userIdType === userType) {
       const userTypes = {
-        "PAT": "patient",
-        "STT": "student-therapist",
-        "SUP": "supervisor"
-      }
+        PAT: "patient",
+        STT: "student-therapist",
+        SUP: "supervisor",
+      };
 
-      router.push(`/${currentLang}/${userTypes[userType]}/dashboard`)
+      router.push(`/${currentLang}/${userTypes[userType]}/dashboard`);
     }
   }, [currentLang]);
 
@@ -137,7 +137,7 @@ const SignInPage = () => {
                           {role.icon}
                         </div>
                         <div className="text-left">
-                          <h2 className="font-semibold text-lg text-gray-800 group-hover:text-green-600">
+                          <h2 className="w-fit font-semibold text-lg text-gray-800 group-hover:text-green-600">
                             {role.label}
                           </h2>
                           <p className="text-sm text-gray-500">
