@@ -244,11 +244,7 @@ export const loginUser = async (req, res, next) => {
 
       const existingUser = await AuthEmail.findOne({
         hash_email: hashedEmailId,
-      }).select("admin_id email password");
-
-      if (!existingUser) {
-        return res.status(400).json({ message: "usr-not-fnd" });
-      }
+      }).select("userId email password");
 
       const findEncryptionKey = await EncryptionKey.findOne({
         collectionName: "auth_emails",
@@ -284,7 +280,11 @@ export const loginUser = async (req, res, next) => {
 
       const iv = generateKeyAndIV();
 
-      if (existingUser) {
+      const existingNewUser = await Admin.findOne({
+        email_hash: hashedEmailId,
+      });
+
+      if (!existingNewUser) {
         const encryptData = {
           admin_id: newUserId,
         };
@@ -312,7 +312,7 @@ export const loginUser = async (req, res, next) => {
         });
       } else {
         const decryptData = {
-          admin_id: existingUser.admin_id,
+          admin_id: existingUser.userId,
         };
 
         const decryptedDetails = decryptSection(decryptData, newKey);

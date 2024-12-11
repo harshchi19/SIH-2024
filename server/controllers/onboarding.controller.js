@@ -101,6 +101,8 @@ export const onboardingAuthUser = async (req, res, next) => {
     existingUser.qualifications = encryptedDetails.qualifications;
     existingUser.sex = encryptedDetails.sex;
     existingUser.age = encryptedDetails.age;
+    existingUser.email_hash = generateHashedData(email);
+    existingUser.phone_hash = generateHashedData(phone_no);
     (existingUser.user_image = encryptedDetails.user_image),
       (existingUser.authenticated = true);
 
@@ -136,6 +138,8 @@ export const checkOnboardingStatus = async (req, res, next) => {
     const existingAdmin = await Admin.findOne({
       admin_id_hash: hashedUserId,
     }).select("_id name");
+
+    console.log(existingAdmin);
 
     if (existingAdmin?.name) {
       return res.status(200).json({
