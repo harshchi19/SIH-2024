@@ -286,6 +286,7 @@ import SupervisorCard from "@/components/supervisor/SupervisorCard";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { useGetRole } from "@/hooks/useGetRole";
+import { hospitalDepartments } from "@/constants/hospitalDetails";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -316,25 +317,26 @@ export default function SupervisorsDashboard() {
     fetchUser();
   }, []);
 
-  const departments = [
-    "All Departments",
-    ...new Set(supervisors.map((sup) => sup.department)),
-  ];
+  // Get unique departments for filter
+  const departments = ["All Departments", ...hospitalDepartments];
 
   const filteredAndSearchedSupervisors = useMemo(() => {
     return supervisors.filter((supervisor) => {
+      // Split and normalize the department values into an array
+      const supervisorDepartments = supervisor.department
+        .split(",")
+        .map((dept) => dept.trim().toLowerCase()); // Split by comma and trim spaces
+
       const matchesSearchTerm =
-        searchTerm.trim().toLowerCase() === "" ||
-        supervisor.name
-          .toLowerCase()
-          .includes(searchTerm.trim().toLowerCase()) ||
-        supervisor.department
-          .toLowerCase()
-          .includes(searchTerm.trim().toLowerCase());
+        searchTerm === "" ||
+        supervisor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        supervisorDepartments.some((dept) =>
+          dept.includes(searchTerm.toLowerCase())
+        ); // Check if any department matches the search term
 
       const matchesDepartment =
         filterDepartment === "All Departments" ||
-        supervisor.department === filterDepartment;
+        supervisorDepartments.includes(filterDepartment.toLowerCase()); // Match the department filter
 
       return matchesSearchTerm && matchesDepartment;
     });
@@ -349,7 +351,8 @@ export default function SupervisorsDashboard() {
   );
 
   return (
-    <div className=" overflow-y-scroll container mx-auto px-4 py-8 space-y-6">
+    <div className="container mx-auto px-4 py-8 space-y-6 overflow-y-scroll">
+      {/* Loading State */}
       {isLoading ? (
         <div className="text-center py-10">Loading supervisors...</div>
       ) : (

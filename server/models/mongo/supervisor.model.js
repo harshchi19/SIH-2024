@@ -96,7 +96,7 @@ const supervisorSchema = new Schema({
   allocated_therapists: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "student_therapist",
+      ref: "StudentTherapist",
       default: null,
     },
   ],

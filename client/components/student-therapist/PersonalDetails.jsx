@@ -12,9 +12,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useEffect, useState } from "react";
+import { useById } from "@/hooks/useById";
+import { useAuthContext } from "@/hooks/useAuthContext";
 
 const PersonalDetails = ({ data, updateData }) => {
   const { dict } = useLanguage();
+  const { getById, isLoading } = useById();
+  const user = localStorage.getItem("user");
+  const [supervisor, setSupervisor] = useState();
+
+  useEffect(() => {
+    getById(user, "SUP").then((res) => {
+      if (res.success) {
+        updateData("supervisor_id", res.user._id);
+        console.log(res.user);
+      }
+    });
+  }, [user]);
 
   const handleChange = (field, value) => {
     updateData(field, value);

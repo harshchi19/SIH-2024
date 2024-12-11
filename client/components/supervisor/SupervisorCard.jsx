@@ -3,18 +3,45 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "../ui/progress";
 import { User, EyeIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useByObjectId } from "@/hooks/useByObjectId";
+import { useEffect, useState } from "react";
 
 const SupervisorCard = ({ supervisor }) => {
   const pathname = usePathname();
-  const naivgate = useRouter();
+  const navigate = useRouter();
   const totalPatients =
     supervisor?.activePatients + supervisor.inactivePatients;
   const activePercentage = (supervisor?.activePatients / totalPatients) * 100;
 
   const handleSubmit = () => {
     console.log("View Supervisor Details");
-    naivgate.push(`${pathname}/${supervisor?.supervisor_id}`);
+    navigate.push(`${pathname}/${supervisor?.supervisor_id}`);
   };
+
+  const { getByObjectId } = useByObjectId();
+  const [therapists, setTherapists] = useState([]);
+
+  useEffect(() => {
+    supervisor?.allocated_therapists?.forEach((therapistId) => {
+      getByObjectId(therapistId, "STT")
+        .then((res) => {
+          if (res.success) {
+            const therapist = res.user;
+
+            // Check if therapist already exists in state
+            setTherapists((prev) => {
+              const exists = prev.some((t) => t._id === therapist._id);
+              return exists ? prev : [...prev, therapist];
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    });
+  }, [supervisor.allocated_therapists]);
+
+  console.log("Unique Therapists:", therapists);
 
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg">
@@ -37,14 +64,16 @@ const SupervisorCard = ({ supervisor }) => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Student Therapists</h3>
           <div className="h-34 space-y-2 overflow-y-auto border-2 rounded p-2">
-            {supervisor?.studentTherapists?.map((therapist, index) => (
-              <div
-                key={index}
-                className="bg-secondary/30 p-1 rounded-md flex justify-center items-center"
-              >
-                <span>{therapist}</span>
-              </div>
-            )) || (
+            {therapists.length > 0 ? (
+              therapists.map((therapist, index) => (
+                <div
+                  key={index}
+                  className="bg-secondary/30 p-1 rounded-md flex justify-center items-center"
+                >
+                  <span>{therapist.name}</span>
+                </div>
+              ))
+            ) : (
               <div className="bg-secondary/30 p-1 rounded-md flex justify-center items-center">
                 <span>No Student Therapists</span>
               </div>
@@ -57,9 +86,6 @@ const SupervisorCard = ({ supervisor }) => {
           <h3 className="text-lg font-semibold">Patient Status</h3>
           <div className="space-y-2">
             <div>
-              {/* <p className="mb-1 text-sm font-medium">
-                Active Patients vs Inactive Patients
-              </p> */}
               {activePercentage ? (
                 <Progress value={activePercentage} />
               ) : (
