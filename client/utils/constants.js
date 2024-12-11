@@ -72,6 +72,7 @@ export const GET_UNALLOCATED_PATIENTS = `${MATCHMAKING_ROUTE}/get-unallocated-pa
 
 // Reports
 export const REPORT_ROUTE = `${HOST}/report`;
+export const ADD_REPORT_ROUTE = `${REPORT_ROUTE}/generate-report`;
 export const GET_ALL_REPORTS = `${REPORT_ROUTE}/get-all-reports`;
 
 // Onboarding

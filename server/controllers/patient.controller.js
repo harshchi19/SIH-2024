@@ -203,7 +203,7 @@ export const getPatientById = async (req, res, next) => {
       preferred_language2: Object.fromEntries(patient.preferred_language2),
       preferred_language3: Object.fromEntries(patient.preferred_language3),
       user_image: Object.fromEntries(patient.user_image),
-      // case_no: Object.fromEntries(patient.case_no),
+      case_no: Object.fromEntries(patient.case_no),
       patient_issue: Object.fromEntries(patient.patient_id),
     };
     const decryptedPatient = decryptSection(decryptPatient, key);
