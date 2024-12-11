@@ -16,6 +16,8 @@ import {
   User,
   UserPlus,
   CirclePlus,
+  Map,
+  BookOpenText,
 } from "lucide-react";
 import HoverSpecializationPopup from "./HoverSpecializationPopup";
 import { useLanguage } from "@/context/LanguageContext";
@@ -35,6 +37,8 @@ const iconMap = {
   MessageSquare,
   UserPlus,
   CirclePlus,
+  Map,
+  BookOpenText,
 };
 
 const SidebarItem = ({ item, activeRoute, handleNavigation, depth = 0 }) => {
