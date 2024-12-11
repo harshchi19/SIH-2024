@@ -6,4 +6,19 @@ import thinking from "./gif/thinking.gif";
 import logo from "./images/logo.png";
 import calendar from "./images/calendar.png";
 
-export { load, logo, thinking, calendar };
+//STORIES
+import story_1_1 from "./images/stories/story_1.1.webp";
+import story_1_2 from "./images/stories/story_1.2.webp";
+import story_1_3 from "./images/stories/story_1.3.webp";
+import story_1_4 from "./images/stories/story_1.4.webp";
+
+export {
+  load,
+  logo,
+  thinking,
+  calendar,
+  story_1_1,
+  story_1_2,
+  story_1_3,
+  story_1_4,
+};
