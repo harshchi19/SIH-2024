@@ -22,10 +22,11 @@ export {
   logo,
   thinking,
   calendar,
+  room1,
+  room2,
+  room3,
   story_1_1,
   story_1_2,
   story_1_3,
   story_1_4,
 };
-export { load, logo, thinking, calendar, youtube, news, room1, room2, room3 };
-

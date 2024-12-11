@@ -10,85 +10,85 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams, useRouter } from "next/navigation";
-import { Brain } from "lucide-react"; // Import brain icon for AI model button
+import { Brain } from "lucide-react";
 
 const ReportViewModal = ({
   isOpen,
   onClose,
-  allReports = [],
-  summaryReports = [],
+  pretherapyReports,
+  sessionReports,
+  // postSessionReports,
+  finalReports,
 }) => {
-  const reports = [
-    {
-      id: "RPT-001",
-      patient: "John Doe",
-      therapist: "Dr. Emily Johnson",
-      appointment: "Cognitive Behavioral Therapy",
-      details: "Initial assessment and treatment plan discussion",
-      date: "2024-03-15",
-      status: "Completed",
-    },
-    {
-      id: "RPT-002",
-      patient: "John Doe",
-      therapist: "Dr. Michael Chen",
-      appointment: "Anxiety Management",
-      details: "Progression review and strategy adjustment",
-      date: "Just now",
-      status: "In Progress",
-    },
-    {
-      id: "RPT-003",
-      patient: "Sarah Smith",
-      therapist: "Dr. Sarah Rodriguez",
-      appointment: "Stress Reduction Workshop",
-      details: "Group session outcomes and individual insights",
-      date: "2024-02-20",
-      status: "Pending",
-    },
-    {
-      id: "RPT-004",
-      patient: "John Doe",
-      therapist: "Dr. David Kim",
-      appointment: "Trauma-Informed Counseling",
-      details: "Personalized coping mechanism development",
-      date: "2024-01-10",
-      status: "Completed",
-    },
-    {
-      id: "RPT-005",
-      patient: "Sarah Smith",
-      therapist: "Dr. Emily Johnson",
-      appointment: "Follow-up Session",
-      details: "Progress tracking and emotional support",
-      date: "2024-03-20",
-      status: "In Progress",
-    },
-  ];
-
-  const [activeTab, setActiveTab] = useState("recent");
+  const [activeTab, setActiveTab] = useState("pretherapy");
   const navigate = useRouter();
   const { lang, role } = useParams();
   const [selectedPatient, setSelectedPatient] = useState(null);
 
-  const handleReportSelect = (report) => {
-    // Set the selected patient for filtering previous reports
-    setSelectedPatient(report.patient);
+  const [allReports, setAllReports] = useState([
+    ...pretherapyReports,
+    ...sessionReports,
+    ...finalReports,
+  ]);
 
-    // Navigate to report view page
-    navigate.push(`/${lang}/${role}/reports/view-report`);
+  const handleActiveTab = (tab) => {
+    setActiveTab(tab);
+  };
+
+  const handleReportSelect = (report) => {
+    // Create a detailed report object to pass
+    const reportDetails = {
+      _id: report._id,
+      patient_id: report.patient_id,
+      student_therapist_id: report.student_therapist_id,
+      session_id: report.session_id,
+      type: report.type, // Capture the current tab/report type
+      createdAt: report.createdAt,
+      patient: report.patient,
+      student: report.student,
+      // Include any other relevant report information
+    };
+
+    // Convert to JSON string and encode for URL
+    const encodedReportDetails = encodeURIComponent(
+      JSON.stringify(reportDetails)
+    );
+
+    // Navigate to report view page with encoded report details
+    navigate.push(
+      `/${lang}/${role}/reports/${report.type}-report?report=${encodedReportDetails}`
+    );
+
     onClose();
   };
 
-  const handleAIModelReport = () => {
-    // Navigate to AI model report generation page
-    navigate.push(`/${lang}/${role}/reports/ai-model-report`);
-  };
+  console.log("finalReports", sessionReports);
 
-  // Filter previous reports for the same patient
-  const patientallReports = selectedPatient
-    ? allReports.filter((report) => report.patient === selectedPatient)
-    : allReports;
+  // Render function for report list
+  const renderReportList = (reports, emptyMessage) => (
+    <div className="grid gap-4 py-4">
+      {reports.length > 0 ? (
+        reports.map((report) => (
+          <div
+            key={report._id}
+            className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer"
+            onClick={() => handleReportSelect(report)}
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-medium">{report.patient.name}</p>
+                <p className="text-sm text-gray-500">{report.date}</p>
+                <p className="text-xs text-gray-400">{report.student.name}</p>
+              </div>
+              <Button variant="outline">View Details</Button>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-gray-500">{emptyMessage}</p>
+      )}
+    </div>
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -101,88 +101,35 @@ const ReportViewModal = ({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="recent">Summary Reports</TabsTrigger>
-            <TabsTrigger value="previous">
-              {selectedPatient
-                ? `All Reports for ${selectedPatient}`
-                : "All Reports"}
-            </TabsTrigger>
+        <Tabs
+          value={activeTab}
+          onValueChange={handleActiveTab}
+          className="w-full"
+        >
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="pretherapy">Pre-Therapy</TabsTrigger>
+            <TabsTrigger value="therapy-plan">Therapy Plan</TabsTrigger>
+            <TabsTrigger value="session">Sessions</TabsTrigger>
+            <TabsTrigger value="finalReport">Progress</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="recent">
-            <div className="grid gap-4 py-4">
-              {summaryReports.length > 0 ? (
-                summaryReports.map((report) => (
-                  <div
-                    key={report._id}
-                    className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handleReportSelect(report)}
-                  >
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">{report.therapist}</p>
-                        <p className="text-sm text-gray-500">{report.date}</p>
-                        <p className="text-xs text-gray-400">
-                          {report.patient}
-                        </p>
-                      </div>
-                      <Button variant="outline">View Details</Button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center text-gray-500">
-                  No recent reports found
-                </p>
-              )}
-            </div>
+          <TabsContent value="pretherapy">
+            {renderReportList(
+              pretherapyReports,
+              "No pre-therapy reports found"
+            )}
           </TabsContent>
 
-          <TabsContent value="previous">
-            <div className="grid gap-4 py-4">
-              {patientallReports.length > 0 ? (
-                patientallReports.map((report) => (
-                  <div
-                    key={report.id}
-                    className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handleReportSelect(report)}
-                  >
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">{report.therapist}</p>
-                        <p className="text-sm text-gray-500">{report.date}</p>
-                        <p className="text-xs text-gray-400">
-                          {report.patient}
-                        </p>
-                      </div>
-                      <Button variant="outline">View Details</Button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center text-gray-500">
-                  {selectedPatient
-                    ? `No previous reports found for ${selectedPatient}`
-                    : "No previous reports found"}
-                </p>
-              )}
-            </div>
+          <TabsContent value="session">
+            {renderReportList(sessionReports, "No session reports found")}
+          </TabsContent>
+
+          <TabsContent value="finalReport">
+            {renderReportList(finalReports, "No final reports found")}
           </TabsContent>
         </Tabs>
 
         <DialogFooter>
-          <div className="flex justify-start mb-4">
-            <Button
-              variant="outline"
-              onClick={handleAIModelReport}
-              className="flex items-center gap-2"
-            >
-              <Brain className="h-4 w-4" />
-              Generate AI Model Report
-            </Button>
-          </div>
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
