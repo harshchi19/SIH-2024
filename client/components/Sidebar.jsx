@@ -216,11 +216,9 @@ const Sidebar = ({ sidebarData }) => {
             className="h-12 w-auto mb-4 cursor-pointer object-contain"
             alt="Logo"
           />
-          {/* <AvatarFallback className="bg-[#54C174] text-white font-mono">
-              VV
-            </AvatarFallback> */}
-          <span className="text-white font-semibold hover:cursor-pointer">
-            <span className="text-lg font-medium font-mono cursor-pointer hover:text-black transition-colors">
+
+          <span className="text-white hover:cursor-pointer">
+            <span className="text-3xl font-semibold cursor-pointer transition-colors tracking-tighter">
               VANI VIKAS
             </span>
           </span>
