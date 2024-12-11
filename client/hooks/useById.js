@@ -2,6 +2,8 @@ import {
   GET_STT_BY_ID_ROUTE,
   GET_PAT_BY_ID_ROUTE,
   GET_SUP_BY_ID_ROUTE,
+  GET_ADM_BY_ID_ROUTE,
+  GET_HOD_BY_ID_ROUTE,
 } from "@/utils/constants";
 import { useState } from "react";
 
@@ -9,12 +11,14 @@ const ROLE_PREFIXES = {
   PAT: GET_PAT_BY_ID_ROUTE,
   STT: GET_STT_BY_ID_ROUTE,
   SUP: GET_SUP_BY_ID_ROUTE,
+  ADM: GET_ADM_BY_ID_ROUTE,
+  HOD: GET_HOD_BY_ID_ROUTE,
 };
 
 export const useById = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const getById = async (id, role) => {
     setIsLoading(true);
     setError(null);

@@ -72,3 +72,16 @@ export const GET_UNALLOCATED_PATIENTS = `${MATCHMAKING_ROUTE}/get-unallocated-pa
 // Reports
 export const REPORT_ROUTE = `${HOST}/report`;
 export const GET_ALL_REPORTS = `${REPORT_ROUTE}/get-all-reports`;
+
+// Onboarding
+export const ONBOARDING_ROUTE = `${HOST}/onboarding`;
+export const CHECK_ONBOARDING_STATUS_ROUTE = `${ONBOARDING_ROUTE}/check-onboarding-status`;
+export const ONBOARD_AUTH_USER_ROUTE = `${ONBOARDING_ROUTE}/onboard-auth-user`;
+
+// Admin
+export const ADMIN_ROUTE = `${HOST}/admin`;
+export const GET_ADM_BY_ID_ROUTE = `${ADMIN_ROUTE}/get-admin-by-id`;
+
+// HOD
+export const HOD_ROUTE = `${HOST}/hod`;
+export const GET_HOD_BY_ID_ROUTE = `${HOD_ROUTE}/get-hod-by-id`;

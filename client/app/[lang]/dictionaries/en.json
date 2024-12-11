@@ -26,7 +26,8 @@
     "pre-therapy": "Pre-Therapy",
     "matchmaking": "Patient Alloment",
     "view_report": "View Report",
-    "navigation": "Guide"
+    "navigation": "Guide",
+    "admin": "Admin"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",

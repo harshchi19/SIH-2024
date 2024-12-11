@@ -17,9 +17,10 @@ export default function RoleLayout({ children }) {
   const router = useRouter();
 
   const checkUserType = {
-    patient: "PAT",
     "student-therapist": "STT",
     supervisor: "SUP",
+    "head-of-department": "HOD",
+    admin: "ADM",
   };
 
   useEffect(() => {

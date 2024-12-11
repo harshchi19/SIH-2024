@@ -115,9 +115,10 @@ const Sidebar = ({ sidebarData }) => {
   const userId = localStorage.getItem("user");
   const userType = localStorage.getItem("userType");
   const ROLE_PREFIXES = {
-    PAT: "Patient",
     STT: "Student Therapist",
     SUP: "Supervisor",
+    HOD: "Head Of Department",
+    ADM: "Admin",
   };
 
   const { getById } = useById();
@@ -203,6 +204,8 @@ const Sidebar = ({ sidebarData }) => {
     return { time: `${hours}:${formattedMinutes}`, ampm: ampm };
   }
 
+  console.log(upcomingEvent);
+
   return (
     <aside className="flex h-screen w-80 flex-col justify-between bg-[#5DB075] p-6 px-3">
       {/* Header */}
@@ -237,7 +240,7 @@ const Sidebar = ({ sidebarData }) => {
       </div>
 
       <div className="space-y-6">
-        {upcomingEvent && (
+        {upcomingEvent.length > 0 && (
           <Card
             className="w-full max-w-md overflow-hidden transition-all duration-300 bg-white/10 border-[1px] border-white/20 backdrop-blur-xl shadow-2xl"
             style={{

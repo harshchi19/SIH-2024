@@ -1,6 +1,7 @@
 import express from "express";
 import { loginUser, logoutUser } from "../controllers/user.controller.js";
 import { generateMasterKey } from "../controllers/keys.controller.js";
+import { addAuthUser } from "../controllers/auth_email.controller.js";
 
 const router = express.Router();
 
@@ -9,5 +10,6 @@ router.post("/logout-user", logoutUser);
 // router.post("/register-user", registerUser);
 // router.get("/get-user-by-id/:userId/:userType", getUserDetailsById);
 router.get("/generate", generateMasterKey);
+router.post("/add-auth-user", addAuthUser);
 
 export default router;

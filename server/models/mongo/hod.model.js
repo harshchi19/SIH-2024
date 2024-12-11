@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
-const adminSchema = new Schema({
-  admin_id: {
+const HODSchema = new Schema({
+  hod_id: {
     type: Map,
     of: String,
     required: true,
@@ -46,7 +46,7 @@ const adminSchema = new Schema({
     type: Map,
     of: String,
   },
-  admin_id_hash: {
+  hash_hod_id: {
     type: String,
   },
   email_hash: {
@@ -61,4 +61,4 @@ const adminSchema = new Schema({
   },
 });
 
-export const Admin = mongoose.model("admin", adminSchema);
+export const HeadOfDepartment = mongoose.model("hod", HODSchema);
