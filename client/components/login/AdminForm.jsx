@@ -1,12 +1,11 @@
-import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import Link from "next/link";
-import Loader from "../Loader";
+import { Loader } from "lucide-react";
 
-const PatientForm = ({ data, updateData, setCurrentStep, handleSubmit }) => {
+const AdminForm = ({ data, updateData, setCurrentStep, handleSubmit }) => {
   const { dict, currentLang } = useLanguage();
 
   const handleChange = (e) => {
@@ -15,42 +14,32 @@ const PatientForm = ({ data, updateData, setCurrentStep, handleSubmit }) => {
   };
 
   if (!dict) {
-    return <Loader />;
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader className="w-6 h-6 animate-spin text-green-500" />
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col w-full">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-          {dict?.login?.wlc_pat}
+          Welcome Admin
         </h1>
         <p className="text-sm text-gray-600">{dict?.login?.wlc_desc}</p>
       </div>
 
       <div className="space-y-5 mt-5">
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-gray-700">
-            {dict?.login?.name}
+          <Label htmlFor="email" className="text-gray-700">
+            Email
           </Label>
           <Input
-            type="text"
-            id="name"
-            value={data.name}
-            placeholder={dict?.login?.pat_pchldr_name}
-            onChange={handleChange}
-            className="w-full border-gray-200 focus:border-green-500 focus:ring-green-500"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="phone_no" className="text-gray-700">
-            {dict?.login?.phone}
-          </Label>
-          <Input
-            type="tel"
-            id="phone_no"
-            value={data.phone_no}
-            placeholder={dict?.login?.pat_pchldr_phon}
+            type="email"
+            id="email"
+            value={data.email}
+            placeholder="Enter your email"
             onChange={handleChange}
             className="w-full border-gray-200 focus:border-green-500 focus:ring-green-500"
           />
@@ -88,11 +77,11 @@ const PatientForm = ({ data, updateData, setCurrentStep, handleSubmit }) => {
 
         <Button
           className={`w-full h-12 bg-green-600 hover:bg-green-700 text-white font-medium tracking-tight transition-colors ${
-            !data.name || !data.phone_no || !data.password
+            !data.email || !data.password
               ? "cursor-not-allowed"
               : "cursor-pointer"
           }`}
-          disabled={!data.name || !data.phone_no || !data.password}
+          disabled={!data.email || !data.password}
           onClick={handleSubmit}
         >
           {dict?.login?.continue}
@@ -102,4 +91,4 @@ const PatientForm = ({ data, updateData, setCurrentStep, handleSubmit }) => {
   );
 };
 
-export default PatientForm;
+export default AdminForm;

@@ -29,4 +29,9 @@ export {
   story_1_2,
   story_1_3,
   story_1_4,
+  youtube,
+  news,
+  room1,
+  room2,
+  room3,
 };

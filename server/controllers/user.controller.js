@@ -1,6 +1,10 @@
 import {
   decryptSection,
+  encryptSection,
+  generateEncryptedUniqueId,
   generateHashedData,
+  generateKeyAndIV,
+  generateUniqueCaseNo,
 } from "../helper/security.helper.js";
 import { Patient } from "../models/mongo/patient.model.js";
 import { EncryptionKey } from "../models/mongo/keys.model.js";
@@ -8,6 +12,9 @@ import { unwrapKey } from "./keys.controller.js";
 import jwt from "jsonwebtoken";
 import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
 import { Supervisor } from "../models/mongo/supervisor.model.js";
+import { AuthEmail } from "../models/mongo/auth_email.model.js";
+import { HeadOfDepartment } from "../models/mongo/hod.model.js";
+import { Admin } from "../models/mongo/admin.model.js";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -20,7 +27,7 @@ const createToken = (phone, userId) => {
 export const loginUser = async (req, res, next) => {
   const {
     userType,
-    name,
+    email,
     phone_no,
     password,
     supervisor_id,
@@ -122,7 +129,7 @@ export const loginUser = async (req, res, next) => {
 
       const existingUser = await Supervisor.findOne({
         phone_hash: hashedPhone,
-        supervisor_id_hash: supervisorHashedId
+        supervisor_id_hash: supervisorHashedId,
       }).select("supervisor_id password");
 
       if (!existingUser) {
@@ -162,6 +169,167 @@ export const loginUser = async (req, res, next) => {
         userType: userType,
         userName: decryptData.name,
       });
+    } else if (userType === "HOD") {
+      const hashedEmailId = generateHashedData(email);
+
+      const existingUser = await AuthEmail.findOne({
+        hash_email: hashedEmailId,
+      }).select("email password");
+
+      if (!existingUser) {
+        return res.status(400).json({ message: "usr-not-fnd" });
+      }
+
+      const findEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "auth_emails",
+      });
+      const key = unwrapKey(
+        findEncryptionKey.encryptedKey,
+        findEncryptionKey.encryptedIV,
+        findEncryptionKey.encryptedAuthTag
+      );
+
+      const decryptData = {
+        email: Object.fromEntries(existingUser.email),
+        password: Object.fromEntries(existingUser.password),
+      };
+
+      const decryptedData = decryptSection(decryptData, key);
+
+      if (decryptedData.password !== password) {
+        return res.status(400).json({ message: "Incorrect Password" });
+      }
+
+      const newUserId = generateUniqueCaseNo(userType);
+      const hashedUserId = generateHashedData(newUserId);
+
+      const newEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "hods",
+      });
+      const newKey = unwrapKey(
+        newEncryptionKey.encryptedKey,
+        newEncryptionKey.encryptedIV,
+        newEncryptionKey.encryptedAuthTag
+      );
+
+      const iv = generateKeyAndIV();
+
+      const encryptData = {
+        hod_id: newUserId,
+      };
+
+      const encryptedDetails = encryptSection(encryptData, newKey, iv);
+
+      const newHOD = new HeadOfDepartment({
+        hod_id: encryptedDetails.hod_id,
+        hash_hod_id: hashedUserId,
+      });
+
+      await newHOD.save();
+
+      res.cookie("token", createToken(email, newHOD._id), {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 1000 * 60 * 60 * 24,
+      });
+
+      return res.status(200).json({
+        message: "Login successful",
+        userId: newUserId,
+        userType: userType,
+      });
+    } else if (userType === "ADM") {
+      const hashedEmailId = generateHashedData(email);
+
+      const existingUser = await AuthEmail.findOne({
+        hash_email: hashedEmailId,
+      }).select("admin_id email password");
+
+      if (!existingUser) {
+        return res.status(400).json({ message: "usr-not-fnd" });
+      }
+
+      const findEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "auth_emails",
+      });
+      const key = unwrapKey(
+        findEncryptionKey.encryptedKey,
+        findEncryptionKey.encryptedIV,
+        findEncryptionKey.encryptedAuthTag
+      );
+
+      const decryptData = {
+        email: Object.fromEntries(existingUser.email),
+        password: Object.fromEntries(existingUser.password),
+      };
+
+      const decryptedData = decryptSection(decryptData, key);
+
+      if (decryptedData.password !== password) {
+        return res.status(400).json({ message: "Incorrect Password" });
+      }
+
+      const newUserId = generateEncryptedUniqueId(userType);
+      const hashedUserId = generateHashedData(newUserId);
+
+      const newEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "admins",
+      });
+      const newKey = unwrapKey(
+        newEncryptionKey.encryptedKey,
+        newEncryptionKey.encryptedIV,
+        newEncryptionKey.encryptedAuthTag
+      );
+
+      const iv = generateKeyAndIV();
+
+      if (existingUser) {
+        const encryptData = {
+          admin_id: newUserId,
+        };
+
+        const encryptedDetails = encryptSection(encryptData, newKey, iv);
+
+        const newAdmin = new Admin({
+          admin_id: encryptedDetails.admin_id,
+          admin_id_hash: hashedUserId,
+        });
+
+        await newAdmin.save();
+
+        res.cookie("token", createToken(email, newAdmin._id), {
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+
+        return res.status(200).json({
+          message: "Login successful",
+          userId: newUserId,
+          userType: userType,
+        });
+      } else {
+        const decryptData = {
+          admin_id: existingUser.admin_id,
+        };
+
+        const decryptedDetails = decryptSection(decryptData, newKey);
+
+        res.cookie("token", createToken(email, decryptedDetails.admin_id), {
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+
+        return res.status(200).json({
+          message: "Login successful",
+          userId: decryptedDetails.admin_id,
+          userType: userType,
+        });
+      }
     }
   } catch (error) {
     console.error("Error in login:", error);

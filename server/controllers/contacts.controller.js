@@ -48,7 +48,7 @@ export const getContacts = async (req, res) => {
     } else {
       return res.status(400).json({ message: "Invalid user type" });
     }
-    // console.log("contacts being returned:", contacts);
+
     return res.status(200).json({ contacts });
   } catch (error) {
     console.error("Error fetching contacts:", error);

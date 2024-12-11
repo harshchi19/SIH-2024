@@ -9,9 +9,10 @@ import Image from "next/image";
 import { logo } from "@/assets";
 import { Check } from "lucide-react";
 import Link from "next/link";
-import PatientForm from "@/components/login/PatientForm";
 import StudentTherapistForm from "@/components/login/StudentTherapistForm";
 import SupervisorForm from "@/components/login/SupervisorForm";
+import HODForm from "@/components/login/HODForm";
+import AdminForm from "@/components/login/AdminForm";
 import { toast } from "@/hooks/use-toast";
 import { useLogin } from "@/hooks/useLogin";
 import { useParams, useRouter } from "next/navigation";
@@ -23,6 +24,7 @@ const SignInPage = () => {
   const [formData, setFormData] = useState({
     userType: "",
     name: "",
+    email: "",
     phone_no: "",
     password: "",
     supervisor_id: "",
@@ -44,11 +46,16 @@ const SignInPage = () => {
       formData["userType"] = selectedRole;
 
       const res = await login(formData);
+      console.log(res);
 
       if (res.success) {
         toast({ title: dict?.success?.login_succ });
 
-        router.push(`/${params.lang}/${res.userRoute}/dashboard`);
+        if (selectedRole === "ADM" || selectedRole === "HOD") {
+          router.push(`/${params.lang}/onboarding`);
+        } else {
+          router.push(`/${params.lang}/${res.userRoute}/dashboard`);
+        }
       } else {
         toast({ variant: "destructive", title: dict?.errors?.try_lat_err });
       }
@@ -64,9 +71,10 @@ const SignInPage = () => {
 
     if (userId && userType && userIdType === userType) {
       const userTypes = {
-        PAT: "patient",
         STT: "student-therapist",
         SUP: "supervisor",
+        HOD: "head-of-department",
+        ADM: "admin",
       };
 
       router.push(`/${currentLang}/${userTypes[userType]}/dashboard`);
@@ -79,12 +87,6 @@ const SignInPage = () => {
 
   const roles = [
     {
-      value: "PAT",
-      label: dict?.login?.pat,
-      icon: <Stethoscope className="w-7 h-7 text-blue-500" />,
-      description: dict?.login?.pat_desc,
-    },
-    {
       value: "STT",
       label: dict?.login?.stt,
       icon: <UserCircle className="w-7 h-7 text-green-500" />,
@@ -93,8 +95,20 @@ const SignInPage = () => {
     {
       value: "SUP",
       label: dict?.login?.sup,
-      icon: <ShieldCheck className="w-7 h-7 text-purple-500" />,
+      icon: <Stethoscope className="w-7 h-7 text-purple-500" />,
       description: dict?.login?.sup_desc,
+    },
+    {
+      value: "HOD",
+      label: "Head Of Department",
+      icon: <ShieldCheck className="w-7 h-7 text-blue-500" />,
+      description: "Leads the department and ensures operational excellence",
+    },
+    {
+      value: "ADM",
+      label: "Admin",
+      icon: <ShieldCheck className="w-7 h-7 text-red-500" />,
+      description: "Handles system management and platform operations",
     },
   ];
 
@@ -171,14 +185,6 @@ const SignInPage = () => {
 
               {currentStep === 2 && (
                 <>
-                  {selectedRole === "PAT" && (
-                    <PatientForm
-                      data={formData}
-                      updateData={updateFormData}
-                      setCurrentStep={setCurrentStep}
-                      handleSubmit={handleSubmit}
-                    />
-                  )}
                   {selectedRole === "STT" && (
                     <StudentTherapistForm
                       data={formData}
@@ -189,6 +195,22 @@ const SignInPage = () => {
                   )}
                   {selectedRole === "SUP" && (
                     <SupervisorForm
+                      data={formData}
+                      updateData={updateFormData}
+                      setCurrentStep={setCurrentStep}
+                      handleSubmit={handleSubmit}
+                    />
+                  )}
+                  {selectedRole === "HOD" && (
+                    <HODForm
+                      data={formData}
+                      updateData={updateFormData}
+                      setCurrentStep={setCurrentStep}
+                      handleSubmit={handleSubmit}
+                    />
+                  )}
+                  {selectedRole === "ADM" && (
+                    <AdminForm
                       data={formData}
                       updateData={updateFormData}
                       setCurrentStep={setCurrentStep}

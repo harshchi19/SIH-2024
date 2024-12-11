@@ -2,6 +2,16 @@ import os
 import fitz 
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
+from azure.storage.blob import BlobServiceClient
+from dotenv import load_dotenv, find_dotenv
+import io
+
+env_file = find_dotenv()
+
+load_dotenv(env_file)
+
+connection_string=os.getenv("CONNECTION_STRING")
+container_name=os.getenv("AZURE_THERAPIST_CONTAINER")
 
 def extract_text_from_pdf(pdf_file) -> str:
     """
@@ -18,14 +28,23 @@ def extract_text_from_folder(folder_path: str) -> dict:
     """
     Extract text from all PDFs in a specified folder and return a dictionary
     with file names as keys and extracted text as values.
+    
     """
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    container_client = blob_service_client.get_container_client(container_name)
+
     extracted_texts = {}
-    for filename in os.listdir(folder_path):
-        if filename.endswith(".pdf"):
-            file_path = os.path.join(folder_path, filename)
-            with open(file_path, "rb") as f:
-                text = extract_text_from_pdf(f)
-                extracted_texts[filename] = text
+
+    blobs = container_client.list_blobs()
+    
+    for blob in blobs:
+        if blob.name.endswith(".pdf"):  
+            blob_client = container_client.get_blob_client(blob.name)
+            blob_data = blob_client.download_blob()
+            pdf_bytes = blob_data.readall()
+            
+            text = extract_text_from_pdf(io.BytesIO(pdf_bytes))
+            extracted_texts[blob.name] = text
     return extracted_texts
 
 def compute_cosine_similarity(text1: str, text2: str) -> float:
