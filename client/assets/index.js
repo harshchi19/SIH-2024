@@ -5,6 +5,7 @@ import thinking from "./gif/thinking.gif";
 // IMAGES
 import logo from "./images/logo.png";
 import calendar from "./images/calendar.png";
+import landingIllustration from "./images/landingillus.png";
 
 //STORIES
 import story_1_1 from "./images/stories/story_1.1.webp";
@@ -21,4 +22,5 @@ export {
   story_1_2,
   story_1_3,
   story_1_4,
+  landingIllustration,
 };
