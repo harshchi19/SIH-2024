@@ -25,9 +25,12 @@
     "add-patient": "Add Patient",
     "pre-therapy": "Pre-Therapy",
     "matchmaking": "Patient Alloment",
-    "view_report": "View Report",
-    "navigation": "Guide",
-    "admin": "Admin"
+    "view-report": "View Report",
+    "Session-report": "Session Report",
+    "Final-report": "Final Report",
+    "Pre-Therapy-report": "Pre-Therapy Report",
+    "Summary-report": "Summary Report",
+    "navigation": "Guide"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",
