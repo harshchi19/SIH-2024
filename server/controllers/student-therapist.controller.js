@@ -1,4 +1,3 @@
-import { de, id } from "date-fns/locale";
 import {
   decryptSection,
   encryptSection,
@@ -10,6 +9,7 @@ import { EncryptionKey } from "../models/mongo/keys.model.js";
 import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
 import { unwrapKey } from "./keys.controller.js";
 import { Supervisor } from "../models/mongo/supervisor.model.js";
+import { AzurePDFUploader } from "../helper/azure.helper.js";
 
 export const addStudent = async (req, res) => {
   const { personalDetails, professionalDetails } = req.body;
@@ -45,6 +45,21 @@ export const addStudent = async (req, res) => {
 
     const hashedStudentTherapistId = generateHashedData(newStudentTherapistId);
 
+    const student = {
+      personalDetails,
+      professionalDetails,
+      location,
+    };
+
+    const pdfFileName = `${newStudentTherapistId}_supervisor_details.pdf`;
+    await generatePdf(dataForPdf, pdfFileName);
+
+    // Azure Storage
+    const containerName = process.env.AZURE_THERAPIST_CONTAINER;
+    const response = await AzurePDFUploader(containerName, pdfFileName);
+
+    if (!response) return res.status(401).json({ message: "pdf-upl-err" });
+
     const encryptedPersonalDetails = encryptSection(personalDetails, key, iv);
     const encryptedProfessionalDetails = encryptSection(
       updatedProfessionalDetails,
@@ -79,6 +94,7 @@ export const addStudent = async (req, res) => {
       email_hash: hashedEmail,
       phone_hash: hashedPhone,
       student_therapist_id_hash: hashedStudentTherapistId,
+      blob_stprage_path: pdfFileName,
     });
 
     await newStudentTherapist.save();
@@ -86,7 +102,6 @@ export const addStudent = async (req, res) => {
     const supervisor = await Supervisor.findOne({
       _id: personalDetails.supervisor_id,
     });
-    console.log(newStudentTherapist._id);
 
     if (!supervisor) {
       return res.status(404).json({ message: "sup-not-fnd" });
