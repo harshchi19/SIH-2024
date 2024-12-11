@@ -8,7 +8,7 @@ export const getUnallocatedPatients = async (req, res, next) => {
     const patients = await Patient.find({
       "medical_details.student_therapist_id": { $size: 0 },
     }).select(
-      "_id name email phone_no sex user_image case_no date_of_assignment date_of_birth patient_issue preferred_language1"
+      "_id patient_id name email phone_no sex user_image case_no date_of_assignment date_of_birth patient_issue preferred_language1 preferred_language2 preferred_language3 addressDetails"
     );
 
     if (!patients) return res.status(400).json({ message: "no-pat-fnd" });
@@ -25,6 +25,7 @@ export const getUnallocatedPatients = async (req, res, next) => {
     const decryptedPatients = patients.map((patient) => {
       const decryptedPatient = {
         _id: patient._id,
+        patient_id: Object.fromEntries(patient.patient_id),
         name: Object.fromEntries(patient.name),
         phone_no: Object.fromEntries(patient.phone_no),
         email: Object.fromEntries(patient.email),
@@ -33,7 +34,9 @@ export const getUnallocatedPatients = async (req, res, next) => {
         sex: Object.fromEntries(patient.sex),
         case_no: Object.fromEntries(patient.case_no),
         patient_issue: Object.fromEntries(patient.patient_issue),
-        language: Object.fromEntries(patient.preferred_language1),
+        language1: Object.fromEntries(patient.preferred_language1),
+        language2: Object.fromEntries(patient.preferred_language2),
+        language3: Object.fromEntries(patient.preferred_language3),
       };
 
       const patientData = decryptSection(decryptedPatient, key);
