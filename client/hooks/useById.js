@@ -14,7 +14,7 @@ const ROLE_PREFIXES = {
 export const useById = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  
   const getById = async (id, role) => {
     setIsLoading(true);
     setError(null);

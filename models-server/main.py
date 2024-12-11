@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from services.ocr import generate_pre_therapy
 from services.vaniai import text_to_speech, prepare_system_context
 from services.matchmaking import extract_text_from_folder, extract_text_from_pdf, compute_cosine_similarity
+from services.blogs_yt import fetch_news_articles, fetch_youtube_videos
 import base64
 import os
 from groq import Groq
@@ -126,3 +127,26 @@ async def match_therapists(pdf_file: UploadFile = File(...)) -> JSONResponse:
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post('/blogs-youtube')
+def search(message: Optional[str] = Form(None), type: Optional[str] = Form(None)):
+    print(message, type)
+    try:
+        if not message:
+            return JSONResponse(content={"error": "Message is required"}, status_code=400)
+        
+        result = {}
+        
+        # Fetch results based on type
+        if type == "youtube":
+            result["youtube_videos"] = fetch_youtube_videos(message)
+        elif type == "news":
+            result["news_articles"] = fetch_news_articles(message)
+        else:
+            return JSONResponse(content={"error": "Invalid type. Use 'youtube' or 'news'."}, status_code=400)
+
+        # Return results in JSON format
+        return JSONResponse(content={"message": message, **result}, status_code=200)
+
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)

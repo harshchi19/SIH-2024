@@ -6,6 +6,9 @@ const reportSchema = new Schema(
       type: Map,
       of: String,
     },
+    session_no: {
+      type: String,
+    },
     patient_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
@@ -74,8 +77,9 @@ const reportSchema = new Schema(
       type: Map,
       of: String,
     },
-    pdfname: {
+    blob_storage_path: {
       type: String,
+      default: "",
     },
   },
   {

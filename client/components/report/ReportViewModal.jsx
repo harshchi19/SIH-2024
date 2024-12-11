@@ -15,8 +15,8 @@ import { Brain } from "lucide-react"; // Import brain icon for AI model button
 const ReportViewModal = ({
   isOpen,
   onClose,
-  previousReports = [],
-  recentReports = [],
+  allReports = [],
+  summaryReports = [],
 }) => {
   const reports = [
     {
@@ -86,9 +86,9 @@ const ReportViewModal = ({
   };
 
   // Filter previous reports for the same patient
-  const patientPreviousReports = selectedPatient
-    ? previousReports.filter((report) => report.patient === selectedPatient)
-    : previousReports;
+  const patientallReports = selectedPatient
+    ? allReports.filter((report) => report.patient === selectedPatient)
+    : allReports;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -103,20 +103,20 @@ const ReportViewModal = ({
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="recent">Recent Reports</TabsTrigger>
+            <TabsTrigger value="recent">Summary Reports</TabsTrigger>
             <TabsTrigger value="previous">
               {selectedPatient
-                ? `Previous Reports for ${selectedPatient}`
-                : "Previous Reports"}
+                ? `All Reports for ${selectedPatient}`
+                : "All Reports"}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="recent">
             <div className="grid gap-4 py-4">
-              {recentReports.length > 0 ? (
-                recentReports.map((report) => (
+              {summaryReports.length > 0 ? (
+                summaryReports.map((report) => (
                   <div
-                    key={report.id}
+                    key={report._id}
                     className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer"
                     onClick={() => handleReportSelect(report)}
                   >
@@ -142,8 +142,8 @@ const ReportViewModal = ({
 
           <TabsContent value="previous">
             <div className="grid gap-4 py-4">
-              {patientPreviousReports.length > 0 ? (
-                patientPreviousReports.map((report) => (
+              {patientallReports.length > 0 ? (
+                patientallReports.map((report) => (
                   <div
                     key={report.id}
                     className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer"

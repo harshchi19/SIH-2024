@@ -24,7 +24,9 @@
     "patients": "All Patients",
     "add-patient": "Add Patient",
     "pre-therapy": "Pre-Therapy",
-    "matchmaking": "Patient Alloment"
+    "matchmaking": "Patient Alloment",
+    "view_report": "View Report",
+    "navigation": "Guide"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",
@@ -216,7 +218,13 @@
     "patient_name": "Patient Name",
     "therapy_sessions_by_student_therapists": "Therapy Sessions By Student Therapists",
     "patient_distribution_by_therapy_type": "Patient Distribution by Therapy Type",
-    "recent_appointments": "Recent Appointments"
+    "recent_appointments": "Recent Appointments",
+    "rel_news": "Relevant News Articles for you",
+    "rel_yt": "Relevant Youtube Videos for you",
+    "watch_video": "Watch Video",
+    "watch_news": "Read more",
+    "no_news": "No news items available",
+    "no_yt": "No Youtube videos available"
   },
   "calendar": {
     "add": "Create",
@@ -349,6 +357,12 @@
     "phone": "Phone No.",
     "email": "Email",
     "language": "Spoken Language",
-    "issue": "Issue"
+    "issue": "Issue",
+    "matchmaker": "VaniVikas Matchmaker",
+    "therapists": "Student Therapists"
+  },
+  "navigation": {
+    "floor": "Floor",
+    "therapy_type": "Therapy Types"
   }
 }
