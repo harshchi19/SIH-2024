@@ -26,12 +26,12 @@ const HODOnboarding = ({
   handleDepartmentChange,
   handleSubmit,
 }) => {
-  const { dict } = useLanguage();
+  const { dict, currentLang } = useLanguage();
 
   const sexData = ["Male", "Female", "Other"];
 
   return (
-    <div className="h-screen w-screen flex-row-center bg-gray-100">
+    <div className="h-screen w-screen flex-row-center bg-gray-100 overflow-auto">
       <div className="h-[90%] w-2/3 rounded-xl overflow-hidden py-5 shadow-2xl border bg-white max-md:w-11/12">
         <div className="h-full flex flex-col justify-between">
           <div>
@@ -48,21 +48,22 @@ const HODOnboarding = ({
 
               <div>
                 <h1 className="text-3xl font-bold tracking-tighter text-gray-800">
-                  {dict?.login?.reg_sup_head}
+                  Register yourself as Head Of Deprtment
                 </h1>
                 <h3 className="text-sm font-medium mt-2 text-gray-600">
-                  {dict?.login?.reg_sup_desc}
+                  Please fill in the details and wait for the approval of the
+                  Admin
                 </h3>
 
                 <div className="w-full flex-row-center gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-8">
                   <div className="space-y-1 w-full">
                     <Label htmlFor="name" className="text-gray-700 text-md">
-                      {dict?.login?.sup_name}
+                      Head Of Department's Name
                     </Label>
                     <Input
                       type="text"
                       id="name"
-                      value={data.name}
+                      value={data?.name}
                       placeholder={dict?.login?.pat_pchldr_name}
                       onChange={handleInputChange}
                       className="border-gray-200 w-full h-12 text-md"
@@ -79,7 +80,7 @@ const HODOnboarding = ({
                     <Input
                       type="password"
                       id="password"
-                      value={data.password}
+                      value={data?.password}
                       placeholder={dict?.login?.pat_pchldr_pass}
                       onChange={handleInputChange}
                       className="border-gray-200 w-full h-12 text-md"
@@ -98,7 +99,7 @@ const HODOnboarding = ({
                     <Input
                       type="email"
                       id="email"
-                      value={data.email}
+                      value={data?.email}
                       placeholder={dict?.addPatient?.email_plchldr}
                       onChange={handleInputChange}
                       className="border-gray-200 w-full h-12 text-md"
@@ -111,7 +112,7 @@ const HODOnboarding = ({
                     <Input
                       type="tel"
                       id="phone_no"
-                      value={data.phone}
+                      value={data?.phone}
                       placeholder={dict?.login?.pat_pchldr_phon}
                       onChange={handleInputChange}
                       className="border-gray-200 w-full h-12 text-md"
@@ -131,7 +132,7 @@ const HODOnboarding = ({
                       id="date_of_birth"
                       name="date_of_birth"
                       type="date"
-                      value={data.date_of_birth}
+                      value={data?.date_of_birth}
                       onChange={handleInputChange}
                       className="h-12 -mt-1"
                       required
@@ -145,10 +146,10 @@ const HODOnboarding = ({
                     <DropdownMenu className="flex justify-start">
                       <DropdownMenuTrigger
                         className={`w-full flex items-center justify-start h-12 rounded-md border ${
-                          !data.sex ? "text-gray-500" : ""
+                          !data?.sex ? "text-gray-500" : ""
                         } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                       >
-                        {data.sex || dict?.login?.sup_sex_plchldr}
+                        {data?.sex || dict?.login?.sup_sex_plchldr}
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         {sexData.map((sex) => (
@@ -164,76 +165,23 @@ const HODOnboarding = ({
                   </div>
                 </div>
 
-                <div className="w-full flex-row-center gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-5">
-                  <div className="space-y-1 w-full">
-                    <Label
-                      htmlFor="preferred_language1"
-                      className="text-gray-700 text-md flex items-center"
-                    >
-                      {dict?.addPatient?.pref_lang} 1
-                    </Label>
-                    <Input
-                      type="text"
-                      id="preferred_language1"
-                      value={data.preferred_language1}
-                      placeholder={dict?.addPatient?.pref_lang_plchldr}
-                      onChange={handleInputChange}
-                      className="border-gray-200 w-full h-12 text-md"
-                    />
-                  </div>
-
-                  <div className="space-y-1 w-full">
-                    <Label
-                      htmlFor="preferred_language2"
-                      className="text-gray-700 text-md flex items-center"
-                    >
-                      {dict?.addPatient?.pref_lang} 2
-                    </Label>
-                    <Input
-                      type="text"
-                      id="preferred_language2"
-                      value={data.preferred_language2}
-                      placeholder={dict?.addPatient?.pref_lang_plchldr}
-                      onChange={handleInputChange}
-                      className="border-gray-200 w-full h-12 text-md"
-                    />
-                  </div>
-
-                  <div className="space-y-1 w-full">
-                    <Label
-                      htmlFor="preferred_language3"
-                      className="text-gray-700 text-md flex items-center"
-                    >
-                      {dict?.addPatient?.pref_lang} 3
-                    </Label>
-                    <Input
-                      type="text"
-                      id="preferred_language3"
-                      value={data.preferred_language3}
-                      placeholder={dict?.addPatient?.pref_lang_plchldr}
-                      onChange={handleInputChange}
-                      className="border-gray-200 w-full h-12 text-md"
-                    />
-                  </div>
-                </div>
-
                 <div className="w-full flex gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-5">
                   <div className="space-y-1 w-full">
                     <Label
                       htmlFor="department"
                       className="text-gray-700 text-md"
                     >
-                      {dict?.login?.department}
+                      Department
                     </Label>
                     <DropdownMenu className="flex justify-start">
                       <DropdownMenuTrigger
                         className={`w-full flex items-center justify-start h-12 rounded-md border ${
-                          selectedDepartments.length === 0
+                          selectedDepartments?.length === 0
                             ? "text-gray-500"
                             : ""
                         } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                       >
-                        {selectedDepartments.length > 0
+                        {selectedDepartments?.length > 0
                           ? selectedDepartments.join(", ")
                           : dict?.login?.dept_plchldr}
                       </DropdownMenuTrigger>
@@ -247,7 +195,7 @@ const HODOnboarding = ({
                           >
                             <div className="flex items-center justify-between">
                               <span>{dept}</span>
-                              {selectedDepartments.includes(dept) && (
+                              {selectedDepartments?.includes(dept) && (
                                 <span className="text-green-500 ml-2">✔</span>
                               )}
                             </div>
@@ -256,7 +204,7 @@ const HODOnboarding = ({
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <div className="mt-2 flex flex-wrap gap-2 gap-y-1">
-                      {selectedDepartments.map((dept) => (
+                      {selectedDepartments?.map((dept) => (
                         <span
                           key={dept}
                           className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm"
@@ -277,17 +225,17 @@ const HODOnboarding = ({
                     <DropdownMenu className="flex justify-start">
                       <DropdownMenuTrigger
                         className={`w-full flex items-center justify-start h-12 rounded-md border ${
-                          selectedQualifications.length === 0
+                          selectedQualifications?.length === 0
                             ? "text-gray-500"
                             : ""
                         } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                       >
-                        {selectedQualifications.length > 0
-                          ? selectedQualifications.join(", ")
+                        {selectedQualifications?.length > 0
+                          ? selectedQualifications?.join(", ")
                           : dict?.login?.qual_plchldr}
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="max-h-80 overflow-y-scroll">
-                        {qualificationsOptions.map((qualification, index) => (
+                        {qualificationsOptions?.map((qualification, index) => (
                           <DropdownMenuItem
                             key={index}
                             onClick={() => {
@@ -296,7 +244,7 @@ const HODOnboarding = ({
                           >
                             <div className="flex items-center justify-between">
                               <span>{qualification}</span>
-                              {selectedQualifications.includes(
+                              {selectedQualifications?.includes(
                                 qualification
                               ) && (
                                 <span className="text-green-500 ml-2">✔</span>
@@ -307,7 +255,7 @@ const HODOnboarding = ({
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <div className="mt-2 flex flex-wrap gap-2 gap-y-1">
-                      {selectedQualifications.map((qualification) => (
+                      {selectedQualifications?.map((qualification) => (
                         <span
                           key={qualification}
                           className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm"

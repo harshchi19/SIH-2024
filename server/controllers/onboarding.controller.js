@@ -35,7 +35,7 @@ export const onboardingAuthUser = async (req, res, next) => {
     } else if (userType === "HOD") {
       UserModel = HeadOfDepartment;
       encryptionCollection = "hods";
-      hashedIdField = "hod_id_hash";
+      hashedIdField = "hash_hod_id";
     } else {
       return res.status(400).json({ message: "Invalid user type" });
     }
@@ -63,7 +63,7 @@ export const onboardingAuthUser = async (req, res, next) => {
 
     const dob = new Date(date_of_birth);
     if (isNaN(dob.getTime())) {
-      console.error("Date of Birth is not valid");
+      console.log("Date of Birth is not valid");
       return res.status(400).json({ message: "Invalid Date" });
     }
 

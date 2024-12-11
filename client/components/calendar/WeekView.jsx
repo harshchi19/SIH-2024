@@ -68,7 +68,7 @@ const WeekView = ({
               const startHour = time.split(":")[0];
 
               const dayEvents = events.filter((event) => {
-                const eventDate = new Date(event.selected_date);
+                const eventDate = new Date(event?.selected_date);
                 return eventDate.toDateString() === day.toDateString();
               });
 

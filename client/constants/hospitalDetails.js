@@ -55,4 +55,15 @@ export const timeData = [
   "Friday 03:30PM - 04:30PM",
   "Friday 04:30PM - 05:30PM",
   "Friday 05:30PM - 06:30PM",
+ ];
+
+export const semester = [
+  "Semester 1",
+  "Semester 2",
+  "Semester 3",
+  "Semester 4",
+  "Semester 5",
+  "Semester 6",
+  "Semester 7",
+  "Semester 8",
 ];

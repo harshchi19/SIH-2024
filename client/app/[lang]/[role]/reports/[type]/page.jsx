@@ -22,6 +22,7 @@ import { logo } from "@/assets/index.js";
 import { useGetReport } from "@/hooks/useGetReport";
 import { useSearchParams } from "next/navigation";
 import { useByObjectId } from "@/hooks/useByObjectId";
+import { Button } from "@/components/ui/button";
 
 function TherapyReport() {
   const searchParams = useSearchParams();
@@ -35,16 +36,8 @@ function TherapyReport() {
     : null;
 
   useEffect(() => {
-    if (reportDetails) {
-      console.log("Selected Report Details:", reportDetails);
-    }
-  }, [reportDetails]);
-
-  console.log("reportDetails", reportDetails);
-
-  useEffect(() => {
-    if (reportDetails.student.supervisor_id) {
-      getByObjectId(reportDetails.student.supervisor_id, "SUP")
+    if (reportDetails?.student.supervisor_id) {
+      getByObjectId(reportDetails?.student.supervisor_id, "SUP")
         .then((res) => {
           setSupervisor(res.user);
         })
@@ -52,9 +45,22 @@ function TherapyReport() {
           console.error(err);
         });
     }
-  }, [reportDetails.student]);
+  }, []);
 
-  console.log("supervisor", supervisor);
+  const treatmentPlan = reportDetails?.treatment_plan || ""; // Ensure treatment_plan exists
+  const treatmentPlanParts = treatmentPlan
+    .split(".")
+    .map((part) => part.trim()); // Split by period and trim whitespace
+
+  const titleDescriptionPairs = treatmentPlanParts.map((part) => {
+    const [title, description] = part
+      .split(":")
+      .map((subPart) => subPart?.trim()); // Split by colon and trim
+    return {
+      title: title || "Untitled", // Default title if missing
+      description: description || "No description provided", // Default description if missing
+    };
+  });
 
   const speechData = [
     { session: "Session 1", rate: 20 },
@@ -64,6 +70,8 @@ function TherapyReport() {
     { session: "Session 5", rate: 35 },
     { session: "Session 6", rate: 38 },
   ];
+
+  console.log("reportDetails", reportDetails);
 
   const COLORS = ["#10b981", "#6366f1", "#f59e0b", "#ef4444"];
 
@@ -92,24 +100,41 @@ function TherapyReport() {
     return <div>No report data available</div>;
   }
 
+  const getInitials = (name) => {
+    if (!name) return "";
+    const initials = name.match(/\b\w/g) || [];
+    return ((initials.shift() || "") + (initials.pop() || "")).toUpperCase();
+  };
+
   return (
     <div className=" overflow-y-scroll bg-gray-50">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         <div className="bg-gradient-to-r from-emerald-400 to-teal-100 p-6 rounded-t-lg">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                <img src={logo} alt="" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white">
+                {getInitials(reportDetails?.patient.name)}
+                {/* <User /> */}
               </div>
               <h1 className="text-4xl font-serif text-white">
-                {reportDetails.type} Report
+                {reportDetails?.type} Report
               </h1>
             </div>
-            <div className="bg-teal-50/90 px-4 py-2 rounded-lg">
-              <p className="text-sm text-teal-800">Supervisor:</p>
-              <p className="font-semibold text-teal-900">
-                {supervisor.name || "Not Assigned"}
-              </p>
+            <div className="flex gap-2">
+              <div className="bg-teal-50/90 px-4 py-2 rounded-lg">
+                <p className="text-sm text-teal-800">Supervisor:</p>
+                <p className="font-semibold text-teal-900">
+                  {supervisor?.name || "Not Assigned"}
+                </p>
+              </div>
+              <div className="bg-teal-50/90 px-4 py-2 rounded-lg ">
+                <Button
+                  variant="ghost"
+                  className="flex items-center h-full rounded-lg hover:shadow-sm hover:bg-teal-100"
+                >
+                  View Feedback
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -131,12 +156,12 @@ function TherapyReport() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground leading-relaxed">
-              {reportData.history || "No history available"}
+              {reportDetails?.history || "No history available"}
             </p>
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-3 gap-6">
+        {/* <div className="grid grid-cols-3 gap-6">
           <Card className="col-span-2">
             <CardHeader>
               <CardTitle className="text-lg font-medium">
@@ -179,26 +204,13 @@ function TherapyReport() {
                     endAngle={360}
                     paddingAngle={5}
                     label={({ name }) => `${name}`}
-                  >
-                    {/* {intonationData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))} */}
-                  </Pie>
+                  ></Pie>
                   <Tooltip />
-                  {/* <Legend
-                    layout="vertical"
-                    align="right"
-                    verticalAlign="middle"
-                    iconSize={10}
-                  /> */}
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
 
         {/* Diagnosis */}
         <Card>
@@ -207,7 +219,7 @@ function TherapyReport() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground leading-relaxed">
-              {reportData.diagnosis || "No diagnosis available"}
+              {reportDetails?.diagnosis || "No diagnosis available"}
             </p>
           </CardContent>
         </Card>
@@ -218,7 +230,7 @@ function TherapyReport() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              {reportData.medications || "No medications listed"}
+              {reportDetails?.medicine || "No medications listed"}
             </p>
           </CardContent>
         </Card>
@@ -232,9 +244,8 @@ function TherapyReport() {
           </CardHeader>
           <CardContent>
             <ol className="list-decimal list-inside space-y-2">
-              {reportData.treatmentPlan &&
-              reportData.treatmentPlan.length > 0 ? (
-                reportData.treatmentPlan.map((item, index) => (
+              {titleDescriptionPairs && titleDescriptionPairs.length > 0 ? (
+                titleDescriptionPairs.map((item, index) => (
                   <li key={index} className="text-muted-foreground">
                     <span className="font-medium text-foreground">
                       {item.title || `Step ${index + 1}`}:
@@ -261,7 +272,7 @@ function TherapyReport() {
                     Student Therapist
                   </p>
                   <p className="text-lg font-medium text-emerald-700">
-                    {reportDetails.student.name || "Unnamed Therapist"}
+                    {reportDetails?.student.name || "Unnamed Therapist"}
                   </p>
                 </div>
               </div>
