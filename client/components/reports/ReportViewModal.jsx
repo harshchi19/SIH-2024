@@ -17,7 +17,7 @@ const ReportViewModal = ({
   onClose,
   pretherapyReports,
   sessionReports,
-  // postSessionReports,
+  therapyPlanReports,
   finalReports,
 }) => {
   const [activeTab, setActiveTab] = useState("pretherapy");
@@ -29,6 +29,7 @@ const ReportViewModal = ({
     ...pretherapyReports,
     ...sessionReports,
     ...finalReports,
+    ...therapyPlanReports,
   ]);
 
   const handleActiveTab = (tab) => {
@@ -38,15 +39,7 @@ const ReportViewModal = ({
   const handleReportSelect = (report) => {
     // Create a detailed report object to pass
     const reportDetails = {
-      _id: report._id,
-      patient_id: report.patient_id,
-      student_therapist_id: report.student_therapist_id,
-      session_id: report.session_id,
-      type: report.type, // Capture the current tab/report type
-      createdAt: report.createdAt,
-      patient: report.patient,
-      student: report.student,
-      // Include any other relevant report information
+      ...report,
     };
 
     // Convert to JSON string and encode for URL
@@ -62,7 +55,7 @@ const ReportViewModal = ({
     onClose();
   };
 
-  console.log("finalReports", sessionReports);
+  console.log("finalReports", pretherapyReports);
 
   // Render function for report list
   const renderReportList = (reports, emptyMessage) => (
@@ -108,7 +101,7 @@ const ReportViewModal = ({
         >
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="pretherapy">Pre-Therapy</TabsTrigger>
-            <TabsTrigger value="therapy-plan">Therapy Plan</TabsTrigger>
+            <TabsTrigger value="therapy-plan">Treatment Plan</TabsTrigger>
             <TabsTrigger value="session">Sessions</TabsTrigger>
             <TabsTrigger value="finalReport">Progress</TabsTrigger>
           </TabsList>
@@ -116,16 +109,20 @@ const ReportViewModal = ({
           <TabsContent value="pretherapy">
             {renderReportList(
               pretherapyReports,
-              "No pre-therapy reports found"
+              "No Pre Therapy Reports found"
             )}
           </TabsContent>
 
+          <TabsContent value="therapy-plan">
+            {renderReportList(therapyPlanReports, "No Treatment Plan found")}
+          </TabsContent>
+
           <TabsContent value="session">
-            {renderReportList(sessionReports, "No session reports found")}
+            {renderReportList(sessionReports, "No Session Reports found")}
           </TabsContent>
 
           <TabsContent value="finalReport">
-            {renderReportList(finalReports, "No final reports found")}
+            {renderReportList(finalReports, "No Final Feports found")}
           </TabsContent>
         </Tabs>
 

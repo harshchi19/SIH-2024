@@ -3,6 +3,8 @@ import { Calendar } from "../models/mongo/calendar.model.js";
 import { Patient } from "../models/mongo/patient.model.js";
 import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
 import { Supervisor } from "../models/mongo/supervisor.model.js";
+import { HeadOfDepartment } from "../models/mongo/hod.model.js";
+import { Admin } from "../models/mongo/admin.model.js";
 
 export const addCalendarEvent = async (req, res, next) => {
   const {
@@ -70,6 +72,14 @@ export const addCalendarEvent = async (req, res, next) => {
       currentUser = await Supervisor.findOne({
         supervisor_id_hash: hashedUserId,
       }).select("_id");
+    } else if (userType === "HOD") {
+      currentUser = await HeadOfDepartment.findOne({
+        hash_hod_id: hashedUserId,
+      }).select("_id");
+    } else if (userType === "ADM") {
+      currentUser = await Admin.findOne({
+        admin_id_hash: hashedUserId,
+      }).select("_id");
     }
 
     if (!currentUser) {
@@ -115,7 +125,13 @@ export const getAllCalendarEvents = async (req, res, next) => {
   try {
     const userType = userId.split("-")[0];
 
-    if (userType !== "PAT" && userType !== "STT" && userType !== "SUP") {
+    if (
+      userType !== "PAT" &&
+      userType !== "STT" &&
+      userType !== "SUP" &&
+      userType !== "HOD" &&
+      userType !== "ADM"
+    ) {
       return res.status(400).json({ message: "invalid-user" });
     }
 
@@ -133,6 +149,14 @@ export const getAllCalendarEvents = async (req, res, next) => {
     } else if (userType === "SUP") {
       currentUser = await Supervisor.findOne({
         supervisor_id_hash: hashedUserId,
+      }).select("_id");
+    } else if (userType === "HOD") {
+      currentUser = await HeadOfDepartment.findOne({
+        hash_hod_id: hashedUserId,
+      }).select("_id");
+    } else if (userType === "ADM") {
+      currentUser = await Admin.findOne({
+        admin_id_hash: hashedUserId,
       }).select("_id");
     }
 
@@ -153,6 +177,14 @@ export const getAllCalendarEvents = async (req, res, next) => {
       })
         .select("-userType")
         .exec();
+    } else if (userType === "HOD") {
+      userCalendar = await Calendar.find({ userId: currentUser._id })
+        .select("-userType")
+        .exec();
+    } else if (userType === "ADM") {
+      userCalendar = await Calendar.find({ userId: currentUser._id })
+        .select("-userType")
+        .exec();
     }
 
     return res
@@ -170,7 +202,13 @@ export const getUserObjId = async (req, res, next) => {
   try {
     const userType = userId.split("-")[0];
 
-    if (userType !== "PAT" && userType !== "STT" && userType !== "SUP") {
+    if (
+      userType !== "PAT" &&
+      userType !== "STT" &&
+      userType !== "SUP" &&
+      userType !== "HOD" &&
+      userType !== "ADM"
+    ) {
       return res.status(400).json({ message: "invalid-user" });
     }
 
@@ -188,6 +226,14 @@ export const getUserObjId = async (req, res, next) => {
     } else if (userType === "SUP") {
       currentUser = await Supervisor.findOne({
         supervisor_id_hash: hashedUserId,
+      }).select("_id");
+    } else if (userType === "HOD") {
+      currentUser = await HeadOfDepartment.findOne({
+        hash_hod_id: hashedUserId,
+      }).select("_id");
+    } else if (userType === "ADM") {
+      currentUser = await Admin.findOne({
+        admin_id_hash: hashedUserId,
       }).select("_id");
     }
 

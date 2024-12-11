@@ -25,6 +25,9 @@ const OnboardingPage = () => {
     sex: "",
     department: "",
     qualifications: "",
+    preferred_language1: "",
+    preferred_language2: "",
+    preferred_language3: "",
   });
   const router = useRouter();
   const params = useParams();
@@ -157,7 +160,18 @@ const OnboardingPage = () => {
 
   return (
     <>
-      {userType === "HOD" && <HODOnboarding />}
+      {userType === "HOD" && (
+        <HODOnboarding
+          data={data}
+          handleInputChange={handleInputChange}
+          handleSexChange={handleSexChange}
+          selectedDepartments={selectedDepartments}
+          selectedQualifications={selectedQualifications}
+          handleQualificationChange={handleQualificationChange}
+          handleDepartmentChange={handleDepartmentChange}
+          handleSubmit={handleSubmit}
+        />
+      )}
       {userType === "ADM" && (
         <AdminOnboarding
           data={data}

@@ -21,6 +21,7 @@ import reportRouter from "./routes/report.route.js";
 import matchmakingRouter from "./routes/matchmaking.route.js";
 import onboardingRouter from "./routes/onboarding.route.js";
 import adminRouter from "./routes/admin.route.js";
+import hodRouter from "./routes/hod.route.js";
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use("/supervisor", supervisorRouter);
 app.use("/student-therapist", studentRouter);
 app.use("/patient", patientRouter);
 app.use("/admin", adminRouter);
+app.use("/hod", hodRouter);
 
 app.use("/messages", messageRoutes);
 app.use("/contacts", contactRoutes);

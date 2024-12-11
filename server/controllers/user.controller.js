@@ -174,7 +174,7 @@ export const loginUser = async (req, res, next) => {
 
       const existingUser = await AuthEmail.findOne({
         hash_email: hashedEmailId,
-      }).select("email password");
+      }).select("userId email password");
 
       if (!existingUser) {
         return res.status(400).json({ message: "usr-not-fnd" });
@@ -200,7 +200,7 @@ export const loginUser = async (req, res, next) => {
         return res.status(400).json({ message: "Incorrect Password" });
       }
 
-      const newUserId = generateUniqueCaseNo(userType);
+      const newUserId = generateEncryptedUniqueId(userType);
       const hashedUserId = generateHashedData(newUserId);
 
       const newEncryptionKey = await EncryptionKey.findOne({
@@ -214,31 +214,56 @@ export const loginUser = async (req, res, next) => {
 
       const iv = generateKeyAndIV();
 
-      const encryptData = {
-        hod_id: newUserId,
-      };
-
-      const encryptedDetails = encryptSection(encryptData, newKey, iv);
-
-      const newHOD = new HeadOfDepartment({
-        hod_id: encryptedDetails.hod_id,
-        hash_hod_id: hashedUserId,
+      const existingNewUser = await HeadOfDepartment.findOne({
+        email_hash: hashedEmailId,
       });
 
-      await newHOD.save();
+      if (!existingNewUser) {
+        const encryptData = {
+          hod_id: newUserId,
+        };
 
-      res.cookie("token", createToken(email, newHOD._id), {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-        maxAge: 1000 * 60 * 60 * 24,
-      });
+        const encryptedDetails = encryptSection(encryptData, newKey, iv);
 
-      return res.status(200).json({
-        message: "Login successful",
-        userId: newUserId,
-        userType: userType,
-      });
+        const newHod = new HeadOfDepartment({
+          hod_id: encryptedDetails.hod_id,
+          hash_hod_id: hashedUserId,
+        });
+
+        await newHod.save();
+
+        res.cookie("token", createToken(email, newHod._id), {
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+
+        return res.status(200).json({
+          message: "Login successful",
+          userId: newUserId,
+          userType: userType,
+        });
+      } else {
+        const decryptData = {
+          hod_id: existingUser.userId,
+        };
+
+        const decryptedDetails = decryptSection(decryptData, newKey);
+
+        res.cookie("token", createToken(email, decryptedDetails.hod_id), {
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+
+        return res.status(200).json({
+          message: "Login successful",
+          userId: decryptedDetails.hod_id,
+          userType: userType,
+        });
+      }
     } else if (userType === "ADM") {
       const hashedEmailId = generateHashedData(email);
 
