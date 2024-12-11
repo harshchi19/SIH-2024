@@ -16,19 +16,21 @@ import story_1_1 from "./images/stories/story_1.1.webp";
 import story_1_2 from "./images/stories/story_1.2.webp";
 import story_1_3 from "./images/stories/story_1.3.webp";
 import story_1_4 from "./images/stories/story_1.4.webp";
+import landingIllustration from "./images/landingIllus.png";
 
 export {
   load,
   logo,
   thinking,
   calendar,
-  room1,
-  room2,
-  room3,
   story_1_1,
   story_1_2,
   story_1_3,
   story_1_4,
   youtube,
   news,
+  room1,
+  room2,
+  room3,
+  landingIllustration,
 };

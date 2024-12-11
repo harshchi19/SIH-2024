@@ -12,17 +12,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@radix-ui/react-dropdown-menu";
-import {
-  qualificationsOptions,
-  hospitalDepartments,
-} from "@/constants/hospitalDetails";
+import { semester, hospitalDepartments } from "@/constants/hospitalDetails";
 
 const ProfessionalDetails = ({ data, updateData }) => {
   const { dict } = useLanguage();
   const [newItem, setNewItem] = useState({
     language: "",
     specialization: "",
-    qualifications: "",
+    semesters: "",
     training: "",
   });
   const [selectedSlots, setSelectedSlots] = useState(data.availability || []);
@@ -76,13 +73,13 @@ const ProfessionalDetails = ({ data, updateData }) => {
     updateData(e.target.id, e.target.value);
   };
 
-  const handleQualificationChange = (qualification) => {
+  const handleQualificationChange = (semester) => {
     setSelectedQualifications((prev) => {
-      const isSelected = prev.includes(qualification);
+      const isSelected = prev.includes(semester);
       if (isSelected) {
-        return prev.filter((item) => item !== qualification);
+        return prev.filter((item) => item !== semester);
       } else {
-        return [...prev, qualification];
+        return [...prev, semester];
       }
     });
   };
@@ -99,7 +96,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
   };
 
   useEffect(() => {
-    data.qualifications = selectedQualifications.toString(", ");
+    data.semesters = selectedQualifications.toString(", ");
     data.specialization = selectedSpecializations.toString(", ");
   }, [selectedQualifications, selectedSpecializations]);
 
@@ -114,7 +111,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
     const fieldMap = {
       language: "spoken_languages",
       specialization: "specialization",
-      qualifications: "qualifications",
+      semesters: "semesters",
       training: "training_and_education",
     };
 
@@ -132,7 +129,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
       preferred_language2: "preferred_language2",
       preferred_language3: "preferred_language3",
       specialization: "specialization",
-      qualifications: "qualifications",
+      semesters: "semesters",
       training: "training_and_education",
     };
 
@@ -291,8 +288,8 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
         {/* Qualifications */}
         <div className="space-y-2">
-          <Label htmlFor="qualifications" className="text-gray-700 text-md">
-            {dict?.addStudentTherapist?.qualifications}
+          <Label htmlFor="semesters" className="text-gray-700 text-md">
+            {dict?.addStudentTherapist?.semesters}
           </Label>
           <DropdownMenu className="flex justify-start">
             <DropdownMenuTrigger
@@ -304,17 +301,17 @@ const ProfessionalDetails = ({ data, updateData }) => {
                 ? selectedQualifications.join(", ")
                 : dict?.addStudentTherapist?.qual_plchldr}
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="max-h-80 overflow-y-scroll bg-slate-50 p-1 rounded">
-              {qualificationsOptions.map((qualification, index) => (
+            <DropdownMenuContent className="max-h-80 overflow-y-auto bg-slate-50 p-1 mx-3 rounded">
+              {semester.map((semester, index) => (
                 <DropdownMenuItem
                   key={index}
                   onClick={() => {
-                    handleQualificationChange(qualification);
+                    handleQualificationChange(semester);
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span>{qualification}</span>
-                    {selectedQualifications.includes(qualification) && (
+                    <span>{semester}</span>
+                    {selectedQualifications.includes(semester) && (
                       <span className="text-green-500 ml-2">✔</span>
                     )}
                   </div>
@@ -323,12 +320,12 @@ const ProfessionalDetails = ({ data, updateData }) => {
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="mt-2 flex flex-wrap gap-2 gap-y-1">
-            {selectedQualifications.map((qualification) => (
+            {selectedQualifications.map((semester) => (
               <span
-                key={qualification}
+                key={semester}
                 className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm"
               >
-                {qualification}
+                {semester}
               </span>
             ))}
           </div>
