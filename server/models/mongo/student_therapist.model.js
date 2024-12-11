@@ -122,6 +122,10 @@ const studentTherapistSchema = new Schema({
     type: Map,
     of: String,
   },
+  blob_stprage_path: {
+    type: String,
+    default: "",
+  },
 
   // Timestamps
   created_at: {
