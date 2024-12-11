@@ -11,10 +11,10 @@ from services.blogs_yt import fetch_news_articles, fetch_youtube_videos
 import base64
 import os
 from groq import Groq
+from azure.storage.blob import BlobServiceClient
+import traceback
 
 load_dotenv()
-
-print(os.getenv("GROQ_API_KEY"))
 
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY"), 
@@ -36,7 +36,6 @@ app.add_middleware(
 
 @app.post("/pre-therapy-report")
 async def pre_therapy_report(files: List[UploadFile] = File(...)):
-    print("Received files:", files)
     try:
         case_data_list = await generate_pre_therapy(files)
         # case_data_list = []
@@ -96,38 +95,59 @@ async def chat_with_bot(
         print("Error in /chat-with-bot endpoint:", str(e))
         return JSONResponse(content={"Error": str(e)}, status_code=500)
     
-# For matching student therapists to patients
-@app.post("/match-therapists")
-async def match_therapists(pdf_file: UploadFile = File(...)) -> JSONResponse:
+# For matching student therapists and supervisors to patients
+@app.post("/matchmaking")
+async def match_therapists(patient_id: Optional[str] = Form(None)) -> JSONResponse:
     """
     Match patient details (uploaded PDF) with therapist data based on cosine similarity.
     """
+    
     try:
-        # Extract text from uploaded PDF file
-        extracted_text = extract_text_from_pdf(pdf_file.file)
+        blob_service_client = BlobServiceClient.from_connection_string(os.getenv("CONNECTION_STRING"))
+        container_client = blob_service_client.get_container_client("patients-container")
 
-        # Define the folder path where therapist PDFs are stored
-        folder_path = "therapist_data"
-        if not os.path.exists(folder_path):
-            raise HTTPException(status_code=404, detail=f"The folder '{folder_path}' does not exist.")
+        blob_name = f"{patient_id}_patient_details.pdf"
+
+        blob_client = container_client.get_blob_client(blob_name)
+
+        if not blob_client.exists():
+            raise HTTPException(status_code=404, detail="PDF file not found.")
+        
+        blob_data = blob_client.download_blob().readall()
+
+        extracted_text = extract_text_from_pdf(blob_data)
+
+        extracted_supervisor_data = extract_text_from_folder(os.getenv("AZURE_SUPERVISORS_CONTAINER"))
 
         # Extract texts from all therapist PDFs
-        extracted_therapist_data = extract_text_from_folder(folder_path)
+        extracted_student_therapist_data = extract_text_from_folder(os.getenv("AZURE_THERAPIST_CONTAINER"))
 
         # Calculate cosine similarity
-        similarities = []
-        for filename, text in extracted_therapist_data.items():
+        supervisor_similarities = []
+        for filename, text in extracted_supervisor_data.items():
             similarity_score = compute_cosine_similarity(extracted_text, text)
-            similarities.append({"filename": filename, "similarity": similarity_score})
+            supervisor_similarities.append({"filename": filename, "similarity": similarity_score})
+
+        student_therapist_similarities = []
+        for filename, text in extracted_student_therapist_data.items():
+            similarity_score = compute_cosine_similarity(extracted_text, text)
+            student_therapist_similarities.append({"filename": filename, "similarity": similarity_score})
 
         # Sort the similarities in descending order
-        similarities.sort(key=lambda x: x["similarity"], reverse=True)
+        supervisor_similarities.sort(key=lambda x: x["similarity"], reverse=True)
+        student_therapist_similarities.sort(key=lambda x: x["similarity"], reverse=True)
 
         # Return top 3 matches
-        top_matches = similarities[:3]
-        return JSONResponse(content={"matches": top_matches}, status_code=200)
+        response = {
+            "supervisors": supervisor_similarities[:5],
+            "student_therapists": student_therapist_similarities[:5]
+        }
+
+        return JSONResponse(content=response, status_code=200)
 
     except Exception as e:
+        error_trace = traceback.format_exc()
+        print(f"Error: {error_trace}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post('/blogs-youtube')

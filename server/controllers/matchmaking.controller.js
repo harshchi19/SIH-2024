@@ -1,4 +1,6 @@
 import { Patient } from "../models/mongo/patient.model.js";
+import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
+import { Supervisor } from "../models/mongo/supervisor.model.js";
 import { decryptSection } from "../helper/security.helper.js";
 import { EncryptionKey } from "../models/mongo/keys.model.js";
 import { unwrapKey } from "./keys.controller.js";
@@ -8,7 +10,7 @@ export const getUnallocatedPatients = async (req, res, next) => {
     const patients = await Patient.find({
       "medical_details.student_therapist_id": { $size: 0 },
     }).select(
-      "_id patient_id name email phone_no sex user_image case_no date_of_assignment date_of_birth patient_issue preferred_language1 preferred_language2 preferred_language3 addressDetails"
+      "_id patient_id name email phone_no sex user_image case_no date_of_assignment date_of_birth patient_issue preferred_language1 preferred_language2 preferred_language3"
     );
 
     if (!patients) return res.status(400).json({ message: "no-pat-fnd" });
@@ -41,6 +43,8 @@ export const getUnallocatedPatients = async (req, res, next) => {
 
       const patientData = decryptSection(decryptedPatient, key);
 
+      console.log(patientData);
+
       return {
         patientData,
       };
@@ -52,5 +56,84 @@ export const getUnallocatedPatients = async (req, res, next) => {
   } catch (error) {
     console.error(`Error in getUnallocatedPatients: ${error}`);
     return res.status(500).json({ message: "int-ser-err" });
+  }
+};
+
+export const matchPatients = async (req, res, next) => {
+  const { selectedPatient, selectedTherapist, selectedSupervisor } = req.body;
+  console.log(req.body);
+
+  try {
+    const existingPatient = await Patient.findById(selectedPatient);
+    if (!existingPatient) {
+      return res.status(404).json({ message: "Patient not found." });
+    }
+
+    existingPatient.medical_details = {
+      supervisor_id: selectedSupervisor
+        ? [
+            ...new Set([
+              ...existingPatient.medical_details.supervisor_id,
+              selectedSupervisor,
+            ]),
+          ]
+        : existingPatient.medical_details.supervisor_id,
+      student_therapist_id: selectedTherapist
+        ? [
+            ...new Set([
+              ...existingPatient.medical_details.student_therapist_id,
+              selectedTherapist,
+            ]),
+          ]
+        : existingPatient.medical_details.student_therapist_id,
+    };
+    await existingPatient.save();
+
+    if (selectedTherapist) {
+      const existingTherapist = await StudentTherapist.findById(
+        selectedTherapist
+      );
+      if (!existingTherapist) {
+        return res.status(404).json({ message: "Therapist not found." });
+      }
+
+      existingTherapist.supervisor_id = selectedSupervisor
+        ? [...new Set([...existingTherapist.supervisor_id, selectedSupervisor])]
+        : existingTherapist.supervisor_id;
+      existingTherapist.patientId = [
+        ...new Set([...existingTherapist.patientId, selectedPatient]),
+      ];
+      await existingTherapist.save();
+    }
+
+    if (selectedSupervisor) {
+      const existingSupervisor = await Supervisor.findById(selectedSupervisor);
+      if (!existingSupervisor) {
+        return res.status(404).json({ message: "Supervisor not found." });
+      }
+
+      existingSupervisor.allocated_therapists = selectedTherapist
+        ? [
+            ...new Set([
+              ...existingSupervisor.allocated_therapists,
+              selectedTherapist,
+            ]),
+          ]
+        : existingSupervisor.allocated_therapists;
+      existingSupervisor.allocated_patients_active = [
+        ...new Set([
+          ...existingSupervisor.allocated_patients_active,
+          selectedPatient,
+        ]),
+      ];
+      await existingSupervisor.save();
+    }
+
+    return res.status(200).json({
+      message: "Patient, therapist, and supervisor successfully matched.",
+    });
+  } catch (error) {
+    console.error(`Error in matchPatients: ${error}`);
+    return res.status(500).json({ message: "Internal server error." });
   }
 };

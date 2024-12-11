@@ -69,6 +69,7 @@ export const GET_ALL_SESSIONS_BY_THERAPIST_PATIENT = `${SESSION_ROUTE}/get-sessi
 // Matchmaking
 export const MATCHMAKING_ROUTE = `${HOST}/matchmaking`;
 export const GET_UNALLOCATED_PATIENTS = `${MATCHMAKING_ROUTE}/get-unallocated-patients`;
+export const ALLOCATING_PATIENTS_ROUTE = `${MATCHMAKING_ROUTE}/match-patients`;
 
 // Reports
 export const REPORT_ROUTE = `${HOST}/report`;

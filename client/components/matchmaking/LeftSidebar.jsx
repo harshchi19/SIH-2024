@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/LanguageContext";
-import { GET_UNALLOCATED_PATIENTS } from "@/utils/constants";
-import { Search } from "lucide-react";
+import { Eye, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   Card,
@@ -12,26 +11,20 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { UserRound, Check } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 
-const SelectPatientModal = ({ selectedPatient, setSelectedPatient }) => {
-  const { dict } = useLanguage();
-  const [patients, setPatients] = useState([]);
+const SelectPatientModal = ({
+  patients,
+  setPatients,
+  selectedPatient,
+  selectedPatientId,
+  setSelectedPatientId,
+  setSelectedPatient,
+}) => {
+  const { dict, currentLang } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    const getUnallocatedPatients = async () => {
-      const response = await fetch(GET_UNALLOCATED_PATIENTS, {
-        method: "GET",
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setPatients(result.patients);
-      }
-    };
-
-    getUnallocatedPatients();
-  }, []);
+  const router = useRouter();
+  const { role } = useParams();
 
   const filteredPatients = patients.patientData
     ? [patients.patientData].filter((patient) =>
@@ -40,8 +33,10 @@ const SelectPatientModal = ({ selectedPatient, setSelectedPatient }) => {
     : [];
 
   const onSelectPatient = (patient) => {
-    if (selectedPatient === null) setSelectedPatient(patient._id);
-    else setSelectedPatient(null);
+    if (selectedPatient === null) {
+      setSelectedPatient(patient._id);
+      setSelectedPatientId(patient.patient_id);
+    } else setSelectedPatient(null);
   };
 
   return (
@@ -83,17 +78,30 @@ const SelectPatientModal = ({ selectedPatient, setSelectedPatient }) => {
                   )}
                 </div>
                 <CardHeader className="flex items-center space-x-2 py-4 justify-start">
-                  <div className="h-12 w-12 rounded-full bg-gray-200 flex justify-center items-center overflow-hidden shadow-md">
+                  <div className="h-12 w-12 relative rounded-full bg-gray-200 flex justify-center items-center overflow-hidden shadow-md group">
+                    <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/30 transition-all duration-300 ease-in-out flex items-center justify-center">
+                      <Eye
+                        className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
+                        onClick={() =>
+                          router.push(
+                            `/${currentLang}/${role}/patients/${patient.patient_id}`
+                          )
+                        }
+                      />
+                    </div>
+
                     {patient.user_image ? (
                       <Image
                         src={patient?.user_image}
                         alt="User Image"
-                        className="h-full w-full object-cover rounded-full"
+                        fill
+                        className="h-full w-full object-cover rounded-full group-hover:scale-110 group-hover:blur-sm transition-all duration-300 ease-in-out"
                       />
                     ) : (
                       <UserRound className="h-8 w-auto text-gray-600" />
                     )}
                   </div>
+
                   <div className="flex flex-col">
                     <CardTitle className="text-md font-semibold text-gray-800">
                       {patient.name}
@@ -103,6 +111,7 @@ const SelectPatientModal = ({ selectedPatient, setSelectedPatient }) => {
                     </CardDescription>
                   </div>
                 </CardHeader>
+
                 <CardContent className="space-y-2 px-4 text-gray-700">
                   <p className="text-sm">
                     <strong>{dict?.matchmaking?.phone}:</strong>{" "}
@@ -113,7 +122,8 @@ const SelectPatientModal = ({ selectedPatient, setSelectedPatient }) => {
                   </p>
                   <p className="text-sm">
                     <strong>{dict?.matchmaking?.language}:</strong>{" "}
-                    {patient.language}
+                    {patient.language1}, {patient.language2},{" "}
+                    {patient.language3}
                   </p>
                   <p className="text-sm">
                     <strong>{dict?.matchmaking?.issue}:</strong>{" "}

@@ -10,6 +10,7 @@ import {
 import { EncryptionKey } from "../models/mongo/keys.model.js";
 import { unwrapKey } from "./keys.controller.js";
 import { generatePdf } from "../helper/pdf.helper.js";
+import { AzurePDFUploader } from "../helper/azure.helper.js";
 
 export const onboardPatient = async (req, res, next) => {
   const {
@@ -68,6 +69,11 @@ export const onboardPatient = async (req, res, next) => {
 
     const pdfFileName = `${newpatient_id}_patient_details.pdf`;
     await generatePdf(dataForPdf, pdfFileName);
+
+    const containerName = process.env.AZURE_PATIENT_CONTAINER;
+    const response = await AzurePDFUploader(containerName, pdfFileName);
+
+    if (!response) return res.status(401).json({ message: "pdf-upl-err" });
 
     const newCaseNo = generateUniqueCaseNo();
     basicDetails["case_no"] = newCaseNo;
