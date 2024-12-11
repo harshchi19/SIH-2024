@@ -54,3 +54,13 @@ export const getUnallocatedPatients = async (req, res, next) => {
     return res.status(500).json({ message: "int-ser-err" });
   }
 };
+
+export const matchPatients = async (req, res, next) => {
+  const { selectedPatient, selectedTherapist, selectedSupervisor } = req.body;
+
+  try {
+  } catch (error) {
+    console.error(`Error in matchPatients: ${error}`);
+    return res.status(500).json({ message: "int-ser-err" });
+  }
+};
