@@ -5,7 +5,8 @@ import {
   updateExistingSession,
   getSessionsByStudentTherapistId,
   getSessionsByPatientId,
-  getSessionsByTherapistIdPatientId
+  getSessionsByTherapistIdPatientId,
+  allSessions,
 } from "../controllers/sessions.controller.js";
 
 const router = express.Router();
@@ -17,6 +18,11 @@ router.get(
   "/get-sessions-by-student-therapist-id/:studentTherapistId",
   getSessionsByStudentTherapistId
 );
-router.get("/get-sessions-by-therapist-patient-id/:studentTherapistId/:patientId", getSessionsByTherapistIdPatientId);
+router.get(
+  "/get-sessions-by-therapist-patient-id/:studentTherapistId/:patientId",
+  getSessionsByTherapistIdPatientId
+);
+
+router.get("/get-all-sessions", allSessions);
 
 export default router;

@@ -34,7 +34,7 @@ export const addSession = async (req, res) => {
     }
 
     const patient = await Patient.findOne({
-      _d: patientId,
+      _id: patientId,
     })
       .select("_id")
       .lean();
@@ -128,12 +128,10 @@ export const updateExistingSession = async (req, res) => {
     const hashedSessionNumber = req.body.session_number_hash;
 
     // Hash IDs and session number for secure matching
-    const hashedStudentTherapistId = generateHashedData(studentTherapistId);
-    const hashedPatientId = generateHashedData(patientId);
 
     // Find the student therapist
     const studentTherapist = await StudentTherapist.findOne({
-      student_therapist_id_hash: hashedStudentTherapistId,
+      _id: studentTherapistId,
     })
       .select("_id")
       .lean();
@@ -144,7 +142,7 @@ export const updateExistingSession = async (req, res) => {
 
     // Find the patient
     const patient = await Patient.findOne({
-      patient_id_hash: hashedPatientId,
+      _id: patientId,
     })
       .select("_id")
       .lean();
@@ -322,10 +320,8 @@ export const getSessionsByStudentTherapistId = async (req, res) => {
   try {
     const studentTherapistId = req.params.studentTherapistId;
 
-    const hashedStudentTherapistId = generateHashedData(studentTherapistId);
-
     const studentTherapist = await StudentTherapist.findOne({
-      student_therapist_id_hash: hashedStudentTherapistId,
+      _id: studentTherapistId,
     })
       .select("_id")
       .lean();
@@ -495,5 +491,80 @@ export const getSessionsByTherapistIdPatientId = async (req, res) => {
     res
       .status(500)
       .json({ message: "session-cntrlr-err", error: error.message });
+  }
+};
+
+export const allSessions = async (req, res) => {
+  try {
+    // Fetch all sessions from the database
+    const sessions = await Sessions.find();
+
+    if (!sessions || sessions.length === 0) {
+      return res.status(404).json({ message: "No sessions found" });
+    }
+
+    // Retrieve the encryption key for decrypting session data
+    const findEncryptionKey = await EncryptionKey.findOne({
+      collectionName: "sessions",
+    });
+
+    if (!findEncryptionKey) {
+      return res.status(500).json({ message: "Encryption key not found" });
+    }
+
+    // Unwrap the encryption key
+    const key = unwrapKey(
+      findEncryptionKey.encryptedKey,
+      findEncryptionKey.encryptedIV,
+      findEncryptionKey.encryptedAuthTag
+    );
+
+    // Helper function to safely convert arrays to objects
+    const decryptedSessions = sessions.map((session) => {
+      const decryptData = {
+        report_name: Object.fromEntries(session.report_name),
+        report_type: Object.fromEntries(session.report_type),
+        report_status: Object.fromEntries(session.report_status),
+        session_number: Object.fromEntries(session.session_number),
+        date_of_session: Object.fromEntries(session.date_of_session),
+        start_time: Object.fromEntries(session.start_time),
+        end_time: Object.fromEntries(session.end_time),
+        progress: Object.fromEntries(session.progress),
+        goals: Object.fromEntries(session.goals),
+        notes: Object.fromEntries(session.notes),
+        results: Object.fromEntries(session.results),
+        external_test: Object.fromEntries(session.external_test),
+        next_session_timings: Object.fromEntries(session.next_session_timings),
+        progress_next_session: Object.fromEntries(
+          session.progress_next_session
+        ),
+        goals_next_session: Object.fromEntries(session.goals_next_session),
+      };
+
+      const decryptedSession = decryptSection(decryptData, key);
+
+      return {
+        ...decryptedSession,
+        _id: session._id,
+        student_therapist_id: session.student_therapist_id,
+        patient_id: session.patient_id,
+        machines_used: session.machines_used,
+        next_session_therapist: session.next_session_therapist,
+        to_do_before_next_session: session.to_do_before_next_session,
+        session_number_hash: session.session_number_hash,
+        createdAt: session.createdAt,
+        updatedAt: session.updatedAt,
+      };
+    });
+
+    // Respond with the decrypted session data
+    res.status(200).json(decryptedSessions);
+  } catch (error) {
+    // Log and return an error response
+    console.error("Error in allSessions:", error);
+    res.status(500).json({
+      message: "session-controller-error",
+      error: error.message,
+    });
   }
 };

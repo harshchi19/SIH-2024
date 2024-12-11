@@ -10,6 +10,7 @@ import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
 import { unwrapKey } from "./keys.controller.js";
 import { Supervisor } from "../models/mongo/supervisor.model.js";
 import { AzurePDFUploader } from "../helper/azure.helper.js";
+import { generatePdf } from "../helper/pdf.helper.js";
 
 export const addStudent = async (req, res) => {
   const { personalDetails, professionalDetails } = req.body;
@@ -45,7 +46,7 @@ export const addStudent = async (req, res) => {
 
     const hashedStudentTherapistId = generateHashedData(newStudentTherapistId);
 
-    const student = {
+    const dataForPdf = {
       personalDetails,
       professionalDetails,
       location,
@@ -232,6 +233,7 @@ export const getAllStudents = async (req, res) => {
           client_coursework: Object.fromEntries(
             studentTherapist.client_coursework
           ),
+          student_image: Object.fromEntries(studentTherapist.student_image),
         };
 
         const decryptedData = decryptSection(decryptData, key);

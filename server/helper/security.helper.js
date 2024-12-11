@@ -4,6 +4,8 @@ const ROLE_PREFIXES = {
   pat: "PAT",
   stt: "STT",
   sup: "SUP",
+  ADM: "ADM",
+  HOD: "HOD",
 };
 
 // Generating Unique IDs for all users

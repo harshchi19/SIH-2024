@@ -19,6 +19,8 @@ import sessionsRouter from "./routes/sessions.route.js";
 import messageRoutes from "./routes/message.route.js";
 import reportRouter from "./routes/report.route.js";
 import matchmakingRouter from "./routes/matchmaking.route.js";
+import onboardingRouter from "./routes/onboarding.route.js";
+import adminRouter from "./routes/admin.route.js";
 
 dotenv.config();
 
@@ -44,6 +46,7 @@ app.use("/sidebar", sidebarRouter);
 app.use("/supervisor", supervisorRouter);
 app.use("/student-therapist", studentRouter);
 app.use("/patient", patientRouter);
+app.use("/admin", adminRouter);
 
 app.use("/messages", messageRoutes);
 app.use("/contacts", contactRoutes);
@@ -54,6 +57,7 @@ app.use("/visualization", visualizationRouter);
 app.use("/pre_therapy", preTherapyRouter);
 app.use("/sessions", sessionsRouter);
 app.use("/matchmaking", matchmakingRouter);
+app.use("/onboarding", onboardingRouter);
 
 const PORT = process.env.PORT || 4224;
 

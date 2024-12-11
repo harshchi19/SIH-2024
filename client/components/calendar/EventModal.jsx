@@ -115,7 +115,7 @@ const EventModal = ({
 
     if (response.ok) {
       const data = response.json();
-      setEvents([...events, data.event]);
+      // setEvents([...events, data.event]);
     }
 
     closeModal();

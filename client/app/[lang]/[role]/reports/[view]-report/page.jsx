@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -20,8 +20,42 @@ import { reportData } from "@/constants/reportData";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { logo } from "@/assets/index.js";
 import { useGetReport } from "@/hooks/useGetReport";
+import { useSearchParams } from "next/navigation";
+import { useByObjectId } from "@/hooks/useByObjectId";
 
 function TherapyReport() {
+  const searchParams = useSearchParams();
+  const reportDetailsParam = searchParams.get("report");
+
+  const { getByObjectId } = useByObjectId();
+  const [supervisor, setSupervisor] = useState([]);
+
+  const reportDetails = reportDetailsParam
+    ? JSON.parse(decodeURIComponent(reportDetailsParam))
+    : null;
+
+  useEffect(() => {
+    if (reportDetails) {
+      console.log("Selected Report Details:", reportDetails);
+    }
+  }, [reportDetails]);
+
+  console.log("reportDetails", reportDetails);
+
+  useEffect(() => {
+    if (reportDetails.student.supervisor_id) {
+      getByObjectId(reportDetails.student.supervisor_id, "SUP")
+        .then((res) => {
+          setSupervisor(res.user);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [reportDetails.student]);
+
+  console.log("supervisor", supervisor);
+
   const speechData = [
     { session: "Session 1", rate: 20 },
     { session: "Session 2", rate: 25 },
@@ -41,15 +75,17 @@ function TherapyReport() {
   ];
 
   const infoFields = [
-    { label: "Name", value: reportData?.patient?.name || "N/A" },
+    { label: "Name", value: reportDetails?.patient?.name || "N/A" },
     {
       label: "Age",
-      value: reportData?.patient?.age ? `${reportData.patient.age} yrs` : "N/A",
+      value: reportDetails?.patient?.age
+        ? `${reportDetails.patient.age} yrs`
+        : "N/A",
     },
-    { label: "Case No", value: reportData?.patient?.caseNo || "N/A" },
-    { label: "Gender", value: reportData?.patient?.gender || "N/A" },
-    { label: "Contact", value: reportData?.patient?.contact || "N/A" },
-    { label: "Email", value: reportData?.patient?.email || "N/A" },
+    { label: "Case No", value: reportDetails?.patient?.case_no || "N/A" },
+    { label: "Gender", value: reportDetails?.patient?.sex || "N/A" },
+    { label: "Contact", value: reportDetails?.patient?.phone_no || "N/A" },
+    { label: "Email", value: reportDetails?.patient?.email || "N/A" },
   ];
 
   if (!reportData) {
@@ -65,12 +101,14 @@ function TherapyReport() {
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                 <img src={logo} alt="" />
               </div>
-              <h1 className="text-4xl font-serif text-white">Therapy Report</h1>
+              <h1 className="text-4xl font-serif text-white">
+                {reportDetails.type} Report
+              </h1>
             </div>
             <div className="bg-teal-50/90 px-4 py-2 rounded-lg">
               <p className="text-sm text-teal-800">Supervisor:</p>
               <p className="font-semibold text-teal-900">
-                {reportData.supervisor || "Not Assigned"}
+                {supervisor.name || "Not Assigned"}
               </p>
             </div>
           </div>
@@ -216,23 +254,6 @@ function TherapyReport() {
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Avatar>
-                    <AvatarFallback className="text-lg">YB</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Supervisor</p>
-                  <p className="text-lg font-medium text-emerald-700">
-                    {reportData.supervisor || "Unnamed Therapist"}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="col-span-1">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                   <User2 className="w-6 h-6 text-primary" />
                 </div>
                 <div>
@@ -240,7 +261,7 @@ function TherapyReport() {
                     Student Therapist
                   </p>
                   <p className="text-lg font-medium text-emerald-700">
-                    {reportData.therapist || "Unnamed Therapist"}
+                    {reportDetails.student.name || "Unnamed Therapist"}
                   </p>
                 </div>
               </div>
