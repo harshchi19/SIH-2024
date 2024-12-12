@@ -18,11 +18,9 @@ const PatientDetailView = ({
   //   if (!patient) return null;
   const { id } = useParams();
   const { getById } = useById();
-  console.log("PARAMS: ", id);
   const [patientData, setPatientData] = useState([]);
 
   useEffect(() => {
-    console.log("Inside useEffect, id:", id);
     const getPatById = async () => {
       try {
         const response = await fetch(`${GET_PAT_BY_ID_ROUTE}/${id}`, {
@@ -34,7 +32,7 @@ const PatientDetailView = ({
         }
         if (response.ok) {
           const result = await response.json();
-          console.log("Rsult:", result);
+
           //   setPatients(result);
         }
       } catch (error) {
