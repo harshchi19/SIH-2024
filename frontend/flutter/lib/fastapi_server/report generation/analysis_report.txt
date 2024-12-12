@@ -1,0 +1,18 @@
+
+    Student Name: John Doe
+    ID: 12345
+    Therapist Name: Dr. Smith
+
+    Diagnosis Summary:
+    - Mild anxiety, moderate ADHD.
+
+    Progress Tracking:
+    Session 1: Progress = 65%
+    Session 2: Progress = 75%
+    Session 3: Progress = 85%
+    Session 4: Progress = 90%
+
+    Personalized Recommendations:
+    - Include mindfulness exercises.
+    - Use adaptive learning strategies.
+    

@@ -1,0 +1,417 @@
+import {
+  decryptSection,
+  encryptSection,
+  generateEncryptedUniqueId,
+  generateHashedData,
+  generateKeyAndIV,
+  generateUniqueCaseNo,
+} from "../helper/security.helper.js";
+import { Patient } from "../models/mongo/patient.model.js";
+import { EncryptionKey } from "../models/mongo/keys.model.js";
+import { unwrapKey } from "./keys.controller.js";
+import jwt from "jsonwebtoken";
+import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
+import { Supervisor } from "../models/mongo/supervisor.model.js";
+import { AuthEmail } from "../models/mongo/auth_email.model.js";
+import { HeadOfDepartment } from "../models/mongo/hod.model.js";
+import { Admin } from "../models/mongo/admin.model.js";
+
+const maxAge = 3 * 24 * 60 * 60 * 1000;
+
+const createToken = (phone, userId) => {
+  return jwt.sign({ phone, userId }, process.env.JWT_SECRET, {
+    expiresIn: maxAge,
+  });
+};
+
+export const loginUser = async (req, res, next) => {
+  const {
+    userType,
+    email,
+    phone_no,
+    password,
+    supervisor_id,
+    student_therapist_id,
+  } = req.body;
+
+
+  try {
+    if (userType === "PAT") {
+      const hashedPhone = generateHashedData(phone_no);
+
+      const existingUser = await Patient.findOne({
+        phone_hash: hashedPhone,
+      }).select("patient_id password");
+
+      if (!existingUser) {
+        return res.status(400).json({ message: "usr-not-fnd" });
+      }
+
+      const findEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "patients",
+      });
+      const key = unwrapKey(
+        findEncryptionKey.encryptedKey,
+        findEncryptionKey.encryptedIV,
+        findEncryptionKey.encryptedAuthTag
+      );
+
+      const decryptData = {
+        patient_id: Object.fromEntries(existingUser.patient_id),
+        password: Object.fromEntries(existingUser.password),
+      };
+
+      const decryptedData = decryptSection(decryptData, key);
+
+      if (decryptedData.password !== password) {
+        return res.status(400).json({ message: "corr-pass" });
+      }
+
+      res.cookie("token", createToken(phone_no, decryptedData.patient_id), {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 1000 * 60 * 60 * 24,
+      });
+
+      return res.status(200).json({
+        message: "Login successful",
+        userId: decryptedData.patient_id,
+        userType: userType,
+      });
+    } else if (userType === "STT") {
+      const hashedPhone = generateHashedData(phone_no);
+
+      const hashedStudentTherapistId = generateHashedData(student_therapist_id);
+
+      const existingUser = await StudentTherapist.findOne({
+        phone_hash: hashedPhone,
+        student_therapist_id_hash: hashedStudentTherapistId,
+      }).select("student_therapist_id password");
+
+      if (!existingUser) {
+        return res.status(400).json({ message: "usr-not-fnd" });
+      }
+
+      const findEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "student-therapists",
+      });
+      const key = unwrapKey(
+        findEncryptionKey.encryptedKey,
+        findEncryptionKey.encryptedIV,
+        findEncryptionKey.encryptedAuthTag
+      );
+
+      const decryptData = {
+        student_therapist_id: Object.fromEntries(
+          existingUser.student_therapist_id
+        ),
+        password: Object.fromEntries(existingUser.password),
+      };
+
+      const decryptedData = decryptSection(decryptData, key);
+
+      if (decryptedData.password !== password) {
+        return res.status(400).json({ message: "corr-pass" });
+      }
+
+      res.cookie("token", createToken(phone_no, student_therapist_id), {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 1000 * 60 * 60 * 24,
+      });
+
+      return res.status(200).json({
+        message: "Login successful",
+        userId: decryptedData.student_therapist_id,
+        userType: userType,
+      });
+    } else if (userType === "SUP") {
+      const hashedPhone = generateHashedData(phone_no);
+
+      const supervisorHashedId = generateHashedData(supervisor_id);
+
+      const existingUser = await Supervisor.findOne({
+        phone_hash: hashedPhone,
+        supervisor_id_hash: supervisorHashedId,
+      }).select("supervisor_id password");
+
+      if (!existingUser) {
+        return res.status(400).json({ message: "usr-not-fnd" });
+      }
+
+      const findEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "supervisors",
+      });
+      const key = unwrapKey(
+        findEncryptionKey.encryptedKey,
+        findEncryptionKey.encryptedIV,
+        findEncryptionKey.encryptedAuthTag
+      );
+
+      const decryptData = {
+        supervisor_id: Object.fromEntries(existingUser.supervisor_id),
+        password: Object.fromEntries(existingUser.password),
+      };
+
+      const decryptedData = decryptSection(decryptData, key);
+
+      if (decryptedData.password !== password) {
+        return res.status(400).json({ message: "corr-pass" });
+      }
+
+      res.cookie("token", createToken(phone_no, decryptedData.supervisor_id), {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 1000 * 60 * 60 * 24,
+      });
+
+      return res.status(200).json({
+        message: "Login successful",
+        userId: decryptedData.supervisor_id,
+        userType: userType,
+        userName: decryptData.name,
+      });
+    } else if (userType === "HOD") {
+      const hashedEmailId = generateHashedData(email);
+
+      const existingUser = await AuthEmail.findOne({
+        hash_email: hashedEmailId,
+      }).select("userId email password");
+
+      if (!existingUser) {
+        return res.status(400).json({ message: "usr-not-fnd" });
+      }
+
+      const findEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "auth_emails",
+      });
+      const key = unwrapKey(
+        findEncryptionKey.encryptedKey,
+        findEncryptionKey.encryptedIV,
+        findEncryptionKey.encryptedAuthTag
+      );
+
+      const decryptData = {
+        email: Object.fromEntries(existingUser.email),
+        password: Object.fromEntries(existingUser.password),
+      };
+
+      const decryptedData = decryptSection(decryptData, key);
+
+      if (decryptedData.password !== password) {
+        return res.status(400).json({ message: "Incorrect Password" });
+      }
+
+      const newUserId = generateEncryptedUniqueId(userType);
+      const hashedUserId = generateHashedData(newUserId);
+
+      const newEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "hods",
+      });
+      const newKey = unwrapKey(
+        newEncryptionKey.encryptedKey,
+        newEncryptionKey.encryptedIV,
+        newEncryptionKey.encryptedAuthTag
+      );
+
+      const iv = generateKeyAndIV();
+
+      const existingNewUser = await HeadOfDepartment.findOne({
+        email_hash: hashedEmailId,
+      });
+
+      if (!existingNewUser) {
+        const encryptData = {
+          hod_id: newUserId,
+        };
+
+        const encryptedDetails = encryptSection(encryptData, newKey, iv);
+
+        const newHod = new HeadOfDepartment({
+          hod_id: encryptedDetails.hod_id,
+          hash_hod_id: hashedUserId,
+        });
+
+        await newHod.save();
+
+        res.cookie("token", createToken(email, newHod._id), {
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+
+        return res.status(200).json({
+          message: "Login successful",
+          userId: newUserId,
+          userType: userType,
+        });
+      } else {
+        const decryptData = {
+          hod_id: existingUser.userId,
+        };
+
+        const decryptedDetails = decryptSection(decryptData, newKey);
+
+        res.cookie("token", createToken(email, decryptedDetails.hod_id), {
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+
+        return res.status(200).json({
+          message: "Login successful",
+          userId: decryptedDetails.hod_id,
+          userType: userType,
+        });
+      }
+    } else if (userType === "ADM") {
+      const hashedEmailId = generateHashedData(email);
+
+      const existingUser = await AuthEmail.findOne({
+        hash_email: hashedEmailId,
+      }).select("userId email password");
+
+      const findEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "auth_emails",
+      });
+      const key = unwrapKey(
+        findEncryptionKey.encryptedKey,
+        findEncryptionKey.encryptedIV,
+        findEncryptionKey.encryptedAuthTag
+      );
+
+      const decryptData = {
+        email: Object.fromEntries(existingUser.email),
+        password: Object.fromEntries(existingUser.password),
+      };
+
+      const decryptedData = decryptSection(decryptData, key);
+
+      if (decryptedData.password !== password) {
+        return res.status(400).json({ message: "Incorrect Password" });
+      }
+
+      const newUserId = generateEncryptedUniqueId(userType);
+      const hashedUserId = generateHashedData(newUserId);
+
+      const newEncryptionKey = await EncryptionKey.findOne({
+        collectionName: "admins",
+      });
+      const newKey = unwrapKey(
+        newEncryptionKey.encryptedKey,
+        newEncryptionKey.encryptedIV,
+        newEncryptionKey.encryptedAuthTag
+      );
+
+      const iv = generateKeyAndIV();
+
+      const existingNewUser = await Admin.findOne({
+        email_hash: hashedEmailId,
+      });
+
+      if (!existingNewUser) {
+        const encryptData = {
+          admin_id: newUserId,
+        };
+
+        const encryptedDetails = encryptSection(encryptData, newKey, iv);
+
+        const newAdmin = new Admin({
+          admin_id: encryptedDetails.admin_id,
+          admin_id_hash: hashedUserId,
+        });
+
+        await newAdmin.save();
+
+        res.cookie("token", createToken(email, newAdmin._id), {
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+
+        return res.status(200).json({
+          message: "Login successful",
+          userId: newUserId,
+          userType: userType,
+        });
+      } else {
+        const decryptData = {
+          admin_id: existingUser.userId,
+        };
+
+        const decryptedDetails = decryptSection(decryptData, newKey);
+
+        res.cookie("token", createToken(email, decryptedDetails.admin_id), {
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+
+        return res.status(200).json({
+          message: "Login successful",
+          userId: decryptedDetails.admin_id,
+          userType: userType,
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error in login:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const logoutUser = async (req, res, next) => {
+  try {
+    res.cookie("token", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 1,
+    });
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error in logout:", error);
+    return res.status(500).json({ message: "Logout Failed" });
+  }
+};
+
+// export const getUserDetailsById = async (req, res, next) => {
+//   const { userId, userType } = req.params;
+
+//   try {
+//     let currentUser;
+
+//     if (userType === "PAT")
+//       currentUser = await Patient.findById(userId).select("name phone_no email date_of_birth date_of_assignment age sex");
+//     else if (userType === "STT")
+//       currentUser = await StudentTherapist.findById(userId).select("name phone_no email age sex");
+//     else if (userType === "SUP")
+//       currentUser = await Supervisor.findById(userId).select("name phone_no email date_of_birth age sex");
+
+//     const collection = userType === "PAT" ? "patient" : (userType === "SUP" ? "supervisors" : (userType === "STT" ? "student-therapists" : ""))
+
+//     const findEncryptionKey = await EncryptionKey.findOne({
+//       collectionName: collection,
+//     });
+//     const key = unwrapKey(
+//       findEncryptionKey.encryptedKey,
+//       findEncryptionKey.encryptedIV,
+//       findEncryptionKey.encryptedAuthTag
+//     );
+
+//     const decryptedSection = decryptSection(currentUser, key);
+
+//     console.log(decryptedSection);
+
+//   } catch (error) {
+//     console.error("Error in getUserDetailsById:", error);
+//     return res.status(500).json({ message: "Logout Failed" });
+//   }
+// }

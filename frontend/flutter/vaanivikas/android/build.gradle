@@ -1,0 +1,23 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.evaluationDependsOn(":app")  // This ensures that the 'app' project is evaluated before others
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
+dependencies {
+    // Updated Gradle plugin version, ensure it matches the version in your `settings.gradle`
+    classpath 'com.android.tools.build:gradle:7.5.1'  // Make sure this version matches your environment
+    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20'  // Optional: update Kotlin plugin if needed
+}
