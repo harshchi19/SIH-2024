@@ -35,9 +35,9 @@ export const loginUser = async (req, res, next) => {
   } = req.body;
 
   try {
-    const hashedPhone = generateHashedData(phone_no);
-
     if (userType === "PAT") {
+      const hashedPhone = generateHashedData(phone_no);
+
       const existingUser = await Patient.findOne({
         phone_hash: hashedPhone,
       }).select("patient_id password");
@@ -79,6 +79,8 @@ export const loginUser = async (req, res, next) => {
         userType: userType,
       });
     } else if (userType === "STT") {
+      const hashedPhone = generateHashedData(phone_no);
+
       const hashedStudentTherapistId = generateHashedData(student_therapist_id);
 
       const existingUser = await StudentTherapist.findOne({
@@ -125,6 +127,8 @@ export const loginUser = async (req, res, next) => {
         userType: userType,
       });
     } else if (userType === "SUP") {
+      const hashedPhone = generateHashedData(phone_no);
+
       const supervisorHashedId = generateHashedData(supervisor_id);
 
       const existingUser = await Supervisor.findOne({
@@ -284,8 +288,6 @@ export const loginUser = async (req, res, next) => {
         email: Object.fromEntries(existingUser.email),
         password: Object.fromEntries(existingUser.password),
       };
-
-      console.log(decryptData);
 
       const decryptedData = decryptSection(decryptData, key);
 
