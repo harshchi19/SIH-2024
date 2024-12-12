@@ -73,6 +73,7 @@ export const ALLOCATING_PATIENTS_ROUTE = `${MATCHMAKING_ROUTE}/match-patients`;
 
 // Reports
 export const REPORT_ROUTE = `${HOST}/report`;
+export const ADD_REPORT_ROUTE = `${REPORT_ROUTE}/generate-report`;
 export const GET_ALL_REPORTS = `${REPORT_ROUTE}/get-all-reports`;
 
 // Onboarding

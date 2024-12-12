@@ -301,15 +301,20 @@ const StudentReportsPage = () => {
     navigate.push(`/${lang}/${role}/reports/new-report`);
   };
 
+  const userType = localStorage.getItem("userType");
+  console.log("User", userType);
+
   return (
     <div className="flex h-screen bg-background">
       <div className="flex-1 p-6 space-y-4">
         {/* Top Actions Section */}
         <div className="flex items-center gap-4 mb-4">
-          <Button onClick={handleAddNew}>
-            <Plus className="h-4 w-4 mr-2" />
-            {dict?.reports?.add_new}
-          </Button>
+          {userType.includes("STT") && (
+            <Button onClick={handleAddNew}>
+              <Plus className="h-4 w-4 mr-2" />
+              {dict?.reports?.add_new}
+            </Button>
+          )}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -353,20 +358,20 @@ const StudentReportsPage = () => {
                 <label className="mb-2">Status</label>
                 {uniqueStatuses.map((status) => (
                   <div key={status} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`status-${status}`}
-                      checked={filterOptions.status.includes(status)}
-                      onChange={() => {
-                        setFilterOptions((prev) => ({
-                          ...prev,
-                          status: prev.status.includes(status)
-                            ? prev.status.filter((s) => s !== status)
-                            : [...prev.status, status],
-                        }));
-                      }}
-                      className="mr-2"
-                    />
+                      <input
+                        type="checkbox"
+                        id={`status-${status}`}
+                        checked={filterOptions.status.includes(status)}
+                        onChange={() => {
+                          setFilterOptions((prev) => ({
+                            ...prev,
+                            status: prev.status.includes(status)
+                              ? prev.status.filter((s) => s !== status)
+                              : [...prev.status, status],
+                          }));
+                        }}
+                        className="mr-2"
+                      />
                     <label htmlFor={`status-${status}`}>{status}</label>
                   </div>
                 ))}

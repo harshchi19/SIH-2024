@@ -70,6 +70,7 @@ export const matchPatients = async (req, res, next) => {
     }
 
     existingPatient.medical_details = {
+      ...existingPatient.medical_details,
       supervisor_id: selectedSupervisor
         ? [
             ...new Set([

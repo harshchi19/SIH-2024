@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ReportTypeModal } from "@/components/reports/ReportTypeModal";
 import { PreTherapyForm } from "@/components/reports/forms/PreTherapyForm";
 import { SessionForm } from "@/components/reports/forms/SessionForm";
@@ -8,12 +8,12 @@ import { TreatmentPlanForm } from "@/components/reports/forms/TreatmentPlanForm"
 import { ProgressReportForm } from "@/components/reports/forms/ProgressReportForm";
 import { FormWrapper } from "@/components/reports/common/FormWrapper.jsx";
 import { FormActions } from "@/components/reports/common/FormActions.jsx";
-import { useReportForm } from "@/hooks/useReportForm";
+import { useReportForm } from "@/hooks/useReportForm.js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useRouter } from "next/router";
 
 export default function AddReportsPage() {
   const { lang, role } = useParams();
+  const navigate = useRouter();
   const {
     isTypeModalOpen,
     setIsTypeModalOpen,
@@ -24,10 +24,12 @@ export default function AddReportsPage() {
     handleInputChange,
     handleSubmit,
   } = useReportForm({ lang, role });
+  const user = localStorage.getItem("user");
 
   const renderForm = () => {
     const props = {
       formData: formData[selectedReportType],
+      studentTherapistId: user,
       handleInputChange,
     };
 
@@ -70,7 +72,7 @@ export default function AddReportsPage() {
                 {renderForm()}
                 <FormActions
                   onChangeType={() => setIsTypeModalOpen(true)}
-                  onCancel={() => router.push(`/${lang}/${role}/reports`)}
+                  onCancel={() => navigate.push(`/${lang}/${role}/reports`)}
                   isSubmitting={isSubmitting}
                 />
               </form>

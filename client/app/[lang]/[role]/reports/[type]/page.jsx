@@ -1,28 +1,50 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
-import { User, User2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { User2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { reportData } from "@/constants/reportData";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
-import { logo } from "@/assets/index.js";
-import { useGetReport } from "@/hooks/useGetReport";
-import { useSearchParams } from "next/navigation";
-import { useByObjectId } from "@/hooks/useByObjectId";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useByObjectId } from "@/hooks/useByObjectId";
+import { useSearchParams } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
+// import { toast } from "@/components/ui/use-toast";
+
+// Status configuration
+const FEEDBACK_STATUSES = [
+  {
+    value: "accept",
+    label: "Accept",
+    color: "text-green-600",
+  },
+  {
+    value: "modify",
+    label: "Modify",
+    color: "text-yellow-600",
+  },
+  {
+    value: "reject",
+    label: "Reject",
+    color: "text-red-600",
+  },
+];
 
 function TherapyReport() {
   const searchParams = useSearchParams();
@@ -30,6 +52,18 @@ function TherapyReport() {
 
   const { getByObjectId } = useByObjectId();
   const [supervisor, setSupervisor] = useState([]);
+
+  // Feedback Modal State
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [feedbackData, setFeedbackData] = useState({
+    status: "",
+    feedback: "",
+    additionalInputs: {
+      assignedTo: "",
+      deadline: "",
+      priority: "",
+    },
+  });
 
   const reportDetails = reportDetailsParam
     ? JSON.parse(decodeURIComponent(reportDetailsParam))
@@ -43,46 +77,91 @@ function TherapyReport() {
         })
         .catch((err) => {
           console.error(err);
+          toast({
+            title: "Error",
+            description: "Failed to fetch supervisor details",
+            variant: "destructive",
+          });
         });
     }
-  }, []);
+  }, [reportDetails.student.supervisor_id]);
+  console.log(reportDetails);
 
-  const treatmentPlan = reportDetails?.treatment_plan || ""; // Ensure treatment_plan exists
-  const treatmentPlanParts = treatmentPlan
-    .split(".")
-    .map((part) => part.trim()); // Split by period and trim whitespace
+  // Feedback Handling Functions
+  const handleStatusChange = (status) => {
+    setFeedbackData((prev) => ({
+      ...prev,
+      status,
+      additionalInputs:
+        status === "modify"
+          ? { assignedTo: "", deadline: "", priority: "medium" }
+          : { assignedTo: "", deadline: "", priority: "" },
+    }));
+  };
 
-  const titleDescriptionPairs = treatmentPlanParts.map((part) => {
-    const [title, description] = part
-      .split(":")
-      .map((subPart) => subPart?.trim()); // Split by colon and trim
-    return {
-      title: title || "Untitled", // Default title if missing
-      description: description || "No description provided", // Default description if missing
-    };
-  });
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault();
 
-  const speechData = [
-    { session: "Session 1", rate: 20 },
-    { session: "Session 2", rate: 25 },
-    { session: "Session 3", rate: 30 },
-    { session: "Session 4", rate: 32 },
-    { session: "Session 5", rate: 35 },
-    { session: "Session 6", rate: 38 },
-  ];
+    // Validation
+    if (!feedbackData.status) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a feedback status",
+        variant: "destructive",
+      });
+      return;
+    }
 
-  console.log("reportDetails", reportDetails);
+    try {
+      // TODO: Replace with actual API call
+      // const response = await submitFeedback(feedbackData);
 
-  const COLORS = ["#10b981", "#6366f1", "#f59e0b", "#ef4444"];
+      toast({
+        title: "Feedback Submitted",
+        description: `Report ${reportDetails?.type} has been ${feedbackData.status}ed`,
+        variant: "success",
+      });
 
-  const intonationData = [
-    { name: "Phrasing", value: 2 },
-    { name: "Pitch Variation", value: 4 },
-    { name: "Rhythm", value: 3 },
-    { name: "Stress Accuracy", value: 5 },
-  ];
+      // Reset and close modal
+      setFeedbackData({
+        status: "",
+        feedback: "",
+        additionalInputs: {
+          assignedTo: "",
+          deadline: "",
+          priority: "",
+        },
+      });
+      setIsFeedbackModalOpen(false);
+    } catch (error) {
+      toast({
+        title: "Submission Error",
+        description: "Failed to submit feedback. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
-  const infoFields = [
+  // Helper function to get treatment plan parts
+  const getTreatmentPlanParts = () => {
+    const treatmentPlan = reportDetails?.treatment_plan || "";
+    const treatmentPlanParts = treatmentPlan
+      .split(".")
+      .map((part) => part.trim());
+
+    return treatmentPlanParts.map((part) => {
+      const [title, description] = part
+        .split(":")
+        .map((subPart) => subPart?.trim());
+      return {
+        title: title || "Untitled",
+        description: description || "No description provided",
+      };
+    });
+  };
+
+  // Helper function to get patient info fields
+  const getInfoFields = () => [
     { label: "Name", value: reportDetails?.patient?.name || "N/A" },
     {
       label: "Age",
@@ -96,25 +175,356 @@ function TherapyReport() {
     { label: "Email", value: reportDetails?.patient?.email || "N/A" },
   ];
 
-  if (!reportData) {
-    return <div>No report data available</div>;
-  }
-
+  // Initials helper
   const getInitials = (name) => {
     if (!name) return "";
     const initials = name.match(/\b\w/g) || [];
     return ((initials.shift() || "") + (initials.pop() || "")).toUpperCase();
   };
 
+  // Render nothing if no report details
+  if (!reportDetails) {
+    return <div>No report data available</div>;
+  }
+  if (reportDetails.type === "Session") {
+    return (
+      <div className="overflow-y-scroll bg-gray-50">
+        <div className="max-w-7xl mx-auto p-6 space-y-6">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-emerald-400 to-teal-100 p-6 rounded-t-lg">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white">
+                  {getInitials(reportDetails?.patient.name)}
+                </div>
+                <h1 className="text-4xl font-serif text-white">
+                  {reportDetails?.type} Report
+                </h1>
+              </div>
+              <div className="flex gap-2">
+                <div className="bg-teal-50/90 px-4 py-2 rounded-lg">
+                  <p className="text-sm text-teal-800">Supervisor:</p>
+                  <p className="font-semibold text-teal-900">
+                    {supervisor?.name || "Not Assigned"}
+                  </p>
+                </div>
+                <div className="bg-teal-50/90 px-4 py-2 rounded-lg ">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setIsFeedbackModalOpen(true)}
+                    className="flex items-center h-full rounded-lg hover:shadow-sm hover:bg-teal-100"
+                  >
+                    Add Feedback
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Session Details */}
+          <Card className="p-4 grid grid-cols-3 gap-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Session Date</p>
+              <p className="font-medium">{reportDetails?.date_of_session}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Session Number</p>
+              <p className="font-medium">{reportDetails?.session_number}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Session Timing</p>
+              <p className="font-medium">
+                {reportDetails?.start_time} - {reportDetails?.end_time}
+              </p>
+            </div>
+          </Card>
+
+          {/* Patient Details */}
+          <Card className="p-4 grid grid-cols-3 gap-4">
+            {getInfoFields().map((field) => (
+              <div key={field.label}>
+                <p className="text-sm text-muted-foreground">{field.label}</p>
+                <p className="font-medium">{field.value}</p>
+              </div>
+            ))}
+          </Card>
+
+          {/* Machines Used Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-medium">
+                Machines Used
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-muted-foreground leading-relaxed">
+                {reportDetails?.machines_used?.length > 0 ? (
+                  reportDetails.machines_used.map((machine, index) => (
+                    <li key={index}>{machine}</li>
+                  ))
+                ) : (
+                  <p>No machines used</p>
+                )}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* Goals and Progress */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-medium">
+                Session Goals
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <p>
+                  <strong>Current Goal:</strong> {reportDetails?.goals}
+                </p>
+                <p>
+                  <strong>Progress:</strong> {reportDetails?.progress}%
+                </p>
+                <p>
+                  <strong>Next Session Goal:</strong>{" "}
+                  {reportDetails?.goals_next_session}
+                </p>
+                <p>
+                  <strong>Next Session Progress Target:</strong>{" "}
+                  {reportDetails?.progress_next_session}%
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Notes and To-Do */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-medium">
+                Notes and Next Steps
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <p>
+                  <strong>Session Notes:</strong> {reportDetails?.notes}
+                </p>
+                <p>
+                  <strong>To-Do Before Next Session:</strong>
+                </p>
+                <ul className="list-disc list-inside">
+                  {reportDetails?.to_do_before_next_session?.map(
+                    (todo, index) => (
+                      <li key={index}>{todo}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Student Therapist Section */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                  <User2 className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Student Therapist
+                  </p>
+                  <p className="text-lg font-medium text-emerald-700">
+                    {reportDetails?.student?.name || "Unnamed Therapist"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {reportDetails?.student?.email}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Feedback Modal */}
+          <Dialog
+            open={isFeedbackModalOpen}
+            onOpenChange={setIsFeedbackModalOpen}
+          >
+            <DialogContent className="sm:max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Provide Feedback</DialogTitle>
+                <DialogDescription>
+                  Submit your feedback for this therapy report
+                </DialogDescription>
+              </DialogHeader>
+
+              <form onSubmit={handleFeedbackSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label>Feedback Status</Label>
+                  <div className="grid grid-cols-3 gap-4">
+                    {FEEDBACK_STATUSES.map((status) => (
+                      <Button
+                        key={status.value}
+                        type="button"
+                        variant={
+                          feedbackData.status === status.value
+                            ? "default"
+                            : "outline"
+                        }
+                        className={`
+                        flex items-center justify-center 
+                        ${
+                          feedbackData.status === status.value
+                            ? ""
+                            : status.color
+                        }
+                      `}
+                        onClick={() => handleStatusChange(status.value)}
+                      >
+                        {status.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="feedback">Feedback Details</Label>
+                  <Textarea
+                    id="feedback"
+                    placeholder="Provide detailed feedback..."
+                    value={feedbackData.feedback}
+                    onChange={(e) =>
+                      setFeedbackData((prev) => ({
+                        ...prev,
+                        feedback: e.target.value,
+                      }))
+                    }
+                    className="min-h-[120px]"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Ratings</Label>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>Overall Performance</Label>
+                      <Select
+                        value={feedbackData.ratings?.overallPerformance}
+                        onValueChange={(value) =>
+                          setFeedbackData((prev) => ({
+                            ...prev,
+                            ratings: {
+                              ...prev.ratings,
+                              overallPerformance: value,
+                            },
+                          }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Rating" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[1, 2, 3, 4, 5].map((rating) => (
+                            <SelectItem key={rating} value={rating.toString()}>
+                              {rating}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {feedbackData.status === "modify" && (
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>Assigned To</Label>
+                      <Input
+                        placeholder="Assignee name"
+                        value={feedbackData.additionalInputs.assignedTo}
+                        onChange={(e) =>
+                          setFeedbackData((prev) => ({
+                            ...prev,
+                            additionalInputs: {
+                              ...prev.additionalInputs,
+                              assignedTo: e.target.value,
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Deadline</Label>
+                      <Input
+                        type="date"
+                        value={feedbackData.additionalInputs.deadline}
+                        onChange={(e) =>
+                          setFeedbackData((prev) => ({
+                            ...prev,
+                            additionalInputs: {
+                              ...prev.additionalInputs,
+                              deadline: e.target.value,
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Priority</Label>
+                      <Select
+                        value={feedbackData.additionalInputs.priority}
+                        onValueChange={(value) =>
+                          setFeedbackData((prev) => ({
+                            ...prev,
+                            additionalInputs: {
+                              ...prev.additionalInputs,
+                              priority: value,
+                            },
+                          }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="low">Low</SelectItem>
+                          <SelectItem value="medium">Medium</SelectItem>
+                          <SelectItem value="high">High</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                )}
+
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsFeedbackModalOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={!feedbackData.status}>
+                    Submit Feedback
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className=" overflow-y-scroll bg-gray-50">
+    <div className="overflow-y-scroll bg-gray-50">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
+        {/* Header Section */}
         <div className="bg-gradient-to-r from-emerald-400 to-teal-100 p-6 rounded-t-lg">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white">
                 {getInitials(reportDetails?.patient.name)}
-                {/* <User /> */}
               </div>
               <h1 className="text-4xl font-serif text-white">
                 {reportDetails?.type} Report
@@ -130,9 +540,10 @@ function TherapyReport() {
               <div className="bg-teal-50/90 px-4 py-2 rounded-lg ">
                 <Button
                   variant="ghost"
+                  onClick={() => setIsFeedbackModalOpen(true)}
                   className="flex items-center h-full rounded-lg hover:shadow-sm hover:bg-teal-100"
                 >
-                  View Feedback
+                  Add Feedback
                 </Button>
               </div>
             </div>
@@ -141,7 +552,7 @@ function TherapyReport() {
 
         {/* Patient Details */}
         <Card className="p-4 grid grid-cols-3 gap-4">
-          {infoFields.map((field) => (
+          {getInfoFields().map((field) => (
             <div key={field.label}>
               <p className="text-sm text-muted-foreground">{field.label}</p>
               <p className="font-medium">{field.value}</p>
@@ -149,7 +560,7 @@ function TherapyReport() {
           ))}
         </Card>
 
-        {/* History Detail */}
+        {/* History Section */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-medium">History</CardTitle>
@@ -161,58 +572,7 @@ function TherapyReport() {
           </CardContent>
         </Card>
 
-        {/* <div className="grid grid-cols-3 gap-6">
-          <Card className="col-span-2">
-            <CardHeader>
-              <CardTitle className="text-lg font-medium">
-                Speech Rate Development Chart
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={speechData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="session" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="rate" fill="#10b981" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-medium">
-                Intonation and Stress Patterns
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={intonationData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    innerRadius={40}
-                    fill="#8884d8"
-                    dataKey="value"
-                    startAngle={0}
-                    endAngle={360}
-                    paddingAngle={5}
-                    label={({ name }) => `${name}`}
-                  ></Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div> */}
-
-        {/* Diagnosis */}
+        {/* Diagnosis Section */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-medium">Diagnosis</CardTitle>
@@ -224,6 +584,7 @@ function TherapyReport() {
           </CardContent>
         </Card>
 
+        {/* Medications Section */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-medium">Medications</CardTitle>
@@ -235,7 +596,7 @@ function TherapyReport() {
           </CardContent>
         </Card>
 
-        {/* Treatment Plan */}
+        {/* Treatment Plan Section */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-medium">
@@ -244,13 +605,13 @@ function TherapyReport() {
           </CardHeader>
           <CardContent>
             <ol className="list-decimal list-inside space-y-2">
-              {titleDescriptionPairs && titleDescriptionPairs.length > 0 ? (
-                titleDescriptionPairs.map((item, index) => (
+              {getTreatmentPlanParts().length > 0 ? (
+                getTreatmentPlanParts().map((item, index) => (
                   <li key={index} className="text-muted-foreground">
                     <span className="font-medium text-foreground">
                       {item.title || `Step ${index + 1}`}:
                     </span>{" "}
-                    {item.description || "No description available"}
+                    {item.description}
                   </li>
                 ))
               ) : (
@@ -260,6 +621,7 @@ function TherapyReport() {
           </CardContent>
         </Card>
 
+        {/* Student Therapist Section */}
         <div className="grid grid-cols-2 gap-6">
           <Card className="col-span-1">
             <CardContent className="p-6">
@@ -279,6 +641,177 @@ function TherapyReport() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Feedback Modal */}
+        <Dialog
+          open={isFeedbackModalOpen}
+          onOpenChange={setIsFeedbackModalOpen}
+        >
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Provide Feedback</DialogTitle>
+              <DialogDescription>
+                Submit your feedback for this therapy report
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleFeedbackSubmit} className="space-y-6">
+              {/* Status Selection */}
+              <div className="space-y-2">
+                <Label>Feedback Status</Label>
+                <div className="grid grid-cols-3 gap-4">
+                  {FEEDBACK_STATUSES.map((status) => (
+                    <Button
+                      key={status.value}
+                      type="button"
+                      variant={
+                        feedbackData.status === status.value
+                          ? "default"
+                          : "outline"
+                      }
+                      className={`
+                        flex items-center justify-center 
+                        ${
+                          feedbackData.status === status.value
+                            ? ""
+                            : status.color
+                        }
+                      `}
+                      onClick={() => handleStatusChange(status.value)}
+                    >
+                      {status.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Feedback Textarea */}
+              <div className="space-y-2">
+                <Label htmlFor="feedback">Feedback Details</Label>
+                <Textarea
+                  id="feedback"
+                  placeholder="Provide detailed feedback..."
+                  value={feedbackData.feedback}
+                  onChange={(e) =>
+                    setFeedbackData((prev) => ({
+                      ...prev,
+                      feedback: e.target.value,
+                    }))
+                  }
+                  className="min-h-[120px]"
+                  required
+                />
+              </div>
+
+              {/* Ratings Section */}
+              <div className="space-y-2">
+                <Label>Ratings</Label>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>Overall Performance</Label>
+                    <Select
+                      value={feedbackData.ratings?.overallPerformance}
+                      onValueChange={(value) =>
+                        setFeedbackData((prev) => ({
+                          ...prev,
+                          ratings: {
+                            ...prev.ratings,
+                          },
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Rating" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5].map((rating) => (
+                          <SelectItem key={rating} value={rating.toString()}>
+                            {rating}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Conditional Additional Inputs for Modify Status */}
+              {feedbackData.status === "modify" && (
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>Assigned To</Label>
+                    <Input
+                      placeholder="Assignee name"
+                      value={feedbackData.additionalInputs.assignedTo}
+                      onChange={(e) =>
+                        setFeedbackData((prev) => ({
+                          ...prev,
+                          additionalInputs: {
+                            ...prev.additionalInputs,
+                            assignedTo: e.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Deadline</Label>
+                    <Input
+                      type="date"
+                      value={feedbackData.additionalInputs.deadline}
+                      onChange={(e) =>
+                        setFeedbackData((prev) => ({
+                          ...prev,
+                          additionalInputs: {
+                            ...prev.additionalInputs,
+                            deadline: e.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Priority</Label>
+                    <Select
+                      value={feedbackData.additionalInputs.priority}
+                      onValueChange={(value) =>
+                        setFeedbackData((prev) => ({
+                          ...prev,
+                          additionalInputs: {
+                            ...prev.additionalInputs,
+                            priority: value,
+                          },
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Priority" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsFeedbackModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={!feedbackData.status}>
+                  Submit Feedback
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
