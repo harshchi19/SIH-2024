@@ -47,7 +47,9 @@ export function ProgressReportForm({
   return (
     <div className="space-y-4">
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="case_no">Case Number</Label>
+        <Label htmlFor="case_no">
+          Case Number <span className="text-red-500">*</span>
+        </Label>
         <Select
           value={formData.case_no} // Selected case number
           onValueChange={(value) => {
@@ -78,7 +80,9 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="session_no">Session Number</Label>
+        <Label htmlFor="session_no">
+          Session Number <span className="text-red-500">*</span>
+        </Label>
         <Input
           id="session_no"
           placeholder="Enter session number"
@@ -90,12 +94,16 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="name">Patient Name</Label>
+        <Label htmlFor="name">
+          Patient Name <span className="text-red-500">*</span>
+        </Label>
         <Input id="name" placeholder="Patient Name" value={formData.name} />
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="status">Status</Label>
+        <Label htmlFor="status">
+          Status <span className="text-red-500">*</span>
+        </Label>
         <Select
           value={formData.status}
           onValueChange={(value) =>
@@ -115,7 +123,9 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="history">History</Label>
+        <Label htmlFor="history">
+          History <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="history"
           placeholder="Enter patient history"
@@ -127,7 +137,9 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="diagnosis">Diagnosis</Label>
+        <Label htmlFor="diagnosis">
+          Diagnosis <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="diagnosis"
           placeholder="Enter diagnosis"
@@ -139,7 +151,9 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="treatment_plan">Treatment Plan</Label>
+        <Label htmlFor="treatment_plan">
+          Treatment Plan <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="treatment_plan"
           placeholder="Enter treatment plan"
@@ -155,7 +169,9 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="progress">Progress</Label>
+        <Label htmlFor="progress">
+          Progress <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="progress"
           placeholder="Enter progress details"
@@ -167,7 +183,9 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="medicine">Medicine</Label>
+        <Label htmlFor="medicine">
+          Medicine <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="medicine"
           placeholder="Enter medicine details"
@@ -179,7 +197,9 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="equipments">Equipment</Label>
+        <Label htmlFor="equipments">
+          Equipment <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="equipments"
           placeholder="Enter equipment used"
@@ -191,7 +211,9 @@ export function ProgressReportForm({
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="findings">Findings</Label>
+        <Label htmlFor="findings">
+          Findings <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="findings"
           placeholder="Enter findings"

@@ -24,7 +24,7 @@ export function PreTherapyForm({ formData, handleInputChange }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="name" className="font-medium">
-              Name
+              Name <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"
@@ -39,7 +39,7 @@ export function PreTherapyForm({ formData, handleInputChange }) {
 
           <div>
             <Label htmlFor="age" className="font-medium">
-              Age
+              Age <span className="text-red-500">*</span>
             </Label>
             <Input
               id="age"
@@ -55,7 +55,7 @@ export function PreTherapyForm({ formData, handleInputChange }) {
 
           <div>
             <Label htmlFor="sex" className="font-medium">
-              Sex
+              Sex <span className="text-red-500">*</span>
             </Label>
             <Select
               value={formData.sex}
@@ -79,7 +79,7 @@ export function PreTherapyForm({ formData, handleInputChange }) {
 
           <div>
             <Label htmlFor="date_of_assignment" className="font-medium">
-              Date of Assignment
+              Date of Assignment <span className="text-red-500">*</span>
             </Label>
             <Input
               id="date_of_assignment"
@@ -106,7 +106,7 @@ export function PreTherapyForm({ formData, handleInputChange }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="provisional_diagnosis" className="font-medium">
-              Provisional Diagnosis
+              Provisional Diagnosis <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="provisional_diagnosis"
@@ -138,7 +138,8 @@ export function PreTherapyForm({ formData, handleInputChange }) {
                   .split("_")
                   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                   .join(" ")}
-              </Label>
+              </Label>{" "}
+              <span className="text-red-500">*</span>
               <Textarea
                 id={key}
                 placeholder={`Enter ${key.split("_").join(" ")}`}

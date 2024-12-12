@@ -114,11 +114,11 @@ const ReportViewModal = ({
           </TabsContent>
 
           <TabsContent value="therapy-plan">
-            {renderReportList(therapyPlanReports, "No Treatment Plan found")}
+            {renderReportList(finalReports, "No Treatment Plan found")}
           </TabsContent>
 
           <TabsContent value="session">
-            {renderReportList(sessionReports, "No Session Reports found")}
+            {renderReportList(pretherapyReports, "No Session Reports found")}
           </TabsContent>
 
           <TabsContent value="finalReport">

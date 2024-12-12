@@ -29,7 +29,11 @@ import { useGetReport } from "@/hooks/useGetReport";
 import { useGetSessions } from "@/hooks/useGetSessions";
 import { useByObjectId } from "@/hooks/useByObjectId";
 import { useParams, useRouter } from "next/navigation";
-import { GET_ALL_PAT_ROUTE } from "@/utils/constants";
+import {
+  GET_ALL_PAT_ROUTE,
+  GET_ALL_SESSIONS_BY_THERAPIST,
+  GET_ALL_SESSIONS_ROUTE,
+} from "@/utils/constants";
 import { useGetRole } from "@/hooks/useGetRole";
 
 const StudentReportsPage = () => {
@@ -74,11 +78,14 @@ const StudentReportsPage = () => {
 
   const fetchSessions = async () => {
     try {
-      const res = await getAllSessions();
+      const res = await fetch(`${GET_ALL_SESSIONS_ROUTE}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (res.success) {
         setSessions(res.user);
-      } else {
-        console.error("Error fetching sessions: ", res);
       }
     } catch (error) {
       console.error("Failed to fetch sessions", error);

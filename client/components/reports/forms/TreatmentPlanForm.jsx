@@ -13,7 +13,7 @@ export function TreatmentPlanForm({ formData, handleInputChange }) {
   return (
     <div className="space-y-4">
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="treatment_approach">Treatment Approach</Label>
+        <Label htmlFor="treatment_approach">Treatment Approach <span className="text-red-500">*</span></Label>
         <Select
           value={formData.treatment_approach}
           onValueChange={(value) =>
@@ -33,7 +33,7 @@ export function TreatmentPlanForm({ formData, handleInputChange }) {
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="planned_interventions">Planned Interventions</Label>
+        <Label htmlFor="planned_interventions">Planned Interventions <span className="text-red-500">*</span></Label>
         <Textarea
           id="planned_interventions"
           placeholder="Describe planned interventions"
@@ -49,7 +49,7 @@ export function TreatmentPlanForm({ formData, handleInputChange }) {
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="expected_outcomes">Expected Outcomes</Label>
+        <Label htmlFor="expected_outcomes">Expected Outcomes <span className="text-red-500">*</span></Label>
         <Textarea
           id="expected_outcomes"
           placeholder="Describe expected outcomes"
@@ -65,7 +65,7 @@ export function TreatmentPlanForm({ formData, handleInputChange }) {
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="frequency_of_sessions">Frequency of Sessions</Label>
+        <Label htmlFor="frequency_of_sessions">Frequency of Sessions <span className="text-red-500">*</span></Label>
         <Input
           id="frequency_of_sessions"
           placeholder="E.g., Weekly, Bi-weekly"
@@ -81,7 +81,7 @@ export function TreatmentPlanForm({ formData, handleInputChange }) {
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="estimated_duration">Estimated Duration</Label>
+        <Label htmlFor="estimated_duration">Estimated Duration <span className="text-red-500">*</span></Label>
         <Input
           id="estimated_duration"
           placeholder="E.g., 3 months, 6 months"

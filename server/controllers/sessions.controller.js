@@ -502,47 +502,42 @@ export const allSessions = async (req, res) => {
     }
 
     // Retrieve the encryption key for decrypting session data
-    const encryptionKeyRecord = await EncryptionKey.findOne({
+    const findEncryptionKey = await EncryptionKey.findOne({
       collectionName: "sessions",
     });
 
-    if (!encryptionKeyRecord) {
-      return res.status(500).json({ message: "Encryption key not found" });
+    if (!findEncryptionKey) {
+      return res.status(500).json({ message: "encryption-key-not-found" });
     }
 
     // Unwrap the encryption key
     const key = unwrapKey(
-      encryptionKeyRecord.encryptedKey,
-      encryptionKeyRecord.encryptedIV,
-      encryptionKeyRecord.encryptedAuthTag
+      findEncryptionKey.encryptedKey,
+      findEncryptionKey.encryptedIV,
+      findEncryptionKey.encryptedAuthTag
     );
 
     // Helper function to safely convert arrays to objects
-    const safeFromEntries = (value) =>
-      Array.isArray(value) ? Object.fromEntries(value) : value;
-
-    // Decrypt each session
     const decryptedSessions = sessions.map((session) => {
-      console.log("session", session.report_name);
+      const safeFromEntries = (value) =>
+        Array.isArray(value) ? Object.fromEntries(value) : value;
 
       const decryptData = {
-        report_name: Object.fromEntries(session.report_name),
-        report_type: Object.fromEntries(session.report_type),
-        report_status: Object.fromEntries(session.report_status),
-        session_number: Object.fromEntries(session.session_number),
-        date_of_session: Object.fromEntries(session.date_of_session),
-        start_time: Object.fromEntries(session.start_time),
-        end_time: session.end_time,
-        progress: session.progress,
-        goals: Object.fromEntries(session.goals),
-        notes: Object.fromEntries(session.notes),
-        results: Object.fromEntries(session.results),
-        external_test: Object.fromEntries(session.external_test),
-        next_session_timings: Object.fromEntries(session.next_session_timings),
-        progress_next_session: Object.fromEntries(
-          session.progress_next_session
-        ),
-        goals_next_session: Object.fromEntries(session.goals_next_session),
+        report_name: safeFromEntries(session.report_name),
+        report_type: safeFromEntries(session.report_type),
+        report_status: safeFromEntries(session.report_status),
+        session_number: safeFromEntries(session.session_number),
+        date_of_session: safeFromEntries(session.date_of_session),
+        start_time: safeFromEntries(session.start_time),
+        end_time: safeFromEntries(session.end_time),
+        progress: safeFromEntries(session.progress),
+        goals: safeFromEntries(session.goals),
+        notes: safeFromEntries(session.notes),
+        results: safeFromEntries(session.results),
+        external_test: safeFromEntries(session.external_test),
+        next_session_timings: safeFromEntries(session.next_session_timings),
+        progress_next_session: safeFromEntries(session.progress_next_session),
+        goals_next_session: safeFromEntries(session.goals_next_session),
       };
 
       const decryptedSession = decryptSection(decryptData, key);
