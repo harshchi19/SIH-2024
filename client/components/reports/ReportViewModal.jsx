@@ -55,8 +55,6 @@ const ReportViewModal = ({
     onClose();
   };
 
-  console.log("finalReports", pretherapyReports);
-
   // Render function for report list
   const renderReportList = (reports, emptyMessage) => (
     <div className="grid gap-4 py-4">
@@ -69,7 +67,9 @@ const ReportViewModal = ({
           >
             <div className="flex justify-between items-center">
               <div>
-                <p className="font-medium">{report.patient.name}</p>
+                <p className="font-medium">
+                  {report.patient?.name || report.name}
+                </p>
                 <p className="text-sm text-gray-500">{report.date}</p>
                 <p className="text-xs text-gray-400">{report.student.name}</p>
               </div>
@@ -114,11 +114,11 @@ const ReportViewModal = ({
           </TabsContent>
 
           <TabsContent value="therapy-plan">
-            {renderReportList(therapyPlanReports, "No Treatment Plan found")}
+            {renderReportList(finalReports, "No Treatment Plan found")}
           </TabsContent>
 
           <TabsContent value="session">
-            {renderReportList(sessionReports, "No Session Reports found")}
+            {renderReportList(pretherapyReports, "No Session Reports found")}
           </TabsContent>
 
           <TabsContent value="finalReport">

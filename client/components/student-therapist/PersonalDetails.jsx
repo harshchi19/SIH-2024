@@ -43,7 +43,8 @@ const PersonalDetails = ({ data, updateData }) => {
       <div className="w-full flex-row-center gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-5">
         <div className="space-y-1 w-full">
           <Label htmlFor="name" className="text-gray-700 text-md">
-            {dict?.addStudentTherapist?.name}
+            {dict?.addStudentTherapist?.name}{" "}
+            <span className="text-red-500">*</span>
           </Label>
           <Input
             type="text"
@@ -56,7 +57,7 @@ const PersonalDetails = ({ data, updateData }) => {
         </div>
         <div className="space-y-1 w-full">
           <Label htmlFor="phone_no" className="text-gray-700 text-md">
-            {dict?.login?.phone}
+            {dict?.login?.phone} <span className="text-red-500">*</span>
           </Label>
           <Input
             type="tel"
@@ -72,7 +73,7 @@ const PersonalDetails = ({ data, updateData }) => {
       <div className="w-full flex-row-center gap-x-5 max-md:flex-col-center max-md:gap-y-5 mt-5">
         <div className="space-y-1 w-full">
           <Label htmlFor="email" className="text-gray-700 text-md">
-            {dict?.login?.email}
+            {dict?.login?.email} <span className="text-red-500">*</span>
           </Label>
           <Input
             type="email"
@@ -85,7 +86,8 @@ const PersonalDetails = ({ data, updateData }) => {
         </div>
         <div className="space-y-1 w-full">
           <Label htmlFor="sex" className="text-gray-700 text-md">
-            {dict?.addStudentTherapist?.sex}
+            {dict?.addStudentTherapist?.sex}{" "}
+            <span className="text-red-500">*</span>
           </Label>
           <Select
             value={data.sex || ""}
@@ -109,7 +111,8 @@ const PersonalDetails = ({ data, updateData }) => {
             htmlFor="age"
             className="text-gray-700 text-md flex items-center"
           >
-            {dict?.addStudentTherapist?.age}
+            {dict?.addStudentTherapist?.age}{" "}
+            <span className="text-red-500">*</span>
           </Label>
           <Input
             type="number"
@@ -125,7 +128,7 @@ const PersonalDetails = ({ data, updateData }) => {
             htmlFor="password"
             className="text-gray-700 text-md flex items-center"
           >
-            {dict?.login?.password}
+            {dict?.login?.password} <span className="text-red-500">*</span>
           </Label>
           <Input
             type="password"

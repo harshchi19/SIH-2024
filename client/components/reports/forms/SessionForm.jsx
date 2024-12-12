@@ -13,7 +13,9 @@ export function SessionForm({ formData, handleInputChange }) {
   return (
     <div className="space-y-4">
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="report_name">Report Name</Label>
+        <Label htmlFor="report_name">
+          Report Name <span className="text-red-500">*</span>
+        </Label>
         <Input
           id="report_name"
           placeholder="Enter report name"
@@ -25,7 +27,9 @@ export function SessionForm({ formData, handleInputChange }) {
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="report_type">Report Type</Label>
+        <Label htmlFor="report_type">
+          Report Type <span className="text-red-500">*</span>
+        </Label>
         <Select
           value={formData.report_type}
           onValueChange={(value) =>
@@ -46,7 +50,9 @@ export function SessionForm({ formData, handleInputChange }) {
       {/* Add similar structure for all other session form fields */}
       {/* Time fields */}
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="session_date">Session Date</Label>
+        <Label htmlFor="session_date">
+          Session Date <span className="text-red-500">*</span>
+        </Label>
         <Input
           id="session_date"
           type="date"
@@ -59,7 +65,9 @@ export function SessionForm({ formData, handleInputChange }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="start_time">Start Time</Label>
+          <Label htmlFor="start_time">
+            Start Time <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="start_time"
             type="time"
@@ -71,7 +79,9 @@ export function SessionForm({ formData, handleInputChange }) {
         </div>
 
         <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="end_time">End Time</Label>
+          <Label htmlFor="end_time">
+            End Time <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="end_time"
             type="time"
@@ -85,7 +95,9 @@ export function SessionForm({ formData, handleInputChange }) {
 
       {/* Notes and Progress */}
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="progress">Progress</Label>
+        <Label htmlFor="progress">
+          Progress <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="progress"
           placeholder="Enter session progress"
@@ -97,7 +109,9 @@ export function SessionForm({ formData, handleInputChange }) {
       </div>
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="goals">Goals</Label>
+        <Label htmlFor="goals">
+          Goals <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="goals"
           placeholder="Enter session goals"

@@ -3,6 +3,7 @@ import { PatientCard } from "./PatientCard";
 import { FeedbackCard } from "./FeedbackCard";
 import { useSessionByTherapist } from "@/hooks/useSessionByTherapistByPatient";
 import { useEffect, useState } from "react";
+import { GET_ALL_PAT_ROUTE } from "@/utils/constants";
 
 export function PatientsSection({ patients, feedback, studentTherapistId }) {
   const [patientData, setPatientData] = useState("");

@@ -225,9 +225,7 @@ export const updateExistingSession = async (req, res) => {
 
     await existingSession.save();
 
-    res
-      .status(200)
-      .json({ message: "session-updated", session: existingSession });
+    res.status(200).json(existingSession);
   } catch (error) {
     console.error("Error in updateExistingSession:", error);
     res
@@ -509,7 +507,7 @@ export const allSessions = async (req, res) => {
     });
 
     if (!findEncryptionKey) {
-      return res.status(500).json({ message: "Encryption key not found" });
+      return res.status(500).json({ message: "encryption-key-not-found" });
     }
 
     // Unwrap the encryption key
@@ -521,24 +519,25 @@ export const allSessions = async (req, res) => {
 
     // Helper function to safely convert arrays to objects
     const decryptedSessions = sessions.map((session) => {
+      const safeFromEntries = (value) =>
+        Array.isArray(value) ? Object.fromEntries(value) : value;
+
       const decryptData = {
-        report_name: Object.fromEntries(session.report_name),
-        report_type: Object.fromEntries(session.report_type),
-        report_status: Object.fromEntries(session.report_status),
-        session_number: Object.fromEntries(session.session_number),
-        date_of_session: Object.fromEntries(session.date_of_session),
-        start_time: Object.fromEntries(session.start_time),
-        end_time: Object.fromEntries(session.end_time),
-        progress: Object.fromEntries(session.progress),
-        goals: Object.fromEntries(session.goals),
-        notes: Object.fromEntries(session.notes),
-        results: Object.fromEntries(session.results),
-        external_test: Object.fromEntries(session.external_test),
-        next_session_timings: Object.fromEntries(session.next_session_timings),
-        progress_next_session: Object.fromEntries(
-          session.progress_next_session
-        ),
-        goals_next_session: Object.fromEntries(session.goals_next_session),
+        report_name: safeFromEntries(session.report_name),
+        report_type: safeFromEntries(session.report_type),
+        report_status: safeFromEntries(session.report_status),
+        session_number: safeFromEntries(session.session_number),
+        date_of_session: safeFromEntries(session.date_of_session),
+        start_time: safeFromEntries(session.start_time),
+        end_time: safeFromEntries(session.end_time),
+        progress: safeFromEntries(session.progress),
+        goals: safeFromEntries(session.goals),
+        notes: safeFromEntries(session.notes),
+        results: safeFromEntries(session.results),
+        external_test: safeFromEntries(session.external_test),
+        next_session_timings: safeFromEntries(session.next_session_timings),
+        progress_next_session: safeFromEntries(session.progress_next_session),
+        goals_next_session: safeFromEntries(session.goals_next_session),
       };
 
       const decryptedSession = decryptSection(decryptData, key);
@@ -558,12 +557,14 @@ export const allSessions = async (req, res) => {
     });
 
     // Respond with the decrypted session data
-    res.status(200).json(decryptedSessions);
+    return res.status(200).json(decryptedSessions);
   } catch (error) {
-    // Log and return an error response
+    // Log the error for debugging
     console.error("Error in allSessions:", error);
-    res.status(500).json({
-      message: "session-controller-error",
+
+    // Respond with a generic error message
+    return res.status(500).json({
+      message: "An error occurred while fetching sessions",
       error: error.message,
     });
   }

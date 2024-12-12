@@ -358,7 +358,7 @@ export const getPatientById = async (req, res, next) => {
     decryptedPatient.voice_details = decryptedVoiceDetails;
     decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
     decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
-    
+
     return res.status(200).json(decryptedPatient);
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);
@@ -622,10 +622,14 @@ export const getPatientByObjectId = async (req, res, next) => {
 
     decryptedPatient.address_details = decryptedAddressDetails;
     decryptedPatient.medical_details = decryptedMedicalDetails;
-    decryptedPatient.medicalDetails.supervisor_id =
-      patient.medical_details.supervisor_id;
-    decryptedPatient.medicalDetails.student_therapist_id =
-      patient.medical_details.student_therapist_id;
+    // decryptedPatient.medicalDetails.supervisor_id = patient.medical_details
+    //   .supervisor_id
+    //   ? patient.medical_details.supervisor_id
+    //   : [];
+    // decryptedPatient.medicalDetails.student_therapist_id = patient
+    //   .medical_details.student_therapist_id
+    //   ? patient.medical_details.student_therapist_id
+    //   : [];
     decryptedPatient.speech_development_history =
       decryptedSpeechDevelopmentHistory;
     decryptedPatient.non_verbal_communication = decryptedNonVerbalCommunication;

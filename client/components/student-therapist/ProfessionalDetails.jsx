@@ -19,7 +19,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
   const [newItem, setNewItem] = useState({
     language: "",
     specialization: "",
-    semesters: "",
+    qualifications: "",
     training: "",
   });
   const [selectedSlots, setSelectedSlots] = useState(data.availability || []);
@@ -96,7 +96,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
   };
 
   useEffect(() => {
-    data.semesters = selectedQualifications.toString(", ");
+    data.qualifications = selectedQualifications.toString(", ");
     data.specialization = selectedSpecializations.toString(", ");
   }, [selectedQualifications, selectedSpecializations]);
 
@@ -111,7 +111,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
     const fieldMap = {
       language: "spoken_languages",
       specialization: "specialization",
-      semesters: "semesters",
+      qualifications: "qualifications",
       training: "training_and_education",
     };
 
@@ -129,7 +129,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
       preferred_language2: "preferred_language2",
       preferred_language3: "preferred_language3",
       specialization: "specialization",
-      semesters: "semesters",
+      qualifications: "qualifications",
       training: "training_and_education",
     };
 
@@ -176,7 +176,10 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
         {/* Spoken Languages */}
         <div className="space-y-4">
-          <Label>Preferred Languages (Up to 3)</Label>
+          <Label>
+            Preferred Languages (Up to 3){" "}
+            <span className="text-red-500">*</span>
+          </Label>
           <div className="grid grid-cols-3 gap-2">
             <div className="flex gap-2">
               <Input
@@ -244,7 +247,8 @@ const ProfessionalDetails = ({ data, updateData }) => {
         {/* Specialization */}
         <div className="space-y-2">
           <Label htmlFor="Specialization" className="text-gray-700 text-md">
-            {dict?.addStudentTherapist?.department}
+            {dict?.addStudentTherapist?.department}{" "}
+            <span className="text-red-500">*</span>
           </Label>
           <DropdownMenu className="flex justify-start">
             <DropdownMenuTrigger
@@ -288,8 +292,9 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
         {/* Qualifications */}
         <div className="space-y-2">
-          <Label htmlFor="semesters" className="text-gray-700 text-md">
-            {dict?.addStudentTherapist?.semesters}
+          <Label htmlFor="qualifications" className="text-gray-700 text-md">
+            {dict?.addStudentTherapist?.qualifications}{" "}
+            <span className="text-red-500">*</span>
           </Label>
           <DropdownMenu className="flex justify-start">
             <DropdownMenuTrigger
@@ -333,7 +338,9 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
         {/* Years of Experience */}
         <div className="space-y-2">
-          <Label htmlFor="experience_years">Years of Experience</Label>
+          <Label htmlFor="experience_years">
+            Years of Experience <span className="text-red-500">*</span>
+          </Label>
           <Input
             type="number"
             id="experience_years"
@@ -346,7 +353,9 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
         {/* Training and Education */}
         <div className="space-y-2">
-          <Label>Clinical Coursework</Label>
+          <Label>
+            Clinical Coursework <span className="text-red-500">*</span>
+          </Label>
           <div className="flex gap-2">
             <Input
               value={newItem.training}
@@ -389,7 +398,9 @@ const ProfessionalDetails = ({ data, updateData }) => {
           <h3 className="font-medium">Location</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="city">City</Label>
+              <Label htmlFor="city">
+                City <span className="text-red-500">*</span>
+              </Label>
               <Input
                 type="text"
                 id="city"
@@ -401,7 +412,9 @@ const ProfessionalDetails = ({ data, updateData }) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="state">State/Province</Label>
+              <Label htmlFor="state">
+                State/Province <span className="text-red-500">*</span>
+              </Label>
               <Input
                 type="text"
                 id="state"
@@ -413,7 +426,9 @@ const ProfessionalDetails = ({ data, updateData }) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
+              <Label htmlFor="country">
+                Country <span className="text-red-500">*</span>
+              </Label>
               <Input
                 type="text"
                 id="country"
@@ -431,7 +446,9 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
       {/* Availability Section */}
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Availability</h2>
+        <h2 className="text-lg">
+          Availability <span className="text-red-500">*</span>
+        </h2>
         <div className="border rounded-md p-4">
           <div className="grid grid-cols-8 gap-2 text-sm font-medium">
             <div className="col-span-1"></div>
