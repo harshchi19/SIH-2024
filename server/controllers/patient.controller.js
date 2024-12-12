@@ -358,7 +358,7 @@ export const getPatientById = async (req, res, next) => {
     decryptedPatient.voice_details = decryptedVoiceDetails;
     decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
     decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
-    
+
     return res.status(200).json(decryptedPatient);
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);
