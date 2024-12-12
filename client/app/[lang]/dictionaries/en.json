@@ -32,8 +32,7 @@
     "Summary-report": "Summary Report",
     "navigation": "Guide",
     "admin": "Admin",
-    "new-report": "New Report",
-    "navigation": "Guide"
+    "new-report": "New Report"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",
@@ -344,7 +343,7 @@
     "postal_code_plchldr": "400004",
     "country": "Country",
     "country_plchldr": "India",
-    "semesters": "Semesters",
+    "qualifications": "Qualifications",
     "qual_plchldr": "Add your Semester",
     "department": "Student Therapist's Department"
   },
