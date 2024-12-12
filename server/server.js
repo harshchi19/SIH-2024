@@ -22,6 +22,7 @@ import matchmakingRouter from "./routes/matchmaking.route.js";
 import onboardingRouter from "./routes/onboarding.route.js";
 import adminRouter from "./routes/admin.route.js";
 import hodRouter from "./routes/hod.route.js";
+import reasonsRouter from "./routes/reasons.route.js";
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ app.use("/pre_therapy", preTherapyRouter);
 app.use("/sessions", sessionsRouter);
 app.use("/matchmaking", matchmakingRouter);
 app.use("/onboarding", onboardingRouter);
+app.use("/reasons", reasonsRouter);
 
 const PORT = process.env.PORT || 4224;
 
