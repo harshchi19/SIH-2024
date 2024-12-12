@@ -44,13 +44,9 @@ export const getAdminById = async (req, res, next) => {
       user_image: Object.fromEntries(admin.user_image),
     };
 
-    console.log(decryptData);
-
     const decryptedData = decryptSection(decryptData, key);
 
     decryptedData.authenticated = admin.authenticated;
-
-    console.log(decryptedData);
 
     return res.status(200).json(decryptedData);
   } catch (error) {
@@ -94,13 +90,9 @@ export const getAdminObjectById = async (req, res, next) => {
       user_image: Object.fromEntries(admin.user_image),
     };
 
-    console.log(decryptData);
-
     const decryptedData = decryptSection(decryptData, key);
 
     decryptedData.authenticated = admin.authenticated;
-
-    console.log(decryptedData);
 
     return res.status(200).json(decryptedData);
   } catch (error) {
