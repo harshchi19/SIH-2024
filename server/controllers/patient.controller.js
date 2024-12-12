@@ -243,6 +243,10 @@ export const getPatientById = async (req, res, next) => {
       recommendations: Object.fromEntries(
         patient.medical_details.recommendations
       ),
+      // supervisor_id: Object.fromEntries(patient.medical_details.supervisor_id),
+      // student_therapist_id: Object.fromEntries(
+      //   patient.medical_details.student_therapist_id
+      // ),
     };
     const decryptedMedicalDetails = decryptSection(decrpytMedicalDetails, key);
 
@@ -348,7 +352,7 @@ export const getPatientById = async (req, res, next) => {
     decryptedPatient.voice_details = decryptedVoiceDetails;
     decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
     decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
-
+    // console.log("Hi", decryptedPatient.supervisor_therapist);
     return res.status(200).json(decryptedPatient);
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);
@@ -430,9 +434,11 @@ export const getAllPatients = async (req, res, next) => {
         voice_details: decryptedVoiceDetails,
         suprasegmental_aspects: decryptedSuprasegmentalAspects,
         reading_writing_skills: decryptedReadingWritingSkills,
+        supervisor_id: patient.supervisor_id,
+        student_therapist_id: patient.student_therapist_id,
       };
     });
-
+    console.log("Sending Data:", decryptedPatients);
     return res.status(200).json(decryptedPatients);
   } catch (error) {
     console.error("Error in getPatients: ", error);
@@ -611,6 +617,10 @@ export const getPatientByObjectId = async (req, res, next) => {
 
     decryptedPatient.address_details = decryptedAddressDetails;
     decryptedPatient.medical_details = decryptedMedicalDetails;
+    decryptedPatient.medicalDetails.supervisor_id =
+      patient.medical_details.supervisor_id;
+    decryptedPatient.medicalDetails.student_therapist_id =
+      patient.medical_details.student_therapist_id;
     decryptedPatient.speech_development_history =
       decryptedSpeechDevelopmentHistory;
     decryptedPatient.non_verbal_communication = decryptedNonVerbalCommunication;
@@ -620,6 +630,7 @@ export const getPatientByObjectId = async (req, res, next) => {
     decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
     decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
 
+    console.log("ByeP:", decryptedPatient);
     return res.status(200).json(decryptedPatient);
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);

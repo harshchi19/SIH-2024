@@ -16,6 +16,7 @@ import story_1_1 from "./images/stories/story_1.1.webp";
 import story_1_2 from "./images/stories/story_1.2.webp";
 import story_1_3 from "./images/stories/story_1.3.webp";
 import story_1_4 from "./images/stories/story_1.4.webp";
+import landingIllustration from "./images/landingillus.png";
 
 export {
   load,
@@ -31,4 +32,5 @@ export {
   story_1_4,
   youtube,
   news,
+  landingIllustration,
 };
