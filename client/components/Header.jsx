@@ -39,8 +39,12 @@ const Header = () => {
     const breadcrumbList = pathParts.map((part, index) => {
       const normalizedPart = part.trim();
 
+      console.log(normalizedPart);
+
       // Check if the part matches the role format (e.g., STT-xxxx-xxxxx)
-      if (/^(STT|PAT|SUP)-[a-z0-9]{8}-[A-Z0-9]{6}$/.test(normalizedPart)) {
+      if (
+        /^(STT|PAT|SUP|ADM|HOD)-[a-z0-9]{8}-[A-Z0-9]{6}$/.test(normalizedPart)
+      ) {
         const extractedRole = normalizedPart.split("-")[0];
         setRole(extractedRole);
         setUserId(normalizedPart);
@@ -48,9 +52,13 @@ const Header = () => {
 
       let label = dict?.breadcrumb?.[normalizedPart] || normalizedPart;
 
-      const isRole = ["student-therapist", "supervisor", "patient"].includes(
-        normalizedPart
-      );
+      const isRole = [
+        "student-therapist",
+        "supervisor",
+        "patient",
+        "admin",
+        "head-of-department",
+      ].includes(normalizedPart);
       const href = isRole
         ? `/${currentLang}/${normalizedPart}/${pathParts[1]}`
         : `/${currentLang}/` + pathParts.slice(0, index + 1).join("/");

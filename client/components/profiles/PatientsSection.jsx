@@ -5,6 +5,30 @@ import { useSessionByTherapist } from "@/hooks/useSessionByTherapistByPatient";
 import { useEffect, useState } from "react";
 
 export function PatientsSection({ patients, feedback, studentTherapistId }) {
+  const [patientData, setPatientData] = useState("");
+  useEffect(() => {
+    const fetchAllPatients = async () => {
+      console.log("URL:", GET_ALL_PAT_ROUTE);
+      try {
+        const response = await fetch(GET_ALL_PAT_ROUTE, {
+          method: "GET",
+          // headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.ok) {
+          const result = await response.json();
+          console.log(result);
+        }
+      } catch (error) {
+        console.error("Error fetching patients", error);
+      }
+    };
+
+    fetchAllPatients();
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Patients List */}
