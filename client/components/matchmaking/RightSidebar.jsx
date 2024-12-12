@@ -209,8 +209,11 @@ const RightSidebar = ({
 
   const handleAIMatchmaking = async () => {
     setLoading(true);
-    if (selectedPatientId === "")
+    if (selectedPatientId === "") {
       toast({ variant: "destructive", title: "Please select a patient" });
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData();
     formData.append("patient_id", selectedPatientId);
@@ -246,6 +249,11 @@ const RightSidebar = ({
   };
 
   const handleSubmit = async () => {
+    if (!selectedPatient || !selectedTherapist || !selectedSupervisor) {
+      toast({ title: "Please select a Patient, Therapist and Supervsior" });
+      return;
+    }
+
     const data = { selectedPatient, selectedTherapist, selectedSupervisor };
 
     const response = await fetch(ALLOCATING_PATIENTS_ROUTE, {

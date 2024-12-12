@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 export function PatientsSection({ patients, feedback, studentTherapistId }) {
   const [patientData, setPatientData] = useState("");
+
   useEffect(() => {
     const fetchAllPatients = async () => {
       console.log("URL:", GET_ALL_PAT_ROUTE);
