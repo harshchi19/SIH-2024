@@ -315,7 +315,9 @@ export default function SupervisorsDashboard() {
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, []); // Fetch supervisors when supervisors change
+
+  console.log("supervisors", supervisors);
 
   // Get unique departments for filter
   const departments = ["All Departments", ...hospitalDepartments];

@@ -225,9 +225,7 @@ export const updateExistingSession = async (req, res) => {
 
     await existingSession.save();
 
-    res
-      .status(200)
-      .json({ message: "session-updated", session: existingSession });
+    res.status(200).json(existingSession);
   } catch (error) {
     console.error("Error in updateExistingSession:", error);
     res
@@ -504,23 +502,29 @@ export const allSessions = async (req, res) => {
     }
 
     // Retrieve the encryption key for decrypting session data
-    const findEncryptionKey = await EncryptionKey.findOne({
+    const encryptionKeyRecord = await EncryptionKey.findOne({
       collectionName: "sessions",
     });
 
-    if (!findEncryptionKey) {
+    if (!encryptionKeyRecord) {
       return res.status(500).json({ message: "Encryption key not found" });
     }
 
     // Unwrap the encryption key
     const key = unwrapKey(
-      findEncryptionKey.encryptedKey,
-      findEncryptionKey.encryptedIV,
-      findEncryptionKey.encryptedAuthTag
+      encryptionKeyRecord.encryptedKey,
+      encryptionKeyRecord.encryptedIV,
+      encryptionKeyRecord.encryptedAuthTag
     );
 
     // Helper function to safely convert arrays to objects
+    const safeFromEntries = (value) =>
+      Array.isArray(value) ? Object.fromEntries(value) : value;
+
+    // Decrypt each session
     const decryptedSessions = sessions.map((session) => {
+      console.log("session", session.report_name);
+
       const decryptData = {
         report_name: Object.fromEntries(session.report_name),
         report_type: Object.fromEntries(session.report_type),
@@ -528,8 +532,8 @@ export const allSessions = async (req, res) => {
         session_number: Object.fromEntries(session.session_number),
         date_of_session: Object.fromEntries(session.date_of_session),
         start_time: Object.fromEntries(session.start_time),
-        end_time: Object.fromEntries(session.end_time),
-        progress: Object.fromEntries(session.progress),
+        end_time: session.end_time,
+        progress: session.progress,
         goals: Object.fromEntries(session.goals),
         notes: Object.fromEntries(session.notes),
         results: Object.fromEntries(session.results),
@@ -558,12 +562,14 @@ export const allSessions = async (req, res) => {
     });
 
     // Respond with the decrypted session data
-    res.status(200).json(decryptedSessions);
+    return res.status(200).json(decryptedSessions);
   } catch (error) {
-    // Log and return an error response
+    // Log the error for debugging
     console.error("Error in allSessions:", error);
-    res.status(500).json({
-      message: "session-controller-error",
+
+    // Respond with a generic error message
+    return res.status(500).json({
+      message: "An error occurred while fetching sessions",
       error: error.message,
     });
   }

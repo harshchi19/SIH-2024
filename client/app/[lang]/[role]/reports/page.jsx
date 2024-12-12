@@ -104,8 +104,6 @@ const StudentReportsPage = () => {
     fetchPreTherapyReports();
   }, []);
 
-  console.log("Pre-Therapy Reports", preTherapyReports);
-
   // Data enrichment effects (similar to your original code)
   useEffect(() => {
     const enrichReports = (reportsToEnrich) => {
@@ -180,20 +178,17 @@ const StudentReportsPage = () => {
     return preTherapyReports.map((pretherapy) => {
       const date = new Date(pretherapy.createdAt).toLocaleDateString();
       const student = students.find(
-        (s) => s._id === pretherapy.student_therapist_id
+        (s) => s._id === pretherapy.medical_details.student_therapist_id
       );
-      const patientData = patient.find((p) => p._id === pretherapy.patient_id);
 
       return {
         ...pretherapy,
         date,
+        type: "Pre-Therapy",
         student: student || {},
-        patient: patientData || {},
       };
     });
-  }, [preTherapyReports, students, patient]);
-
-  console.log("Enriched Reports", enrichedReports);
+  }, [preTherapyReports, students]);
 
   // Filtering and sorting logic
   const uniqueTherapists = [
@@ -302,7 +297,6 @@ const StudentReportsPage = () => {
   };
 
   const userType = localStorage.getItem("userType");
-  console.log("User", userType);
 
   return (
     <div className="flex h-screen bg-background">
@@ -358,20 +352,20 @@ const StudentReportsPage = () => {
                 <label className="mb-2">Status</label>
                 {uniqueStatuses.map((status) => (
                   <div key={status} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={`status-${status}`}
-                        checked={filterOptions.status.includes(status)}
-                        onChange={() => {
-                          setFilterOptions((prev) => ({
-                            ...prev,
-                            status: prev.status.includes(status)
-                              ? prev.status.filter((s) => s !== status)
-                              : [...prev.status, status],
-                          }));
-                        }}
-                        className="mr-2"
-                      />
+                    <input
+                      type="checkbox"
+                      id={`status-${status}`}
+                      checked={filterOptions.status.includes(status)}
+                      onChange={() => {
+                        setFilterOptions((prev) => ({
+                          ...prev,
+                          status: prev.status.includes(status)
+                            ? prev.status.filter((s) => s !== status)
+                            : [...prev.status, status],
+                        }));
+                      }}
+                      className="mr-2"
+                    />
                     <label htmlFor={`status-${status}`}>{status}</label>
                   </div>
                 ))}
@@ -499,7 +493,7 @@ const StudentReportsPage = () => {
       <ReportViewModal
         isOpen={modalOpen}
         onClose={handleCloseModal}
-        pretherapyReports={selectedReport?.preTherapyReports || []}
+        pretherapyReports={enrichedPreTherapy || []}
         sessionReports={selectedReport?.sessionReports || []}
         therapyPlanReports={selectedReport?.therapyPlanReports || []}
         finalReports={selectedReport?.finalReports || []}

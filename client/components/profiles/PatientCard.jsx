@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { lastDateOfMonth } from "@syncfusion/ej2-react-schedule";
 
 export function PatientCard({ patient, studentTherapistId }) {
-  const { currentLang, role } = useParams();
+  const { lang, role } = useParams();
   const navigate = useRouter();
   const getStatusColor = (status) => {
     switch (status) {
@@ -47,7 +47,7 @@ export function PatientCard({ patient, studentTherapistId }) {
   console.log("Sessions: ", latestSession);
 
   const handleClick = (id) => {
-    navigate.push(`/${currentLang}/${role}/pre-therapy/${id}`); //To be changed
+    navigate.push(`/${lang}/${role}/pre_therapy/${patient?.patient_id}`); //To be changed
   };
 
   return (
@@ -64,7 +64,7 @@ export function PatientCard({ patient, studentTherapistId }) {
             </p>
           </div>
           <Badge className={getStatusColor(latestSession.report_status)}>
-            {latestSession.report_status}
+            {latestSession.report_status || "Active"}
           </Badge>
         </div>
       </CardHeader>
@@ -72,7 +72,9 @@ export function PatientCard({ patient, studentTherapistId }) {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Condition:</span>
-            <span className="font-medium">{latestSession.report_name}</span>
+            <span className="font-medium">
+              {latestSession.report_name || "Speech"}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Started:</span>
@@ -85,9 +87,9 @@ export function PatientCard({ patient, studentTherapistId }) {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Progress</span>
-            <span className="font-medium">{latestSession.progress}%</span>
+            <span className="font-medium">{latestSession.progress || 30}%</span>
           </div>
-          <Progress value={latestSession.progress} className="h-2 " />
+          <Progress value={latestSession.progress || 30} className="h-2 " />
         </div>
 
         <div className="flex items-center justify-between pt-2 text-sm">

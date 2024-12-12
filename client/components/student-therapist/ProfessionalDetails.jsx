@@ -19,7 +19,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
   const [newItem, setNewItem] = useState({
     language: "",
     specialization: "",
-    semesters: "",
+    qualifications: "",
     training: "",
   });
   const [selectedSlots, setSelectedSlots] = useState(data.availability || []);
@@ -96,7 +96,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
   };
 
   useEffect(() => {
-    data.semesters = selectedQualifications.toString(", ");
+    data.qualifications = selectedQualifications.toString(", ");
     data.specialization = selectedSpecializations.toString(", ");
   }, [selectedQualifications, selectedSpecializations]);
 
@@ -111,7 +111,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
     const fieldMap = {
       language: "spoken_languages",
       specialization: "specialization",
-      semesters: "semesters",
+      qualifications: "qualifications",
       training: "training_and_education",
     };
 
@@ -129,7 +129,7 @@ const ProfessionalDetails = ({ data, updateData }) => {
       preferred_language2: "preferred_language2",
       preferred_language3: "preferred_language3",
       specialization: "specialization",
-      semesters: "semesters",
+      qualifications: "qualifications",
       training: "training_and_education",
     };
 
@@ -288,8 +288,8 @@ const ProfessionalDetails = ({ data, updateData }) => {
 
         {/* Qualifications */}
         <div className="space-y-2">
-          <Label htmlFor="semesters" className="text-gray-700 text-md">
-            {dict?.addStudentTherapist?.semesters}
+          <Label htmlFor="qualifications" className="text-gray-700 text-md">
+            {dict?.addStudentTherapist?.qualifications}
           </Label>
           <DropdownMenu className="flex justify-start">
             <DropdownMenuTrigger

@@ -25,8 +25,8 @@ const ReportsLayout = ({ children }) => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex-1 overflow-y-scroll">{children}</div>
+    <div className="flex flex-col h-screen overflow-y-scroll">
+      <div className="flex-1">{children}</div>
     </div>
   );
 };
