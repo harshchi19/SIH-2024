@@ -151,12 +151,10 @@ const PatientDetailView = ({
     </div>
   );
 
-  // If it's a full-screen view, render directly
   if (isFullScreen) {
     return content;
   }
 
-  // If it's a modal view
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl h-[90vh] overflow-y-auto">
