@@ -97,3 +97,8 @@ export const GET_ALL_HOD_ROUTE = `${HOD_ROUTE}/get-all-hods`;
 export const REASONS_ROUTE = `${HOST}/reasons`;
 export const TERMINATION_ROUTE = `${REASONS_ROUTE}/terminate-patient`;
 export const TRANSFER_ROUTE = `${REASONS_ROUTE}/transfer-patient`;
+
+// Feedback
+export const FEEDBACK_ROUTE = `${HOST}/feedback`;
+export const ADD_FEEDBACK_ROUTE = `${FEEDBACK_ROUTE}/add-feedback`;
+export const GET_FEEDBACK_ROUTE = `${FEEDBACK_ROUTE}/get-feedback`;

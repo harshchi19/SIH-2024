@@ -28,6 +28,7 @@ import { toast } from "@/hooks/use-toast";
 import SessionReport from "@/components/reports/show/SessionReport";
 import PreTherapyForm from "@/components/reports/show/PreTherapyReport";
 import PreTherapyReport from "@/components/reports/show/PreTherapyReport";
+import { ADD_FEEDBACK_ROUTE } from "@/utils/constants";
 // import { toast } from "@/components/ui/use-toast";
 
 // Status configuration
@@ -74,11 +75,7 @@ function TherapyReport() {
 
   useEffect(() => {
     if (reportDetails?.student.supervisor_id) {
-      getByObjectId(
-        reportDetails?.student.supervisor_id ||
-          reportDetails?.medicalDetails.supervisor_id,
-        "SUP"
-      )
+      getByObjectId(reportDetails?.student.supervisor_id[0], "SUP")
         .then((res) => {
           setSupervisor(res.user);
         })
@@ -91,8 +88,7 @@ function TherapyReport() {
           });
         });
     }
-  }, [reportDetails.student.supervisor_id]);
-  console.log(reportDetails);
+  }, []);
 
   // Feedback Handling Functions
   const handleStatusChange = (status) => {
@@ -120,8 +116,18 @@ function TherapyReport() {
     }
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await submitFeedback(feedbackData);
+      const response = await fetch(ADD_FEEDBACK_ROUTE, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ feedbackData }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+      }
 
       toast({
         title: "Feedback Submitted",
