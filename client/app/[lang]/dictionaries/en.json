@@ -32,7 +32,9 @@
     "Summary-report": "Summary Report",
     "navigation": "Guide",
     "admin": "Admin",
-    "new-report": "New Report"
+    "new-report": "New Report",
+    "admins": "All Admins",
+    "head-of-department": "All HOD's"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",

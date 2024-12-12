@@ -125,19 +125,13 @@ export const getAllCalendarEvents = async (req, res, next) => {
   try {
     const userType = userId.split("-")[0];
 
-    if (
-      userType !== "PAT" &&
-      userType !== "STT" &&
-      userType !== "SUP" &&
-      userType !== "HOD" &&
-      userType !== "ADM"
-    ) {
+    if (!["PAT", "STT", "SUP", "HOD", "ADM"].includes(userType)) {
       return res.status(400).json({ message: "invalid-user" });
     }
 
     const hashedUserId = generateHashedData(userId);
-    let currentUser;
 
+    let currentUser = null;
     if (userType === "PAT") {
       currentUser = await Patient.findOne({
         patient_id_hash: hashedUserId,
@@ -160,39 +154,28 @@ export const getAllCalendarEvents = async (req, res, next) => {
       }).select("_id");
     }
 
-    let userCalendar;
-    if (userType === "SUP") {
-      userCalendar = await Calendar.find({
-        $or: [{ userId: currentUser._id }, { supervisor_id: currentUser._id }],
-      })
-        .select("-userType")
-        .exec();
-    } else if (userType === "STT") {
-      userCalendar = await Calendar.find({ userId: currentUser._id })
-        .select("-userType")
-        .exec();
-    } else if (userType === "PAT") {
-      userCalendar = await Calendar.find({
-        $or: [{ userId: currentUser._id }, { patient_id: currentUser._id }],
-      })
-        .select("-userType")
-        .exec();
-    } else if (userType === "HOD") {
-      userCalendar = await Calendar.find({ userId: currentUser._id })
-        .select("-userType")
-        .exec();
-    } else if (userType === "ADM") {
-      userCalendar = await Calendar.find({ userId: currentUser._id })
-        .select("-userType")
-        .exec();
+    if (!currentUser) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    return res
-      .status(200)
-      .json({ userEvents: userCalendar, message: "Events fetched" });
+    const appointments = await Calendar.find({
+      messageType: "appointments",
+    }).lean();
+
+    const reminders = await Calendar.find({
+      userId: currentUser._id,
+      messageType: "reminder",
+    }).lean();
+
+    const events = [
+      ...appointments.map((event) => ({ ...event, eventType: "appointment" })),
+      ...reminders.map((event) => ({ ...event, eventType: "reminder" })),
+    ];
+
+    return res.status(200).json({ events });
   } catch (error) {
-    console.error(`Error in getAllCalendarEvents: ${error}`);
-    return res.status(500).json({ message: "int-ser-err" });
+    console.error("Error fetching calendar data:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

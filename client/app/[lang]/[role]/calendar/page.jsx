@@ -65,7 +65,7 @@ export default function AdvancedCalendar() {
 
       if (response.ok) {
         const data = await response.json();
-        setEvents(data.userEvents);
+        setEvents(data.events);
       }
     };
 

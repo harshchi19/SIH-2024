@@ -18,6 +18,7 @@ const ReadingWritingSkills = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.letter_recognition}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.letter_recognition_info} />
           </Label>
           <RangeSelector
@@ -36,6 +37,7 @@ const ReadingWritingSkills = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.word_recognition}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.word_recognition_info} />
           </Label>
           <RangeSelector
@@ -54,6 +56,7 @@ const ReadingWritingSkills = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.reading_comprehension}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.reading_comprehension_info} />
           </Label>
           <RangeSelector
@@ -72,6 +75,7 @@ const ReadingWritingSkills = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.copying}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.copying_info} />
           </Label>
           <RangeSelector
@@ -88,6 +92,7 @@ const ReadingWritingSkills = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.writing_to_dictation}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.writing_to_dictation_info} />
           </Label>
           <RangeSelector
@@ -106,6 +111,7 @@ const ReadingWritingSkills = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.spontaneous_writing}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.spontaneous_writing_info} />
           </Label>
           <RangeSelector

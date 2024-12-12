@@ -30,6 +30,7 @@ const NonVerbalCommunicationDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.expression_level}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.expression_level_info} />
           </Label>
           <Textarea
@@ -48,6 +49,7 @@ const NonVerbalCommunicationDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.comprehension_level}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.comprehension_level_info} />
           </Label>
           <Textarea

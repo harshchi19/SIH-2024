@@ -11,12 +11,6 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Info from "@/components/Info";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { GET_ALL_SUP_ROUTE } from "@/utils/constants";
@@ -75,6 +69,7 @@ const PatientDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="name" className="text-gray-700 text-md">
             {dict?.addPatient?.name}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -91,6 +86,7 @@ const PatientDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.pre_therapy?.case_no}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -110,6 +106,7 @@ const PatientDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.pre_therapy?.age_sex}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -124,6 +121,7 @@ const PatientDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="date_of_assignment" className="text-gray-700 text-md">
             {dict?.addPatient?.date_of_assg}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Popover>
             <PopoverTrigger className="w-full h-12 bg-transparent" asChild>
@@ -163,6 +161,7 @@ const PatientDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.pre_therapy?.supervisor}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -180,6 +179,7 @@ const PatientDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.pre_therapy?.stt_name}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -199,6 +199,7 @@ const PatientDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.pre_therapy?.prov_diag}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.pre_therapy?.prov_diag} />
           </Label>
           <Textarea

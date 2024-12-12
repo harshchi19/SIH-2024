@@ -59,6 +59,7 @@ const HODOnboarding = ({
                   <div className="space-y-1 w-full">
                     <Label htmlFor="name" className="text-gray-700 text-md">
                       Head Of Department's Name
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Input
                       type="text"
@@ -76,6 +77,7 @@ const HODOnboarding = ({
                       className="text-gray-700 text-md flex items-center"
                     >
                       {dict?.login?.password}
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Input
                       type="password"
@@ -95,6 +97,7 @@ const HODOnboarding = ({
                       className="text-gray-700 text-md flex items-center"
                     >
                       {dict?.addPatient?.email}
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Input
                       type="email"
@@ -108,6 +111,7 @@ const HODOnboarding = ({
                   <div className="space-y-1 w-full">
                     <Label htmlFor="phone_no" className="text-gray-700 text-md">
                       {dict?.login?.phone}
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Input
                       type="tel"
@@ -127,6 +131,7 @@ const HODOnboarding = ({
                       className="text-gray-700 text-md"
                     >
                       {dict?.addPatient?.date_of_birth}
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Input
                       id="date_of_birth"
@@ -142,6 +147,7 @@ const HODOnboarding = ({
                   <div className="space-y-1 w-full">
                     <Label htmlFor="sex" className="text-gray-700 text-md">
                       {dict?.addPatient?.sex}
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <DropdownMenu className="flex justify-start">
                       <DropdownMenuTrigger
@@ -172,6 +178,7 @@ const HODOnboarding = ({
                       className="text-gray-700 text-md"
                     >
                       Department
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <DropdownMenu className="flex justify-start">
                       <DropdownMenuTrigger
@@ -221,6 +228,7 @@ const HODOnboarding = ({
                       className="text-gray-700 text-md"
                     >
                       {dict?.login?.qualifications}
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <DropdownMenu className="flex justify-start">
                       <DropdownMenuTrigger

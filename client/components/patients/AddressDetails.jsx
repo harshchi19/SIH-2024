@@ -23,6 +23,7 @@ const AddressDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="address_line1" className="text-gray-700 text-md">
             {dict?.addPatient?.address_line1}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -55,6 +56,7 @@ const AddressDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="city" className="text-gray-700 text-md">
             {dict?.addPatient?.city}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -69,6 +71,7 @@ const AddressDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="state" className="text-gray-700 text-md">
             {dict?.addPatient?.state}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -85,6 +88,7 @@ const AddressDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="postal_code" className="text-gray-700 text-md">
             {dict?.addPatient?.postal_code}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -99,6 +103,7 @@ const AddressDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="country" className="text-gray-700 text-md">
             {dict?.addPatient?.country}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"

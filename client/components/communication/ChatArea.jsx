@@ -10,7 +10,6 @@ import moment from "moment";
 
 const ChatHeader = ({ selectedContact }) => {
   if (!selectedContact) return null;
-
   return (
     <div className="h-16 border-b flex items-center justify-between px-4">
       <div className="flex items-center gap-3">
@@ -56,7 +55,7 @@ const ChatMessage = ({ message, selectedContact, isOutgoing }) => (
       {!isOutgoing && (
         <Avatar className="h-8 w-8">
           <AvatarFallback>
-            {message.sender
+            {selectedContact.name
               .split(" ")
               .map((n) => n[0])
               .join("")}
@@ -116,7 +115,6 @@ const ChatArea = ({ selectedContact }) => {
           const user2Id =
             selectedContact?.supervisor_id ||
             selectedContact?.student_therapist_id ||
-            selectedContact?.patient_id ||
             selectedContact?.admin_id ||
             selectedContact?.hod_id;
           const url = `${GET_MESSAGES_ROUTE}/${userId}/${user2Id}`;
@@ -130,7 +128,6 @@ const ChatArea = ({ selectedContact }) => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const result = await response.json();
-          // console.log("Raw results:", result);
           // Normalize messages to match the existing message structure
           const normalizedMessages = result.messages
             .map((msg) => ({
@@ -140,7 +137,6 @@ const ChatArea = ({ selectedContact }) => {
               isOutgoing: msg.sender_id === userId,
             }))
             .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-          // console.log("Normal", normalizedMessages);
           setMessages(normalizedMessages);
         } catch (error) {
           console.error("Error Fetching Messages", error);
@@ -185,7 +181,6 @@ const ChatArea = ({ selectedContact }) => {
       sender: userId,
       recipient:
         selectedContact?.supervisor_id ||
-        selectedContact?.patientr_id ||
         selectedContact?.student_therapist_id ||
         selectedContact?.admin_id ||
         selectedContact?.hod_id,
@@ -207,8 +202,11 @@ const ChatArea = ({ selectedContact }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col">
-      <ChatHeader selectedContact={selectedContact} />
+    <div className="flex-1 flex flex-col ">
+      <div className="sticky top-0 z-10 bg-white shadow">
+        <ChatHeader selectedContact={selectedContact} />
+      </div>
+
       <ScrollArea className="flex-1 p-4">
         {Object.entries(groupedMessages).map(([date, dateMessages]) => (
           <div key={date}>
@@ -232,7 +230,7 @@ const ChatArea = ({ selectedContact }) => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1"
+            className="flex-1 h-8 text-md px-2"
           />
           <Button
             type="submit"
