@@ -358,7 +358,7 @@ export const getPatientById = async (req, res, next) => {
     decryptedPatient.voice_details = decryptedVoiceDetails;
     decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
     decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
-    // console.log("Hi", decryptedPatient.supervisor_therapist);
+
     return res.status(200).json(decryptedPatient);
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);
@@ -442,9 +442,10 @@ export const getAllPatients = async (req, res, next) => {
         reading_writing_skills: decryptedReadingWritingSkills,
         supervisor_id: patient.supervisor_id,
         student_therapist_id: patient.student_therapist_id,
+        patient_status: patient.patient_status,
       };
     });
-    console.log("Sending Data:", decryptedPatients);
+
     return res.status(200).json(decryptedPatients);
   } catch (error) {
     console.error("Error in getPatients: ", error);
@@ -636,7 +637,6 @@ export const getPatientByObjectId = async (req, res, next) => {
     decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
     decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
 
-    console.log("ByeP:", decryptedPatient);
     return res.status(200).json(decryptedPatient);
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);

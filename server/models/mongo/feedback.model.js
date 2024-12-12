@@ -1,10 +1,9 @@
 import mongoose, { Schema } from "mongoose";
-import { StudentTherapist } from "./student_therapist.model";
 
 const FeedbackSchema = new Schema({
   student_therapist_id: {
     type: Schema.Types.ObjectId,
-    ref: "StudentTherapist",
+    ref: "Student_Therapist",
     required: true,
   },
   supervisor_id: {
@@ -13,8 +12,7 @@ const FeedbackSchema = new Schema({
     required: true,
   },
   feedback: {
-    type: Map,
-    ref: "String",
+    type: String,
     required: true,
   },
   feedback_status: {
@@ -34,3 +32,5 @@ const FeedbackSchema = new Schema({
     required: true,
   },
 });
+
+export const Feedback = mongoose.model("feedback", FeedbackSchema);

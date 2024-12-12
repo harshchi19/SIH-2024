@@ -25,7 +25,6 @@ const SelectPatientModal = ({
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { role } = useParams();
-  console.log(patients);
 
   const filteredPatients = patients
     ? patients.filter((patient) =>
