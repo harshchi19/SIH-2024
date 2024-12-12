@@ -27,6 +27,7 @@ const VoiceDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.pitch_quality}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.pitch_quality_info} />
           </Label>
           <Textarea
@@ -45,6 +46,7 @@ const VoiceDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.loudness}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.loudness_info} />
           </Label>
           <Textarea
@@ -63,6 +65,7 @@ const VoiceDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.voice_quality}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.voice_quality_info} />
           </Label>
           <Textarea
@@ -81,6 +84,7 @@ const VoiceDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.breath_control}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.breath_control_info} />
           </Label>
           <Textarea

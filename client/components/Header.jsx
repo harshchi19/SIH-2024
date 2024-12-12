@@ -39,8 +39,6 @@ const Header = () => {
     const breadcrumbList = pathParts.map((part, index) => {
       const normalizedPart = part.trim();
 
-      console.log(normalizedPart);
-
       // Check if the part matches the role format (e.g., STT-xxxx-xxxxx)
       if (
         /^(STT|PAT|SUP|ADM|HOD)-[a-z0-9]{8}-[A-Z0-9]{6}$/.test(normalizedPart)

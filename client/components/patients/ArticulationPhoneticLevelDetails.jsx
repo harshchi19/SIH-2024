@@ -20,6 +20,7 @@ const ArticulationPhoneticLevelDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.vowels_stage}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.vowels_stage_info} />
           </Label>
           <RangeSelector
@@ -38,6 +39,7 @@ const ArticulationPhoneticLevelDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.consonants_stage}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.consonants_stage_info} />
           </Label>
           <RangeSelector
@@ -56,6 +58,7 @@ const ArticulationPhoneticLevelDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.blends_stage}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.blends_stage_info} />
           </Label>
           <RangeSelector

@@ -18,6 +18,7 @@ import {
   CirclePlus,
   Map,
   BookOpenText,
+  ShieldPlus,
 } from "lucide-react";
 import HoverSpecializationPopup from "./HoverSpecializationPopup";
 import { useLanguage } from "@/context/LanguageContext";
@@ -39,6 +40,7 @@ const iconMap = {
   CirclePlus,
   Map,
   BookOpenText,
+  ShieldPlus,
 };
 
 const SidebarItem = ({ item, activeRoute, handleNavigation, depth = 0 }) => {
@@ -151,26 +153,6 @@ const Sidebar = ({ sidebarData }) => {
     getCurrentData();
   }, [userId]);
 
-  // useEffect(() => {
-  //   const getUserById = async () => {
-  //     if (upcomingEvent?.userId && upcomingEvent?.userType) {
-  //       const response = await fetch(
-  //         `${GET_USER_DETAILS_BY_ID_ROUTE}/${upcomingEvent.userId}/${upcomingEvent.userType}`,
-  //         {
-  //           method: "GET",
-  //         }
-  //       );
-
-  //       if (response.ok) {
-  //         const result = await response.json();
-  //         console.log(result);
-  //       }
-  //     }
-  //   };
-
-  //   getUserById();
-  // }, [upcomingEvent]);
-
   const getInitials = (name) => {
     if (!name) return "";
     return name
@@ -203,8 +185,6 @@ const Sidebar = ({ sidebarData }) => {
     const formattedMinutes = minutes.toString().padStart(2, "0");
     return { time: `${hours}:${formattedMinutes}`, ampm: ampm };
   }
-
-  console.log(upcomingEvent);
 
   return (
     <aside className="flex h-screen w-80 flex-col justify-between bg-[#5DB075] p-6 px-3">

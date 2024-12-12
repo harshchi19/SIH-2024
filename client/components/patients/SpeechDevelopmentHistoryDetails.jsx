@@ -28,6 +28,7 @@ const SpeechDevelopmentHistoryDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.vocalization}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.vocalization_info} />
           </Label>
           <Textarea
@@ -46,6 +47,7 @@ const SpeechDevelopmentHistoryDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.babbling}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.babbling_info} />
           </Label>
           <Textarea
@@ -61,6 +63,7 @@ const SpeechDevelopmentHistoryDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="first_word" className="text-gray-700 text-md">
             {dict?.addPatient?.first_word}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -75,6 +78,7 @@ const SpeechDevelopmentHistoryDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="first_sentence" className="text-gray-700 text-md">
             {dict?.addPatient?.first_sentence}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"

@@ -5,6 +5,7 @@ export const AUTH_ROUTE = `${HOST}/auth`;
 export const LOGIN_USER_ROUTE = `${AUTH_ROUTE}/login-user`;
 export const LOGOUT_ROUTE = `${AUTH_ROUTE}/logout-user`;
 export const GET_USER_DETAILS_BY_ID_ROUTE = `${AUTH_ROUTE}/get-user-by-id`;
+export const ADD_AUTH_USER = `${AUTH_ROUTE}/add-auth-user`;
 
 // Sidebar
 export const SIDEBAR_DATA_ROUTE = `${HOST}/sidebar/get-sidebar-data`;
@@ -84,10 +85,13 @@ export const ONBOARD_AUTH_USER_ROUTE = `${ONBOARDING_ROUTE}/onboard-auth-user`;
 // Admin
 export const ADMIN_ROUTE = `${HOST}/admin`;
 export const GET_ADM_BY_ID_ROUTE = `${ADMIN_ROUTE}/get-admin-by-id`;
+export const GET_ALL_ADM_ROUTE = `${ADMIN_ROUTE}/get-all-admins`;
+export const ADD_ADMIN_ROUTE = `${ADMIN_ROUTE}/add-admin`;
 
 // HOD
 export const HOD_ROUTE = `${HOST}/hod`;
 export const GET_HOD_BY_ID_ROUTE = `${HOD_ROUTE}/get-hod-by-id`;
+export const GET_ALL_HOD_ROUTE = `${HOD_ROUTE}/get-all-hods`;
 
 // Reasons
 export const REASONS_ROUTE = `${HOST}/reasons`;
