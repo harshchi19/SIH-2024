@@ -34,8 +34,6 @@ export const getUpcomingData = async (req, res, next) => {
     const hashedUserId = generateHashedData(userId);
     let currentUser;
 
-    const newId = new mongoose.Types.ObjectId(userId);
-
     if (userType === "PAT") {
       currentUser = await Patient.findOne({
         patient_id_hash: hashedUserId,
@@ -54,13 +52,15 @@ export const getUpcomingData = async (req, res, next) => {
       }).select("_id");
     } else if (userType === "ADM") {
       currentUser = await Admin.findOne({
-        hash_admin_id: hashedUserId,
+        admin_id_hash: hashedUserId,
       }).select("_id");
     }
 
     if (!currentUser) {
       return res.status(404).json({ message: "usr-not-fnd" });
     }
+
+    currentUser = new mongoose.Types.ObjectId(currentUser);
 
     let upcomingEvent = await Calendar.find({ userId: currentUser })
       .where("selected_date")

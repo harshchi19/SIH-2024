@@ -488,7 +488,9 @@ const StudentPatients = () => {
             </Badge>
             <Button variant="outline">Filter</Button>
             <Link href={`/${currentLang}/${role}/patients/add-patient`}>
-              <Button className="bg-black">Add Patient</Button>
+              <Button className="border border-green-500 bg-white text-green-500 font-bold hover:bg-white active:scale-95">
+                Add Patient
+              </Button>
             </Link>
           </div>
         </div>
