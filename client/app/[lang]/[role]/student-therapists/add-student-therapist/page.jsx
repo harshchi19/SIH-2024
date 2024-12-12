@@ -104,6 +104,8 @@ export default function AddPatientPage() {
     }));
   };
 
+  console.log(formData);
+
   const handleSubmit = async () => {
     const response = await fetch(ADD_STUDENT_THERAPIST_ROUTE, {
       method: "POST",
@@ -117,7 +119,7 @@ export default function AddPatientPage() {
 
     if (response.ok) {
       toast({ title: dict?.success?.sup_onb_suc });
-      
+
       router.push(`/${currentLang}/${role}/student-therapists/`);
     } else {
       console.error("Error adding student therapist:", response);

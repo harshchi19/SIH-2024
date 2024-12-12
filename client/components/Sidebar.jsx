@@ -186,6 +186,8 @@ const Sidebar = ({ sidebarData }) => {
     return { time: `${hours}:${formattedMinutes}`, ampm: ampm };
   }
 
+  console.log(upcomingEvent);
+
   return (
     <aside className="flex h-screen w-80 flex-col justify-between bg-[#5DB075] p-6 px-3">
       {/* Header */}
@@ -218,7 +220,7 @@ const Sidebar = ({ sidebarData }) => {
       </div>
 
       <div className="space-y-6">
-        {upcomingEvent.length > 0 && (
+        {upcomingEvent && (
           <Card
             className="w-full max-w-md overflow-hidden transition-all duration-300 bg-white/10 border-[1px] border-white/20 backdrop-blur-xl shadow-2xl"
             style={{
@@ -231,10 +233,10 @@ const Sidebar = ({ sidebarData }) => {
                 <Image src={calendar} alt="Calendar" className="h-10 w-auto" />
                 <div className="max-w-full truncate flex-grow overflow-hidden whitespace-nowrap">
                   <h1 className="text-xl font-extrabold text-white truncate flex-grow drop-shadow-md tracking-tight">
-                    {upcomingEvent?.title}
+                    {upcomingEvent.title}
                   </h1>
                   <h4 className="text-sm font-semibold text-gray-200 truncate flex-grow overflow-hidden whitespace-nowrap tracking-tight">
-                    {upcomingEvent?.description}
+                    {upcomingEvent.description}
                   </h4>
                 </div>
               </div>
@@ -245,25 +247,25 @@ const Sidebar = ({ sidebarData }) => {
                 <div className="flex items-center space-x-4">
                   <div className="flex flex-col justify-center">
                     <span className="text-3xl font-semibold text-gray-100 tracking-wide">
-                      {formatTime(upcomingEvent?.start_time).time}
+                      {formatTime(upcomingEvent.start_time).time}
                     </span>
                     <span className="text-md font-semibold text-gray-100 tracking-wide">
-                      {formatTime(upcomingEvent?.start_time).ampm}
+                      {formatTime(upcomingEvent.start_time).ampm}
                     </span>
                   </div>
                   <MoveRight className="text-gray-100 mx-2 opacity-80 h-8 w-auto" />
                   <div className="flex flex-col justify-center">
                     <span className="text-3xl font-semibold text-gray-100 tracking-wide">
-                      {formatTime(upcomingEvent?.end_time).time}
+                      {formatTime(upcomingEvent.end_time).time}
                     </span>
                     <span className="text-md font-semibold text-gray-100 tracking-wide">
-                      {formatTime(upcomingEvent?.end_time).ampm}
+                      {formatTime(upcomingEvent.end_time).ampm}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {upcomingEvent?.userId && (
+              {upcomingEvent.userId && (
                 <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
                   <User className="h-6 w-6 text-blue-600" />
                   <span className="text-lg text-gray-100 font-semibold tracking-wide">
@@ -272,7 +274,7 @@ const Sidebar = ({ sidebarData }) => {
                 </div>
               )}
 
-              {upcomingEvent?.room_no && (
+              {upcomingEvent.room_no && (
                 <div className="flex items-center space-x-3 bg-white/10 p-3 rounded-lg hover:bg-white/20 transition-all">
                   <Hospital className="h-6 w-6 text-green-600" />
                   <span className="text-lg text-gray-100 font-semibold tracking-wide">

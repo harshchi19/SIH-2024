@@ -1,24 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { User, Star, Users, Clock, TrendingUp, Filter } from "lucide-react";
-import RightSidebar from "@/components/RightSidebar";
-import Link from "next/link";
+import { Filter } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { StudentTherapistCard } from "@/components/student-therapist/index";
 import { useGetRole } from "@/hooks/useGetRole";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 const StudentTherapistPage = () => {
   const { currentLang } = useLanguage();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [students, setStudents] = useState([]);
   const userId = "STT";
   const { role } = useParams();
+  const router = useRouter();
 
   const { getAll, isLoading, error } = useGetRole();
   useEffect(() => {
@@ -33,30 +29,36 @@ const StudentTherapistPage = () => {
     <>
       <div className="w-full bg-gray-50 px-8 overflow-y-scroll">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm">
             <div>
-              <p className="text-gray-600 mt-2">
-                Overview of our training therapists and their progress
+              <h1 className="text-2xl font-bold">
+                Student Therapists Overview
+              </h1>
+              <p className="text-slate-500 text-sm">
+                Manage and monitor Patient progress
               </p>
             </div>
-
-            <div className="flex space-x-4">
-              <Button variant="outline" className="flex items-center">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
-              <Button className="flex items-center">
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Performance Report
-              </Button>
-              <Link
-                href={`/${currentLang}/${role}/student-therapists/add-student-therapist`}
-              >
-                <Button className="flex items-center">
-                  <User className="h-4 w-4 mr-2" />
-                  Add Student
+            <div className="flex items-center gap-4">
+              <Badge variant="secondary" className="text-lg">
+                Total Student Therapists: {students.length}
+              </Badge>
+              <div className="flex space-x-4">
+                <Button variant="outline" className="flex items-center">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
                 </Button>
-              </Link>
+              </div>
+
+              <Button
+                className="border border-green-500 bg-white text-green-500 font-bold hover:bg-white active:scale-95"
+                onClick={() =>
+                  router.push(
+                    `/en/${role}/student-therapists/add-student-therapist`
+                  )
+                }
+              >
+                Add Student Therapist
+              </Button>
             </div>
           </div>
 

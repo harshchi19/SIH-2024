@@ -34,7 +34,8 @@
     "admin": "Admin",
     "new-report": "New Report",
     "admins": "All Admins",
-    "head-of-department": "All HOD's"
+    "head-of-department": "All HOD's",
+    "add-supervisor": "Add Supervisor"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",

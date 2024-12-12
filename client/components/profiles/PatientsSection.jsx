@@ -38,9 +38,9 @@ export function PatientsSection({ patients, feedback, studentTherapistId }) {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            {patients.map((patient) => (
+            {patients.map((patient, index) => (
               <PatientCard
-                key={patient.patient_id}
+                key={index}
                 patient={patient}
                 studentTherapistId={studentTherapistId}
               />
