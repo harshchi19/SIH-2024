@@ -8,10 +8,75 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { GET_ALL_PAT_ROUTE } from "@/utils/constants";
+import { useEffect, useState } from "react";
 
-export function ProgressReportForm({ formData, handleInputChange }) {
+export function ProgressReportForm({
+  formData,
+  studentTherapistId,
+  handleInputChange,
+}) {
+  formData.student_therapist_id = studentTherapistId;
+  console.log("formData", formData);
+  const [patientData, setPatientData] = useState([]);
+  const [caseNo, setCaseNo] = useState([]);
+  const uniqueCaseNos = Array.from(
+    new Set(patientData.map((patient) => patient.case_no))
+  );
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      const response = await fetch(GET_ALL_PAT_ROUTE, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const result = await response.json();
+        setPatientData(result);
+      }
+    };
+
+    fetchPatients();
+    setCaseNo(uniqueCaseNos);
+  }, []);
+
+  console.log("patientData", patientData);
+
   return (
     <div className="space-y-4">
+      <div className="grid w-full items-center gap-1.5">
+        <Label htmlFor="case_no">Case Number</Label>
+        <Select
+          value={formData.case_no} // Selected case number
+          onValueChange={(value) => {
+            handleInputChange("progress-report", "case_no", value);
+
+            // Find the patient name based on the selected case number
+            const selectedPatient = patientData.find(
+              (patient) => patient.case_no === value
+            );
+            handleInputChange(
+              "progress-report",
+              "name",
+              selectedPatient?.name || ""
+            );
+          }}
+        >
+          <SelectTrigger id="case_no">
+            <SelectValue placeholder="Select Case" />
+          </SelectTrigger>
+          <SelectContent>
+            {uniqueCaseNos.map((caseNumber) => (
+              <SelectItem key={caseNumber} value={caseNumber}>
+                {caseNumber}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="grid w-full items-center gap-1.5">
         <Label htmlFor="session_no">Session Number</Label>
         <Input
@@ -26,14 +91,7 @@ export function ProgressReportForm({ formData, handleInputChange }) {
 
       <div className="grid w-full items-center gap-1.5">
         <Label htmlFor="name">Patient Name</Label>
-        <Input
-          id="name"
-          placeholder="Enter patient name"
-          value={formData.name}
-          onChange={(e) =>
-            handleInputChange("progress-report", "name", e.target.value)
-          }
-        />
+        <Input id="name" placeholder="Patient Name" value={formData.name} />
       </div>
 
       <div className="grid w-full items-center gap-1.5">
@@ -43,6 +101,7 @@ export function ProgressReportForm({ formData, handleInputChange }) {
           onValueChange={(value) =>
             handleInputChange("progress-report", "status", value)
           }
+          readOnly
         >
           <SelectTrigger id="status">
             <SelectValue placeholder="Select Status" />

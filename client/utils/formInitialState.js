@@ -48,6 +48,7 @@ export const initialFormData = {
     estimated_duration: "",
   },
   "progress-report": {
+    case_no: "",
     session_no: "",
     name: "",
     status: "",

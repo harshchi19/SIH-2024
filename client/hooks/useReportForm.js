@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { initialFormData } from "@/utils/formInitialState";
+import {
+  ADD_REPORT_ROUTE,
+  ADD_SESSION_ROUTE,
+  UPLOAD_PRE_THERAPY_DETAILS,
+} from "@/utils/constants";
 
 export function useReportForm({ lang, role }) {
   const router = useRouter();
@@ -36,12 +41,28 @@ export function useReportForm({ lang, role }) {
     setFormData(handleFormChange(type, field, value, nestedField));
   };
 
+  const ReportTypes = {
+    "pre-therapy": UPLOAD_PRE_THERAPY_DETAILS,
+    session: ADD_SESSION_ROUTE,
+    "therapy-plan": [],
+    "progress-report": ADD_REPORT_ROUTE,
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       // API call would go here
+      const response = await fetch(ReportTypes[selectedReportType], {
+        method: "POST",
+        body: JSON.stringify(formData[selectedReportType]),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Report submitted:", result);
+      }
+
       console.log("Submitting report:", {
         type: selectedReportType,
         data: formData[selectedReportType],
