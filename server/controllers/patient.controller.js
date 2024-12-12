@@ -358,7 +358,7 @@ export const getPatientById = async (req, res, next) => {
     decryptedPatient.voice_details = decryptedVoiceDetails;
     decryptedPatient.suprasegmental_aspects = decryptedSuprasegmentalAspects;
     decryptedPatient.reading_writing_skills = decryptedReadingWritingSkills;
-
+    
     return res.status(200).json(decryptedPatient);
   } catch (error) {
     console.error("Error in getPatientDetails: ", error);
@@ -455,8 +455,6 @@ export const getAllPatients = async (req, res, next) => {
 
 export const getPatientByObjectId = async (req, res, next) => {
   const { patient_id } = req.params;
-
-  console.log(patient_id);
   try {
     const findEncryptionKey = await EncryptionKey.findOne({
       collectionName: "patients",

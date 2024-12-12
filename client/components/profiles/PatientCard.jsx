@@ -44,7 +44,6 @@ export function PatientCard({ patient, studentTherapistId }) {
   }, [studentTherapistId]);
 
   const latestSession = sessions?.[0] || {};
-  console.log("Sessions: ", latestSession);
 
   const handleClick = (id) => {
     navigate.push(`/${currentLang}/${role}/pre-therapy/${id}`); //To be changed

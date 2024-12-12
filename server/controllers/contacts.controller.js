@@ -1,4 +1,6 @@
-import { Patient } from "../models/mongo/patient.model.js";
+// import { Patient } from "../models/mongo/patient.model.js";
+import { Admin } from "../models/mongo/admin.model.js";
+import { HeadOfDepartment } from "../models/mongo/hod.model.js";
 import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
 import { Supervisor } from "../models/mongo/supervisor.model.js";
 import { EncryptionKey } from "../models/mongo/keys.model.js";
@@ -7,7 +9,6 @@ import {
   decryptSection,
   generateHashedData,
 } from "../helper/security.helper.js";
-import { Messages } from "../models/mongo/message.model.js";
 
 export const getContacts = async (req, res) => {
   let { userId } = req.params;
@@ -43,8 +44,10 @@ export const getContacts = async (req, res) => {
       contacts = await getSupervisorContacts(userId, encryptionKeys);
     } else if (userType === "STT") {
       contacts = await getStudentTherapistContacts(userId, encryptionKeys);
-    } else if (userType === "PAT") {
-      contacts = await getPatientContacts(userId, encryptionKeys);
+    } else if (userType === "ADM") {
+      contacts = await getAdminContacts(userId, encryptionKeys);
+    } else if (userType === "HOD") {
+      contacts = await getHODContacts(userId, encryptionKeys);
     } else {
       return res.status(400).json({ message: "Invalid user type" });
     }
@@ -58,11 +61,13 @@ export const getContacts = async (req, res) => {
 const getCollectionName = (userType) => {
   switch (userType) {
     case "SUP":
-      return ["supervisors", "student-therapists"];
-    case "PAT":
-      return ["student-therapists", "patients"];
+      return ["supervisors", "student-therapists", "admins", "hods"];
     case "STT":
-      return ["student-therapists", "patients", "supervisors"];
+      return ["student-therapists", "supervisors", "admins", "hods"];
+    case "ADM":
+      return ["admins", "student-therapists", "supervisors", "hods"];
+    case "HOD":
+      return ["hods", "student-therapists", "supervisors", "admins"];
     default:
       return [];
   }
@@ -78,6 +83,8 @@ const getSupervisorContacts = async (currentUserId, encryptionKeys) => {
   const studentTherapists = await StudentTherapist.find().select(
     "student_therapist_id name -_id"
   );
+  const admins = await Admin.find().select("admin_id name -_id");
+  const hods = await HeadOfDepartment.find().select("hod_id name -_id");
 
   const decryptedSupervisors = supervisors.map((supervisor) => {
     const decryptData = {
@@ -95,21 +102,38 @@ const getSupervisorContacts = async (currentUserId, encryptionKeys) => {
     };
     return decryptSection(decryptData, encryptionKeys["student-therapists"]);
   });
+
+  const decryptedAdmins = admins.map((admin) => {
+    const decryptData = {
+      admin_id: Object.fromEntries(admin.admin_id),
+      name: Object.fromEntries(admin.name),
+    };
+    return decryptSection(decryptData, encryptionKeys["admins"]);
+  });
+
+  const decryptedHODs = hods.map((hod) => {
+    const decryptData = {
+      hod_id: Object.fromEntries(hod.hod_id),
+      name: Object.fromEntries(hod.name),
+    };
+    return decryptSection(decryptData, encryptionKeys["hods"]);
+  });
   return {
     supervisors: decryptedSupervisors,
     therapists: decryptedTherapists,
-    patients: [],
+    admins: decryptedAdmins,
+    hods: decryptedHODs,
   };
 };
 
 const getStudentTherapistContacts = async (currentUserId, encryptionKeys) => {
   const currentIdHash = generateHashedData(currentUserId);
   const supervisors = await Supervisor.find().select("supervisor_id name -_id");
-  const patients = await Patient.find().select("patient_id name -_id");
   const studentTherapists = await StudentTherapist.find({
     student_therapist_id_hash: { $ne: currentIdHash },
   }).select("student_therapist_id name -_id");
-
+  const admins = await Admin.find().select("admin_id name -_id");
+  const hods = await HeadOfDepartment.find().select("hod_id name -_id");
   const decryptedTherapists = studentTherapists.map((therapist) => {
     const decryptData = {
       student_therapist_id: Object.fromEntries(therapist.student_therapist_id),
@@ -127,28 +151,41 @@ const getStudentTherapistContacts = async (currentUserId, encryptionKeys) => {
 
     return decryptSection(decryptData, encryptionKeys["supervisors"]);
   });
-
-  const decryptedPatients = patients.map((patient) => {
+  const decryptedAdmins = admins.map((admin) => {
     const decryptData = {
-      patient_id: Object.fromEntries(patient.patient_id),
-      name: Object.fromEntries(patient.name),
+      admin_id: Object.fromEntries(admin.admin_id),
+      name: Object.fromEntries(admin.name),
     };
-    return decryptSection(decryptData, encryptionKeys["patients"]);
+    return decryptSection(decryptData, encryptionKeys["admins"]);
+  });
+
+  const decryptedHODs = hods.map((hod) => {
+    const decryptData = {
+      hod_id: Object.fromEntries(hod.hod_id),
+      name: Object.fromEntries(hod.name),
+    };
+    return decryptSection(decryptData, encryptionKeys["hods"]);
   });
 
   return {
     supervisors: decryptedSupervisors,
     therapists: decryptedTherapists,
-    patients: decryptedPatients,
+    admins: decryptedAdmins,
+    hods: decryptedHODs,
   };
 };
 
-// Fetch and decrypt only Student Therapists for Patients
-const getPatientContacts = async (currentUserId, encryptionKeys) => {
+//Admin
+const getAdminContacts = async (currentUserId, encryptionKeys) => {
+  const currentIdHash = generateHashedData(currentUserId);
+  const supervisors = await Supervisor.find().select("supervisor_id name -_id");
+  const admins = await Admin.find({
+    admin_id_hash: { $ne: currentIdHash },
+  }).select("admin_id name -_id");
   const studentTherapists = await StudentTherapist.find().select(
     "student_therapist_id name -_id"
   );
-
+  const hods = await HeadOfDepartment.find().select("hod_id name -_id");
   const decryptedTherapists = studentTherapists.map((therapist) => {
     const decryptData = {
       student_therapist_id: Object.fromEntries(therapist.student_therapist_id),
@@ -156,8 +193,87 @@ const getPatientContacts = async (currentUserId, encryptionKeys) => {
     };
     return decryptSection(decryptData, encryptionKeys["student-therapists"]);
   });
+
+  // Handle Supervisor Decryption
+  const decryptedSupervisors = supervisors.map((supervisor) => {
+    const decryptData = {
+      supervisor_id: Object.fromEntries(supervisor.supervisor_id),
+      name: Object.fromEntries(supervisor.name),
+    };
+
+    return decryptSection(decryptData, encryptionKeys["supervisors"]);
+  });
+  const decryptedAdmins = admins.map((admin) => {
+    const decryptData = {
+      admin_id: Object.fromEntries(admin.admin_id),
+      name: Object.fromEntries(admin.name),
+    };
+    return decryptSection(decryptData, encryptionKeys["admins"]);
+  });
+
+  const decryptedHODs = hods.map((hod) => {
+    const decryptData = {
+      hod_id: Object.fromEntries(hod.hod_id),
+      name: Object.fromEntries(hod.name),
+    };
+    return decryptSection(decryptData, encryptionKeys["hods"]);
+  });
+
   return {
-    supervisors: [],
+    admins: decryptedAdmins,
+    supervisors: decryptedSupervisors,
     therapists: decryptedTherapists,
+    hods: decryptedHODs,
+  };
+};
+
+const getHODContacts = async (currentUserId, encryptionKeys) => {
+  const currentIdHash = generateHashedData(currentUserId);
+  const supervisors = await Supervisor.find().select("supervisor_id name -_id");
+  const hods = await HeadOfDepartment.find({
+    hash_hod_id: { $ne: currentIdHash },
+  }).select("admin_id name -_id");
+  const studentTherapists = await Supervisor.find().select(
+    "student_therapist_id name -_id"
+  );
+  const admins = await Admin.find().select("admin_id name -_id");
+  const decryptedTherapists = studentTherapists.map((therapist) => {
+    const decryptData = {
+      student_therapist_id: Object.fromEntries(therapist.student_therapist_id),
+      name: Object.fromEntries(therapist.name),
+    };
+    return decryptSection(decryptData, encryptionKeys["admin"]);
+  });
+
+  // Handle Supervisor Decryption
+  const decryptedSupervisors = supervisors.map((supervisor) => {
+    const decryptData = {
+      supervisor_id: Object.fromEntries(supervisor.supervisor_id),
+      name: Object.fromEntries(supervisor.name),
+    };
+
+    return decryptSection(decryptData, encryptionKeys["supervisors"]);
+  });
+  const decryptedAdmins = admins.map((admin) => {
+    const decryptData = {
+      admin_id: Object.fromEntries(admin.admin_id),
+      name: Object.fromEntries(admin.name),
+    };
+    return decryptSection(decryptData, encryptionKeys["admins"]);
+  });
+
+  const decryptedHODs = hods.map((hod) => {
+    const decryptData = {
+      hod_id: Object.fromEntries(hod.hod_id),
+      name: Object.fromEntries(hod.name),
+    };
+    return decryptSection(decryptData, encryptionKeys["hods"]);
+  });
+
+  return {
+    admins: decryptedAdmins,
+    supervisors: decryptedSupervisors,
+    therapists: decryptedTherapists,
+    hods: decryptedHODs,
   };
 };

@@ -9,7 +9,6 @@ export function PatientsSection({ patients, feedback, studentTherapistId }) {
 
   useEffect(() => {
     const fetchAllPatients = async () => {
-      console.log("URL:", GET_ALL_PAT_ROUTE);
       try {
         const response = await fetch(GET_ALL_PAT_ROUTE, {
           method: "GET",
@@ -20,7 +19,6 @@ export function PatientsSection({ patients, feedback, studentTherapistId }) {
         }
         if (response.ok) {
           const result = await response.json();
-          console.log(result);
         }
       } catch (error) {
         console.error("Error fetching patients", error);

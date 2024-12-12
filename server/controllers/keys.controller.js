@@ -5,7 +5,6 @@ export const generateMasterKey = async (req, res, next) => {
 
   const keyToWrap = crypto.randomBytes(32);
   const wrappedKey = wrapKey(keyToWrap, masterKey);
-  console.log(wrappedKey);
 };
 
 const wrapKey = (keyToWrap, masterKey) => {
