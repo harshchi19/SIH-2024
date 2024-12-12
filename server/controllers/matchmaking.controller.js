@@ -41,18 +41,12 @@ export const getUnallocatedPatients = async (req, res, next) => {
         language3: Object.fromEntries(patient.preferred_language3),
       };
 
-      const patientData = decryptSection(decryptedPatient, key);
-
-      console.log(patientData);
-
-      return {
-        patientData,
-      };
+      return decryptSection(decryptedPatient, key);
     });
 
     return res
       .status(200)
-      .json({ message: "success", patients: decryptedPatients[0] });
+      .json({ message: "success", patients: decryptedPatients });
   } catch (error) {
     console.error(`Error in getUnallocatedPatients: ${error}`);
     return res.status(500).json({ message: "int-ser-err" });

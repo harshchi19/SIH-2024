@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardHeader,
@@ -334,8 +334,8 @@ const StudentPatients = () => {
   const { currentLang } = useLanguage();
   const patientsPerPage = 6;
   const navigate = useRouter();
-  const pathname = usePathname();
   const { lang, role } = useParams();
+  const router = useRouter();
 
   // Pagination calculations
   const totalPages = Math.ceil(patients.length / patientsPerPage);
@@ -611,7 +611,16 @@ const StudentPatients = () => {
                   {patient.patient_status !== "TERMINATED" && (
                     <Button
                       className="flex items-center gap-2 bg-green-500 hover:bg-green-600 w-1/2"
-                      onClick={() => handleTransferClick(patient)}
+                      onClick={() => {
+                        if (
+                          patient.medical_details.student_therapist_id.length >
+                          0
+                        ) {
+                          handleTransferClick(patient);
+                        } else {
+                          router.push(`/en/${role}/patients/matchmaking`);
+                        }
+                      }}
                     >
                       <Stethoscope className="h-5 w-auto" />
                       Assign New Therapist

@@ -100,8 +100,8 @@ const patientsSchema = new Schema({
   },
   patient_status: {
     type: String,
-    enum: ["Terminated", "Ongoing"],
-    default: "Ongoing",
+    enum: ["TERMINATED", "ONGOING"],
+    default: "ONGOING",
   },
 
   // Address Details
