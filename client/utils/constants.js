@@ -88,3 +88,8 @@ export const GET_ADM_BY_ID_ROUTE = `${ADMIN_ROUTE}/get-admin-by-id`;
 // HOD
 export const HOD_ROUTE = `${HOST}/hod`;
 export const GET_HOD_BY_ID_ROUTE = `${HOD_ROUTE}/get-hod-by-id`;
+
+// Reasons
+export const REASONS_ROUTE = `${HOST}/reasons`;
+export const TERMINATION_ROUTE = `${REASONS_ROUTE}/terminate-patient`;
+export const TRANSFER_ROUTE = `${REASONS_ROUTE}/transfer-patient`;

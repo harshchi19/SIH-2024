@@ -25,9 +25,10 @@ const SelectPatientModal = ({
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { role } = useParams();
+  console.log(patients);
 
-  const filteredPatients = patients.patientData
-    ? [patients.patientData].filter((patient) =>
+  const filteredPatients = patients
+    ? patients.filter((patient) =>
         patient.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
@@ -36,7 +37,9 @@ const SelectPatientModal = ({
     if (selectedPatient === null) {
       setSelectedPatient(patient._id);
       setSelectedPatientId(patient.patient_id);
-    } else setSelectedPatient(null);
+    } else {
+      setSelectedPatient(null);
+    }
   };
 
   return (
