@@ -46,7 +46,7 @@ const SignInPage = () => {
       formData["userType"] = selectedRole;
 
       const res = await login(formData);
-      console.log(res);
+      // console.log(res);
 
       if (res.success) {
         toast({ title: dict?.success?.login_succ });

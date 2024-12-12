@@ -1,118 +1,3 @@
-// import { Messages } from "../models/mongo/message.model.js";
-// import { unwrapKey } from "./keys.controller.js";
-// import { EncryptionKey } from "../models/mongo/keys.model.js";
-// import {
-//   decryptSection,
-//   generateHashedData,
-// } from "../helper/security.helper.js";
-// import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
-// import { Supervisor } from "../models/mongo/supervisor.model.js";
-// import { Patient } from "../models/mongo/patient.model.js";
-
-// export const getMessages = async (req, res, next) => {
-//   try {
-//     const { user1Id, user2Id } = req.params;
-//     // console.log("Users:", user1Id, user2Id);
-
-//     if (!user1Id || !user2Id) {
-//       return res.status(400).send("Both user ids are required.");
-//     }
-
-//     // Generate hashed user IDs
-//     const user1Type = user1Id.split("-")[0]; // Extract user type from the ID
-//     const user2Type = user2Id.split("-")[0]; // Extract user type from the ID
-//     const hashedUser1Id = generateHashedData(user1Id);
-//     const hashedUser2Id = generateHashedData(user2Id);
-
-//     // Find the users based on hashed IDs
-//     let user1Record, user2Record;
-//     switch (user1Type) {
-//       case "SUP":
-//         user1Record = await Supervisor.findOne({
-//           supervisor_id_hash: hashedUser1Id,
-//         }).select("_id");
-//         break;
-//       case "STT":
-//         user1Record = await StudentTherapist.findOne({
-//           student_therapist_id_hash: hashedUser1Id,
-//         }).select("_id");
-//         break;
-//       case "PAT":
-//         user1Record = await Patient.findOne({
-//           patient_id_hash: hashedUser1Id,
-//         }).select("_id");
-//         break;
-//       default:
-//         return res.status(400).json({ message: "Invalid user1 type" });
-//     }
-
-//     switch (user2Type) {
-//       case "SUP":
-//         user2Record = await Supervisor.findOne({
-//           supervisor_id_hash: hashedUser2Id,
-//         });
-//         break;
-//       case "STT":
-//         user2Record = await StudentTherapist.findOne({
-//           student_therapist_id_hash: hashedUser2Id,
-//         });
-//         break;
-//       case "PAT":
-//         user2Record = await Patient.findOne({ patient_id_hash: hashedUser2Id });
-//         break;
-//       default:
-//         return res.status(400).json({ message: "Invalid user2 type" });
-//     }
-//     if (!user1Record || !user2Record) {
-//       return res.status(404).json({ message: "One or both users not found" });
-//     }
-//     // console.log(user1Record._id, user2Record._id);
-//     // Retrieve messages between the two users
-//     const messages = await Messages.find({
-//       $or: [
-//         { sender_id: user1Record._id, recipient_id: user2Record._id },
-//         { sender_id: user2Record._id, recipient_id: user1Record._id },
-//       ],
-//     }).sort({ createdAt: 1 });
-
-//     // console.log(messages);
-
-//     // If messages exist, decrypt them
-//     const encryptionKey = await EncryptionKey.findOne({
-//       collectionName: "communications",
-//     });
-//     const key = unwrapKey(
-//       encryptionKey.encryptedKey,
-//       encryptionKey.encryptedIV,
-//       encryptionKey.encryptedAuthTag
-//     );
-
-//     const decryptedMessages = messages.map((msg) => {
-//       console.log("message ", msg.content);
-//       const decryptedContent = decryptSection(
-//         { message: Object.fromEntries(msg.content) },
-//         key
-//       );
-
-//       return {
-//         sender_id: msg.sender_id,
-//         recipient_id: msg.recipient_id,
-//         content: decryptedContent.message,
-//         messageType: msg.messageType,
-//         timestamp: msg.createdAt,
-//       };
-//     });
-//     console.log("messages:", decryptedMessages);
-//     // Return the decrypted messages as JSON
-//     return res.status(200).json({ messages: decryptedMessages });
-//   } catch (error) {
-//     console.error("Error fetching messages:", error);
-//     return res
-//       .status(500)
-//       .json({ message: "Error fetching messages", error: error.message });
-//   }
-// };
-
 import { Messages } from "../models/mongo/message.model.js";
 import { unwrapKey } from "./keys.controller.js";
 import { EncryptionKey } from "../models/mongo/keys.model.js";
@@ -122,7 +7,9 @@ import {
 } from "../helper/security.helper.js";
 import { StudentTherapist } from "../models/mongo/student_therapist.model.js";
 import { Supervisor } from "../models/mongo/supervisor.model.js";
-import { Patient } from "../models/mongo/patient.model.js";
+// import { Patient } from "../models/mongo/patient.model.js";
+import { Admin } from "../models/mongo/admin.model.js";
+import { HeadOfDepartment } from "../models/mongo/hod.model.js";
 
 // Function to build user mappings
 const buildUserMapping = async (userIds) => {
@@ -132,8 +19,12 @@ const buildUserMapping = async (userIds) => {
   const studentTherapistKey = await EncryptionKey.findOne({
     collectionName: "student-therapists",
   });
-  const patientKey = await EncryptionKey.findOne({
-    collectionName: "patients",
+
+  const adminKey = await EncryptionKey.findOne({
+    collectionName: "admins",
+  });
+  const hodKey = await EncryptionKey.findOne({
+    collectionName: "hods",
   });
 
   const supervisorDecryptionKey = unwrapKey(
@@ -148,10 +39,16 @@ const buildUserMapping = async (userIds) => {
     studentTherapistKey.encryptedAuthTag
   );
 
-  const patientDecryptionKey = unwrapKey(
-    patientKey.encryptedKey,
-    patientKey.encryptedIV,
-    patientKey.encryptedAuthTag
+  const adminDecryptionKey = unwrapKey(
+    adminKey.encryptedKey,
+    adminKey.encryptedIV,
+    adminKey.encryptedAuthTag
+  );
+
+  const hodDecryptionKey = unwrapKey(
+    hodKey.encryptedKey,
+    hodKey.encryptedIV,
+    hodKey.encryptedAuthTag
   );
 
   const supervisors = await Supervisor.find({
@@ -162,9 +59,13 @@ const buildUserMapping = async (userIds) => {
     _id: { $in: userIds },
   }).select("_id student_therapist_id");
 
-  const patients = await Patient.find({
+  const admins = await Admin.find({
     _id: { $in: userIds },
-  }).select("_id patient_id");
+  }).select("_id admin_id");
+
+  const hods = await HeadOfDepartment.find({
+    _id: { $in: userIds },
+  }).select("_id hod_id");
 
   const mapping = {};
 
@@ -184,12 +85,20 @@ const buildUserMapping = async (userIds) => {
     mapping[stt._id.toString()] = decryptedId;
   });
 
-  patients.forEach((pat) => {
+  admins.forEach((adm) => {
     const decryptedId = decryptSection(
-      { patient_id: Object.fromEntries(pat.patient_id) },
-      patientDecryptionKey
-    ).patient_id;
-    mapping[pat._id.toString()] = decryptedId;
+      { admin_id: Object.fromEntries(adm.admin_id) },
+      adminDecryptionKey
+    ).admin_id;
+    mapping[adm._id.toString()] = decryptedId;
+  });
+
+  hods.forEach((hod) => {
+    const decryptedId = decryptSection(
+      { hod_id: Object.fromEntries(hod.hod_id) },
+      hodDecryptionKey
+    ).hod_id;
+    mapping[hod._id.toString()] = decryptedId;
   });
 
   return mapping;
@@ -216,17 +125,22 @@ export const getMessages = async (req, res, next) => {
       case "SUP":
         user1Record = await Supervisor.findOne({
           supervisor_id_hash: hashedUser1Id,
-        }).select("_id");
+        });
         break;
       case "STT":
         user1Record = await StudentTherapist.findOne({
           student_therapist_id_hash: hashedUser1Id,
-        }).select("_id");
+        });
         break;
-      case "PAT":
-        user1Record = await Patient.findOne({
-          patient_id_hash: hashedUser1Id,
-        }).select("_id");
+      case "ADM":
+        user1Record = await Admin.findOne({
+          admin_id_hash: hashedUser1Id,
+        });
+        break;
+      case "HOD":
+        user1Record = await HeadOfDepartment.findOne({
+          hash_hod_id: hashedUser1Id,
+        });
         break;
       default:
         return res.status(400).json({ message: "Invalid user1 type" });
@@ -243,8 +157,15 @@ export const getMessages = async (req, res, next) => {
           student_therapist_id_hash: hashedUser2Id,
         });
         break;
-      case "PAT":
-        user2Record = await Patient.findOne({ patient_id_hash: hashedUser2Id });
+      case "ADM":
+        user2Record = await Admin.findOne({
+          admin_id_hash: hashedUser2Id,
+        });
+        break;
+      case "HOD":
+        user2Record = await HeadOfDepartment.findOne({
+          hash_hod_id: hashedUser2Id,
+        });
         break;
       default:
         return res.status(400).json({ message: "Invalid user2 type" });
