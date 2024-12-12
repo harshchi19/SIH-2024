@@ -22,12 +22,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Plus, SlidersHorizontal, X } from "lucide-react";
-import ReportViewModal from "@/components/report/ReportViewModal";
+import ReportViewModal from "@/components/reports/ReportViewModal";
 
 import { useLanguage } from "@/context/LanguageContext";
 import { useGetReport } from "@/hooks/useGetReport";
 import { useGetSessions } from "@/hooks/useGetSessions";
 import { useByObjectId } from "@/hooks/useByObjectId";
+import { useParams, useRouter } from "next/navigation";
+import { GET_ALL_PAT_ROUTE } from "@/utils/constants";
+import { useGetRole } from "@/hooks/useGetRole";
 
 const StudentReportsPage = () => {
   const { getByObjectId } = useByObjectId();
@@ -36,6 +39,7 @@ const StudentReportsPage = () => {
 
   const { getAllReports } = useGetReport();
   const { getAllSessions } = useGetSessions();
+  const { getAll } = useGetRole();
   const [reports, setReports] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [preTherapyReports, setPreTherapyReports] = useState([]);
@@ -81,10 +85,26 @@ const StudentReportsPage = () => {
     }
   };
 
+  const fetchPreTherapyReports = async () => {
+    try {
+      const result = await getAll("PAT");
+      if (result.success) {
+        setPreTherapyReports(result.users);
+      } else {
+        console.error("Error fetching pre-therapy reports: ", result);
+      }
+    } catch (error) {
+      console.error("Failed to fetch pre-therapy reports", error);
+    }
+  };
+
   useEffect(() => {
     fetchReports();
     fetchSessions();
+    fetchPreTherapyReports();
   }, []);
+
+  console.log("Pre-Therapy Reports", preTherapyReports);
 
   // Data enrichment effects (similar to your original code)
   useEffect(() => {
@@ -118,8 +138,8 @@ const StudentReportsPage = () => {
 
     enrichReports(reports);
     enrichReports(sessions);
-    // enrichReports(preTherapyReports);
-  }, [reports, sessions]);
+    enrichReports(preTherapyReports);
+  }, [reports, sessions, preTherapyReports]);
 
   // Enrich reports with additional data
   const enrichedReports = useMemo(() => {
@@ -155,6 +175,25 @@ const StudentReportsPage = () => {
       };
     });
   }, [sessions, students, patient]);
+
+  const enrichedPreTherapy = useMemo(() => {
+    return preTherapyReports.map((pretherapy) => {
+      const date = new Date(pretherapy.createdAt).toLocaleDateString();
+      const student = students.find(
+        (s) => s._id === pretherapy.student_therapist_id
+      );
+      const patientData = patient.find((p) => p._id === pretherapy.patient_id);
+
+      return {
+        ...pretherapy,
+        date,
+        student: student || {},
+        patient: patientData || {},
+      };
+    });
+  }, [preTherapyReports, students, patient]);
+
+  console.log("Enriched Reports", enrichedReports);
 
   // Filtering and sorting logic
   const uniqueTherapists = [
@@ -234,7 +273,7 @@ const StudentReportsPage = () => {
 
   const handleViewReport = (report) => {
     setSelectedReport({
-      preTherapyReports: preTherapyReports
+      preTherapyReports: enrichedPreTherapy
         .filter((r) => r.patient_id === report.patient_id)
         .map((r) => ({ ...r, type: "Pre-Therapy" })),
       sessionReports: enrichedSessions
@@ -253,12 +292,21 @@ const StudentReportsPage = () => {
     setSelectedReport(null);
   };
 
+  const navigate = useRouter();
+  const { lang, role } = useParams();
+
+  const handleAddNew = () => {
+    // Redirect to the new report page
+    // For example, navigate.push(`/${lang}/${role}/reports/new`);
+    navigate.push(`/${lang}/${role}/reports/new-report`);
+  };
+
   return (
     <div className="flex h-screen bg-background">
       <div className="flex-1 p-6 space-y-4">
         {/* Top Actions Section */}
         <div className="flex items-center gap-4 mb-4">
-          <Button>
+          <Button onClick={handleAddNew}>
             <Plus className="h-4 w-4 mr-2" />
             {dict?.reports?.add_new}
           </Button>
@@ -448,7 +496,7 @@ const StudentReportsPage = () => {
         onClose={handleCloseModal}
         pretherapyReports={selectedReport?.preTherapyReports || []}
         sessionReports={selectedReport?.sessionReports || []}
-        // postSessionReports={selectedReport?.postSessionReports || []}
+        therapyPlanReports={selectedReport?.therapyPlanReports || []}
         finalReports={selectedReport?.finalReports || []}
       />
     </div>

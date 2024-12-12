@@ -33,6 +33,7 @@ const EventModal = ({
 }) => {
   const [supervisorData, setSupervisorData] = useState([]);
   const [supervisorName, setSupervisorName] = useState("");
+  const [supervisorId, setSupervisorId] = useState("");
   const [patientName, setPatientName] = useState("");
   const { dict } = useLanguage();
 
@@ -115,7 +116,7 @@ const EventModal = ({
 
     if (response.ok) {
       const data = response.json();
-      // setEvents([...events, data.event]);
+      setEvents([...events, data.event]);
     }
 
     closeModal();
@@ -214,6 +215,7 @@ const EventModal = ({
                           onClick={() => {
                             setData({ ...data, supervisor: supervisor._id });
                             setSupervisorName(supervisor.name);
+                            setSupervisorId(supervisor._id);
                           }}
                         >
                           {supervisor.name}

@@ -37,13 +37,6 @@ const BasicDetails = ({ data, updateData }) => {
     }
   };
 
-  const supervisorData = [
-    "Dr. Shashikant Deshpande",
-    "Prof. Reshma Desai",
-    "Dr. Mohammad Rehan",
-    "Dr. Jethalal Bhide",
-  ];
-
   const sexData = ["Male", "Female", "Other"];
 
   return (
@@ -207,33 +200,6 @@ const BasicDetails = ({ data, updateData }) => {
               />
             </PopoverContent>
           </Popover>
-        </div>
-
-        <div className="space-y-1 w-full">
-          <Label htmlFor="preferred_language" className="text-gray-700 text-md">
-            {dict?.addPatient?.sel_sup}
-          </Label>
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              className={`w-full flex items-center justify-start h-12 rounded-md border ${
-                !data.supervisor ? "text-gray-500" : ""
-              } border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
-            >
-              {data.supervisor || dict?.addPatient?.sel_sup_plchldr}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {supervisorData.map((supervisor) => (
-                <DropdownMenuItem
-                  key={supervisor}
-                  onClick={() =>
-                    handleInputChange(null, "supervisor", supervisor)
-                  }
-                >
-                  {supervisor}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
 

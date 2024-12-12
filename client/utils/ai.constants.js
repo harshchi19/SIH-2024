@@ -8,3 +8,6 @@ export const OCR_ROUTE = `${HOST}/pre-therapy-report`;
 
 // Youtube/News
 export const YT_NEWS_ROUTE = `${HOST}/blogs-youtube`;
+
+// Matchmaking
+export const MATHCMAKING_ROUTE = `${HOST}/matchmaking`;

@@ -95,16 +95,20 @@ const studentTherapistSchema = new Schema({
       required: true,
     },
   },
-  supervisor_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    of: String,
-    ref: "Supervisor",
-  },
-  patientId: {
-    type: mongoose.Schema.Types.ObjectId,
-    of: String,
-    ref: "Patient",
-  },
+  supervisor_id: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      of: String,
+      ref: "Supervisor",
+    },
+  ],
+  patientId: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      of: String,
+      ref: "Patient",
+    },
+  ],
   // Hashed Details
   student_therapist_id_hash: {
     type: String,
