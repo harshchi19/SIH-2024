@@ -47,6 +47,7 @@ const BasicDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="name" className="text-gray-700 text-md">
             {dict?.addPatient?.name}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -63,6 +64,7 @@ const BasicDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.login?.password}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.pass_info} />
           </Label>
           <Input
@@ -83,6 +85,7 @@ const BasicDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.email}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="email"
@@ -96,6 +99,7 @@ const BasicDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="phone_no" className="text-gray-700 text-md">
             {dict?.login?.phone}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="tel"
@@ -112,6 +116,7 @@ const BasicDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="date_of_birth" className="text-gray-700 text-md">
             {dict?.addPatient?.date_of_birth}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Popover>
             <PopoverTrigger className="w-full h-12 bg-transparent" asChild>
@@ -144,6 +149,7 @@ const BasicDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="sex" className="text-gray-700 text-md">
             {dict?.addPatient?.sex}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <DropdownMenu className="flex justify-start">
             <DropdownMenuTrigger
@@ -171,6 +177,7 @@ const BasicDetails = ({ data, updateData }) => {
         <div className="space-y-1 w-full">
           <Label htmlFor="date_of_assignment" className="text-gray-700 text-md">
             {dict?.addPatient?.date_of_assg}
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Popover>
             <PopoverTrigger className="w-full h-12 bg-transparent" asChild>
@@ -210,6 +217,7 @@ const BasicDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.pref_lang} 1
+            <span className="text-red-500 ml-1">*</span>
           </Label>
           <Input
             type="text"
@@ -263,6 +271,7 @@ const BasicDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.summary}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.summary_info} />
           </Label>
           <Textarea

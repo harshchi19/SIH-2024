@@ -1,10 +1,13 @@
 import {
   decryptSection,
+  encryptSection,
   generateHashedData,
+  generateKeyAndIV,
 } from "../helper/security.helper.js";
 import { Admin } from "../models/mongo/admin.model.js";
 import { EncryptionKey } from "../models/mongo/keys.model.js";
 import { unwrapKey } from "./keys.controller.js";
+import { AuthEmail } from "../models/mongo/auth_email.model.js";
 
 export const getAdminById = async (req, res, next) => {
   const { admin_id } = req.params;
@@ -54,6 +57,7 @@ export const getAdminById = async (req, res, next) => {
     return res.status(400).json({ message: "int-ser-err" });
   }
 };
+
 export const getAdminObjectById = async (req, res, next) => {
   const { admin_id } = req.params;
 
@@ -137,7 +141,48 @@ export const getAllAdmins = async (req, res, next) => {
       return decryptSection(decryptData, key);
     });
 
-    return res.status(200).json(decryptedData);
+    return res.status(200).json({ admin: decryptedData });
+  } catch (error) {
+    console.error("Error in getAdminById: ", error);
+    return res.status(400).json({ message: "int-ser-err" });
+  }
+};
+
+export const addAdmin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const hashedEmailId = generateHashedData(email);
+
+    const findEncryptionKey = await EncryptionKey.findOne({
+      collectionName: "auth_emails",
+    });
+
+    const key = unwrapKey(
+      findEncryptionKey.encryptedKey,
+      findEncryptionKey.encryptedIV,
+      findEncryptionKey.encryptedAuthTag
+    );
+
+    const encryptData = {
+      email,
+      password,
+    };
+
+    const iv = generateKeyAndIV();
+
+    const ecnryptedDetails = encryptSection(encryptData, key, iv);
+
+    const newAuthEmail = new AuthEmail({
+      email: ecnryptedDetails.email,
+      password: ecnryptedDetails.password,
+      hash_email: hashedEmailId,
+      userType: "ADM",
+    });
+
+    newAuthEmail.save();
+
+    return res.status(200).json({ message: "Admin has been added" });
   } catch (error) {
     console.error("Error in getAdminById: ", error);
     return res.status(400).json({ message: "int-ser-err" });

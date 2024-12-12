@@ -29,6 +29,7 @@ const SuprasegmentalAspectsDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.emphasis_level}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.emphasis_level_info} />
           </Label>
           <Textarea
@@ -47,6 +48,7 @@ const SuprasegmentalAspectsDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.intonation}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.intonation_info} />
           </Label>
           <Textarea
@@ -65,6 +67,7 @@ const SuprasegmentalAspectsDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.phrasing}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.phrasing_info} />
           </Label>
           <Textarea
@@ -83,6 +86,7 @@ const SuprasegmentalAspectsDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.speech_rate}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.speech_rate_info} />
           </Label>
           <Textarea

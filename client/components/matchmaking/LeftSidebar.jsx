@@ -42,7 +42,7 @@ const SelectPatientModal = ({
   };
 
   return (
-    <div className="h-full w-1/3 bg-white rounded-lg border border-gray-300 px-4 py-3 overflow-hidden">
+    <div className="h-full w-1/3 bg-white rounded-lg border border-gray-300 px-4 py-3 overflow-y-scroll">
       <h1 className="text-xl font-semibold">{dict?.matchmaking?.patients}</h1>
       <div className="relative">
         <Input
@@ -55,7 +55,7 @@ const SelectPatientModal = ({
         <Search className="absolute top-2 right-4 h-5 w-auto cursor-pointer" />
       </div>
 
-      <div className="h-full space-y-4">
+      <div className="h-fit space-y-4 ">
         {filteredPatients?.length > 0 ? (
           filteredPatients?.map((patient) => (
             <div

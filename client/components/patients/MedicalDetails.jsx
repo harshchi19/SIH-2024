@@ -27,6 +27,7 @@ const MedicalDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.multilingual_factors}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.multilingual_factors_info} />
           </Label>
           <Textarea
@@ -45,6 +46,7 @@ const MedicalDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.details_to_pay_attention}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.details_to_pay_attention_info} />
           </Label>
           <Textarea
@@ -63,6 +65,7 @@ const MedicalDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.language_evaluation}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.language_evaluation_info} />
           </Label>
           <Textarea
@@ -81,6 +84,7 @@ const MedicalDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.auditory_skills}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.auditory_skills_info} />
           </Label>
           <Textarea
@@ -99,6 +103,7 @@ const MedicalDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.formal_testing}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.formal_testing_info} />
           </Label>
           <Textarea
@@ -117,6 +122,7 @@ const MedicalDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.diagnostic_formulation}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.diagnostic_formulation_info} />
           </Label>
           <Textarea
@@ -135,6 +141,7 @@ const MedicalDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.clinical_impression}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.clinical_impression_info} />
           </Label>
           <Textarea
@@ -153,6 +160,7 @@ const MedicalDetails = ({ data, updateData }) => {
             className="text-gray-700 text-md flex items-center"
           >
             {dict?.addPatient?.recommendations}
+            <span className="text-red-500 ml-1">*</span>
             <Info info={dict?.addPatient?.recommendations_info} />
           </Label>
           <Textarea

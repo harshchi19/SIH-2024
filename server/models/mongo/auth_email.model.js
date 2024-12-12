@@ -21,7 +21,6 @@ const authEmailSchema = new Schema({
   },
   userId: {
     type: String,
-    required: true,
   },
 });
 

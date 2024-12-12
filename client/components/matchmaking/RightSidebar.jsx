@@ -233,13 +233,14 @@ const RightSidebar = ({
         (therapist) => therapist.filename.split("_")[0]
       );
 
-      setFilteredSupervisors((prev) =>
-        prev.filter((supervisor) =>
+      setFilteredSupervisors(
+        supervisors.filter((supervisor) =>
           supervisorIds.includes(supervisor.supervisor_id)
         )
       );
-      setFilteredTherapists((prev) =>
-        prev.filter((therapist) =>
+
+      setFilteredTherapists(
+        studentTherapists.filter((therapist) =>
           therapistIds.includes(therapist.student_therapist_id)
         )
       );

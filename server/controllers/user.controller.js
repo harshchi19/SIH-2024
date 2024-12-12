@@ -285,6 +285,8 @@ export const loginUser = async (req, res, next) => {
         password: Object.fromEntries(existingUser.password),
       };
 
+      console.log(decryptData);
+
       const decryptedData = decryptSection(decryptData, key);
 
       if (decryptedData.password !== password) {

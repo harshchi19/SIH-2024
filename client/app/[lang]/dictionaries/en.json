@@ -33,7 +33,8 @@
     "navigation": "Guide",
     "admin": "Admin",
     "new-report": "New Report",
-    "navigation": "Guide"
+    "admins": "All Admins",
+    "head-of-department": "All HOD's"
   },
   "errors": {
     "int_ser_err": "Internal Server Error",
