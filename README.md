@@ -1,18 +1,8 @@
 # VaaniVikas - Speech Therapy Management System
 
-<div align="center">
-
-![VaaniVikas](https://img.shields.io/badge/VaaniVikas-Speech%20Therapy-blue?style=for-the-badge)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![SIH 2024](https://img.shields.io/badge/SIH-2024-orange?style=for-the-badge)](https://www.sih.gov.in/)
 
 **A comprehensive digital platform for speech therapy management developed for Ali Javar Yung Institute**
 
-[Features](#-key-features) • [Tech Stack](#-technology-stack) • [Getting Started](#-getting-started) • [Documentation](#-documentation) • [Contributing](#-contributing)
-
-</div>
-
----
 
 ## 📋 Overview
 
